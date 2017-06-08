@@ -6,7 +6,7 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: SeraphRoy
+title: GaeBlogX
 brief-intro: Ha?
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://seraphroy.github.io" # the base hostname & protocol for your site
@@ -15,7 +15,7 @@ permalink: /:year/:month/:day/:title/
 
 # other links
 # twitter_username: gaohaoyang126
-# facebook_username: gaohaoyang.water
+facebook_username: SeraphRoy
 github_username: SeraphRoy
 email: royxagain@gmail.com
 # weibo_username: 3115521wh
