@@ -7,7 +7,7 @@
 
 # Site settings
 title: GaeBlogX
-brief-intro: 死宅 中二 现充
+brief-intro: Software Engineer@Silicon Valley
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://seraphroy.github.io" # the base hostname & protocol for your site
 

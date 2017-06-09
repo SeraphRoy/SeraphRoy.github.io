@@ -43,7 +43,7 @@ There are various ways that these operations are named and described, more or le
 
 The easiest way for me to think of semaphores is, of course, with code. Here is a little pseudo-code that may help.
 
-```
+```c
 typedef struct sem {
   int value;
   other_stuff
@@ -55,7 +55,7 @@ There are two actions defined on semaphores (we'll go with the classic terminolo
 *   **P(Sem s)** decrements **s->value**, and if this is less than zero, the thread is blocked, and will remain so until another thread unblocks it. This is all done atomically.
 *   **V(Sem s)** increments **s->value**, and if this is less than or equal to zero, then there is at least one other thread that is blocked because of **s**. Exactly one of these threads is chosen and unblocked. The definition of **V()** does not specify how the thread to unblock is chosen, although most uniprocessor thread packages use a FIFO algorithm.
 
-```
+```c
 initialize(i)
 {
     s->value = i
@@ -91,7 +91,7 @@ The power of semaphores, though, is that they can be implemented relatively simp
 
 In pthreads, the implementation of sempahores is pretty simple as long as your pthreads code adheres to basic thread principles. That is, the code uses threads and thread synchronization in a way that conforms to the fork/join model. We'll discuss the full pthreads picture with respect to semaphores as well, but to begin, consider the following code:
 
-```
+```c
 typedef struct
 {
         pthread_mutex_t lock;
@@ -161,7 +161,7 @@ This decision making is unfortunate because it introduces considerable complexit
 
 Be that as it may, it is possible to write the semaphore code in a slightly more complex way to work with these unfortunate semantics in the pthreads specification. Consider the following code:
 
-```
+```c
 #include < stdlib.h >
 #include < unistd.h >
 #include < stdio.h >
@@ -257,7 +257,7 @@ Take a look at the code for the [Client-Trader simulation written for semaphores
 
 Let's look at these features a little more closely. Here is the client and trader thread code with all of the comments removed to show how compact it is:
 
-```
+```c
 void *ClientThread(void *arg)
 {
     struct client_arg *ca = (struct client_arg *)arg;
@@ -368,7 +368,7 @@ Notice also that the count in the semaphore records (as a negative number) the n
 
 Notice in the code that mutual exclusion is needed both to implement the order queue correctly and also to ensure that updates to the stock totals in the market are atomic. In the constructor functions, then, for the order queue and the market, you'd expect to see a semaphore initialized with a value of _1_:
 
-```
+```c
 struct order_que *InitOrderQue(int size)
 {
     struct order_que *oq;
@@ -452,7 +452,7 @@ Again, you should convince yourself that the thread execution order between clie
 
 Here are the same set of experiments as we discussed in the [lecture on condition variables](../CondVar/index.html).
 
-```
+```bash
 MossPiglet% ./market-semaphore -c 1 -t 1 -q 1 -s 1 -o 100000
 140849.225016 transactions / sec
 

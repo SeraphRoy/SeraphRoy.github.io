@@ -74,7 +74,7 @@ Here is the C code. I've put a commented version of the code in [avg-nothread.c]
 
 Here is the code
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -133,7 +133,7 @@ Now is a good time to take a moment to make sure that you understand each line o
 
 The next program performs the same computation, but does so using a single thread rather than in the main body as in the previous program. The full version of this program is available from [avg-1thread.c]({{ site.url }}/assets/avg-1thread.c)
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -233,20 +233,17 @@ int main(int argc, char **argv)
     return(0);
 }
 ```
+
 In pseudocode form, the logic is as follows. The _main()_ function does
-```
-allocate memory for thread arguments
-fill in thread arguments (marshal the arguments)
-spawn the thread
-wait for the thread to complete and get the result (the sum in this example) computed by the thread
-print out the average
-```
+- allocate memory for thread arguments
+- fill in thread arguments (marshal the arguments)
+- spawn the thread
+- wait for the thread to complete and get the result (the sum in this example) computed by the thread
+- print out the average
 and the thread executes
-```
-unmarshal the arguments
-compute and marshal the sum so it can be returned
-return the sum and exit
-```
+- unmarshal the arguments
+- compute and marshal the sum so it can be returned
+- return the sum and exit
 
 ### Reading through the Code
 
@@ -254,7 +251,7 @@ The first thing to notice is that the code that computes the sum is performed in
 
 The second thing to notice are the types in the prototype for the thread entry point:
 
-```
+```c
 void *SumThread(void *arg)
 ```
 
@@ -271,7 +268,7 @@ A structure is a way for you to define your own composite data type. In a pthrea
 
 In this example, we define two structures
 
-```
+```c
  // data type definition for arguments passed to thread
 struct arg_struct
 {
@@ -291,13 +288,13 @@ The argument structure allows the code that spawns the thread to pass it two arg
 
 Notice that the thread entry point function converts its one argument to a pointer to the argument data structure. The data type for _my_args_ is
 
-```
+```c
 struct arg_struct *my_args;
 ```
 
 and the body of the thread assigns the _arg_ pointer passed as an argument to _my_args_ via a C language cast.
 
-```
+```c
 my_args = (struct arg_struct *)arg;
 ```
 
@@ -305,19 +302,19 @@ You can think of the thread as receiving a message with its initial arguments in
 
 Similarly, when the thread has finished computing the sum, it needs a data structure to pass back to a thread that is waiting for the result. The code calls _malloc()_ to allocate the memory necessary to transmit the results once the thread has completed:
 
-```   
+```   c
 result = (struct result_struct *)malloc(sizeof(struct result_struct));
 ```
 
 and when the sum is computed, the thread loads the sum into the result structure:
 
-```
+```c
 result->sum = my_sum;
 ```
 
 The marshaling into a _(void *)_ of the _(struct result_struct *)_ takes place directly in the return call
 
-```
+```c
 return((void *)result);
 ```
 
@@ -331,7 +328,7 @@ The _main()_ function creates an argument structure, spawns the thread, waits fo
 
 Creating and marshaling the arguments for the thread:
 
-```
+```c
 args = (struct arg_struct *)malloc(sizeof(struct arg_struct));
 args->size = count;
 args->data = data;
@@ -339,7 +336,7 @@ args->data = data;
 
 The thread that computes the sum is created by the _pthread_create()_ call in the _main()_ function.
 
-```
+```c
 err = pthread_create(&thread_id, NULL, SumThread, (void *)args);
 ```
 
@@ -364,7 +361,7 @@ Thus the main thread in this example spawns a single thread to compute the sum a
 
 After the main thread spawns the thread to compute the sum, it immediately calls
 
-```   
+```   c
 err = pthread_join(thread_id,(void **)&result);
 ```
 
@@ -376,7 +373,7 @@ Like with _pthread_create()_, _pthread_join()_ returns an integer which is zero 
 
 Here is the output
 
-```
+```bash
 ./avg-1thread 100000
 main thread forking sum thread
 main thread running after sum thread created, about to call join
@@ -394,7 +391,7 @@ The previous example is a little contrived in that there is no real advantage (a
 
 The answers is that it is possible to compute some things in parallel using threads. In this example, we can modify the sum thread so that it works on a subregion of the array. The main thread can spawn multiple subregions (which are computed in parallel) and then sum the sums that come back to get the full sum. The following example code does this parallel computation of the sums.
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -546,7 +543,7 @@ Aftre the main thread spawns all of the sum threads, it goes into another loop a
 
 Here is a a sample output from this multi-threaded program:
 
-```
+```bash
 MossPiglet% ./avg-manythread 100000 5
 main thread about to create 5 sum threads
 main thread creating sum thread 1
@@ -618,7 +615,7 @@ Synchronization is an important concept when concurrent and/or asynchronous even
 
 You can experiment with these last two example codes to see how much of an improvement threading and parallelism make in terms of the performance of the code. On my laptop. Running these codes with the Linux time command:
 
-```
+```bash
 time ./avg-1thread 100000000
 main thread forking sum thread
 main thread running after sum thread created, about to call join
@@ -634,7 +631,7 @@ sys 0m0.195s
 
 and
 
-```
+```bash
 time ./avg-manythread 100000000 10
 main thread about to create 10 sum threads
 main thread creating sum thread 1
@@ -741,7 +738,7 @@ You can copy the files from this location.
 
 I've also made the examples available on [github](github.com). If you haven't used github before, it is a public code repository that promotes code sharing using the [git](http://en.wikipedia.org/wiki/Git_(software)) source code control system. Git has many interesting features that are designed to allow distributed sets of developers to collaborate. One such feature allows you to "clone" a repository so that you can work with it on your own. To get a copy fo the examples from this class, log into a CSIL machine and type
 
-```
+```bash
 git clone https://github.com/richwolski/cs170-lecture-examples.git
 ```
 
@@ -749,7 +746,7 @@ This command will create a subdirectory called cs170-lecture-examples. In it you
 
 To build the programs type
 
-```
+```bash
 cd cs170-lecture-examples/IntroThreads
 make
 ```

@@ -15,7 +15,7 @@ mathjax: true
 
 In the C lecture we discussed the concept of separate compilation and C "libraries." Functions like _printf()_, _strlen()_ and _strncpy()_ are all implemented as libraries for Linux. That is, someone, some time wrote the following code (or something like it):
 
-```
+```c
 int strlen(char *string)
 {
     int i;
@@ -34,19 +34,19 @@ There are some functions that your program also gets that are not implemented as
 
 Knowing whether a Linux feature is implemented as a library or system call isn't exactly easy. As a rule, the section section of the manual (section 2) are the basic system calls. If you type
 
-```
+```bash
 man 2 read
 ```
 
 you will see the system call _read()_ listed, but type
 
-```
+```bash
 man 3 read
 ```
 
 and it won't appear. However,
 
-```
+```bash
 man 3 fwrite
 ```
 
@@ -62,13 +62,13 @@ All processes in Linux get a unique identifier of type _pid_t_. Printing the val
 
 The system call to get the process identifier under Linux is _getpid()_. If you type
 
-```
+```bash
 man getpid
 ```
 
 you will see that you need to include _sys/types.h_ to get the type specifier and _unistd.h_ to get the right prototype for the compiler. It takes no arguments and returns a _pid_t_. Try it out using [sys-call1.c]({{site.url}}/assets/sys-call1.c):
 
-```
+```c
 #include < sys/types.h >
 #include < unistd.h >
 #include < stdlib.h >
@@ -111,7 +111,7 @@ Secondly, the OS keeps a "current offset" from the beginning of the file for you
 
 Let's start by writing a program that takes a file name as an argument, creates the file, and writes an important and pitch message into it as a string. Consider the program code available in [file-create1.c]({{site.url}}/assets/file-create1.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -189,13 +189,13 @@ int main(int argc, char **argv)
 
 First, try running it as
 
-```
+```bash
 ./file-create1 ./foo.txt
 ```
 
 Then, look in the current directory for a file called _foo.txt_. What does it contain? Now try:
 
-```
+```bash
 ./file-create1 /foo.txt
 ```
 
@@ -203,7 +203,7 @@ This attempt should fail because you tried to create a file called "foo.txt" in 
 
 Next, look at the line where _open()_ is called in the code:
 
-```
+```c
 my_file_desc = open(file_name,O_CREAT | O_WRONLY, 0600);
 ```
 
@@ -211,7 +211,7 @@ This line says to open the file specified by the string contained in the array _
 
 The second argument requires that you look at the man page for open
 
-```
+```bash
 man 2 open
 ```
 
@@ -219,7 +219,7 @@ The second argument to open specifies how you want the file opened. In this case
 
 Notice that if I run the program twice
 
-```
+```bash
 ./file-create1 foo.txt
 ./file-create1 foo.txt
 ```
@@ -228,7 +228,7 @@ I still only get one copy of the file with one string in it. That's because the 
 
 The third argument says that I want to create the file with the permissions "600" -- or RW for owner only. See
 
-```
+```bash
 man 2 chmod
 ```
 
@@ -236,7 +236,7 @@ for details on specifying permissions. It is possible to use constants for these
 
 Finally, notice that the open returns an integer (the type of _my_file_desc_ is _int_). That value is passed to _write()_ to indicate which file I want to write. If the code had opened two different files, each would have a different file descriptor number. For example, as in [file-create2.c]({{site.url}}/assets/file-create2.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -363,7 +363,7 @@ You should read through this example and notice that the two files are reference
 
 Now let's try reading the data back from a file, as in [file-read1.c]({{site.url}}/assets/file-read1.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -428,7 +428,7 @@ int main(int argc, char **argv)
 
 Here the open call is a little different:
 
-```
+```c
     my_file_desc = open(file_name,O_RDONLY,0);
 ```
 
@@ -436,7 +436,7 @@ indicating that the file is to be open for reading only. The permissions will be
 
 Also, the read is a little different
 
-```
+```c
     r = read(my_file_desc,read_buffer,sizeof(read_buffer)-1);
 ```
 
@@ -444,7 +444,7 @@ In the case of _read()_ the system call will read bytes up to the number specifi
 
 If you wanted to read the entire contents of the file, then you will need to loop until there is no more data as in [file-read2.c]({{site.url}}/assets/file-read2.c).
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -515,7 +515,7 @@ This is essentially what the Linux utility _cat_ does although cat probably does
 
 For example, try
 
-```
+```bash
 ./file-read2 /cs/faculty/rich/public_html/class/cs170/notes/C/index.html
 ```
 
@@ -525,7 +525,7 @@ and see if you get the text from the HTML for this web page back.
 
 The _lseek()_ system call moves the current offset pointer by the number of bytes specified from a starting location that is taken from its third argument. For example, consider [file-seek1.c]({{site.url}}/assets/file-seek1.c).
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -615,7 +615,7 @@ int main(int argc, char **argv)
 
 The line
 
-```
+```c
 where = lseek(my_file_desc,offset,SEEK_SET);
 ```
 
@@ -623,7 +623,7 @@ after the call to _open()_ but before the first call to _read()_ moves the curre
 
 Now try running the following:
 
-```
+```bash
 ./file-create1 foo.txt
 ./file-seek1 foo.txt 10
 ```
@@ -640,7 +640,7 @@ where the first 10 bytes of the line are missing from the line in the file _foo.
 
 Take a look at the code in [file-fd1.c]({{site.url}}/assets/file-fd1.c).
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -699,7 +699,7 @@ int main(int argc, char **argv)
 
 It should look a little alarming to you especially with respect to the _write()_ call. Try running it after creating the file _foo.txt_:
 
-```
+```bash
 ./file-create1 foo.txt
 ./file-fd1 foo.txt 
 my_file_desc: 3
@@ -708,7 +708,7 @@ a string written to standard out
 
 What happened here? First, notice that the value of file descriptor returned by the open call and stored in the integer variable _my_file_desc_ is _3_. Turns out that this number is not just a random integer selected by Linux. Next, and perhaps most curiously, in the code the call to _write()_ writes a string out to file descriptor that wasn't opened.
 
-```
+```c
         string = "a string written to standard out\n";
         write(1,string,strlen(string));
 ```
@@ -727,7 +727,7 @@ Thus, the call to write tells the OS to write from the string buffer the _strlen
 
 To see the difference between **standard out** and **standard error** try running the code in [file-fd2.c]({{site.url}}/assets/file-fd2.c)
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -755,7 +755,7 @@ int main(int argc, char **argv)
 
 First, run it from the terminal and then run it, but redirect (using the shell) the output to a file:
 
-```
+```bash
 ./file-fd2
 a string written to standard out
 a string written to standard error
@@ -770,7 +770,7 @@ In the first execution, both standard out and standard error were sent to the te
 
 Standard in works the same way, but it needs to know when there is no more input from the keyboard. When you tun the code in [file-fd3.c]({{site.url}}/assets/file-fd3.c)
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -798,7 +798,7 @@ Notice that this codes uses the function _memset()_ to zero out the buffer. It r
 
 I ran it, types the characters in _my dog is happy!_ and then _ctrl-D_.
 
-```
+```bash
 ./file-fd3
 my dog is happy!my dog is happy!
 ```
@@ -807,7 +807,7 @@ The _ctrl-D_ character tells the shell that the end of file has been reached whi
 
 The shell can also redirect data from a file to standard in. Using the file from the previous example, try
 
-```
+```bash
 ./file-fd3 < fd2.out
 ```
 
@@ -819,7 +819,7 @@ which causes the contents fo the file _fd2.out_ to be sent to standard in of _fi
 
 When you log into a Linux system and you get a prompt, the program that is running is called "the shell." It is usually a BASH shell (see the man page) and its job is to create processes on your behalf. Some of those processes then run Linux utilities for you. For example, when you type
 
-```
+```bash
 ls ~
 ```
 
@@ -833,7 +833,7 @@ The way one program runs another in Linux is a little odd. First, it makes an ex
 
 Take a look at the code in [fork-1.c]({{site.url}}/assets/fork-1.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -871,13 +871,13 @@ int main(int argc, char **argv)
 
 The call to _fork()_ creates an **exact copy of the process calling fork except for the process identifier** which is different since it is a new process. The interesting part is that this new process (typically called the _child_ process) begins running at the instruction **immediately after the fork() call in the program**. That is, after the call to _fork()_ completes, there are two processes running and they both execute the next line which is
 
-```
+```bash
 if(child_id != 0) {
 ```
 
 which is pretty typical. The call to _fork()_ returns the process identifier to of the newly created process to the parent, but returns zero to the child. That way the code can have the child and parent diverge and execute different code paths. In this example, the parent and child print different messages after the child has been forked. The output I get is
 
-```
+```bash
 ./fork-1
 pid: 40285 -- I am the parent about to call fork
 pid: 40285 -- I just forked a child with id 40286
@@ -890,7 +890,7 @@ On each line, the code prints the process identifier of the process calling _pri
 
 The parent can wait for the child to complete using the _wait()_ system call. Take a look at [fork-2.c]({{site.url}}/assets/fork-2.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -937,7 +937,7 @@ int main(int argc, char **argv)
 
 Running this version yields:
 
-```
+```bash
 ./fork-2
 pid: 74869 -- I just forked a child with id 74870
 pid: 74869 -- I am waiting for process 74870 to finish
@@ -963,7 +963,7 @@ Notice also that the call to _wait()_ takes a pointer to an integer as a paramet
 
 The exit status in the child is given in the argument to _exit()_ which, in this example, is _0_. Most Linux utilities return an exit status of _0_ when the complete successfully and a small positive integer (usually _1_ or _2_) when an error has occured. If the call to exit had been
 
-```
+```c
 exit(1);
 ```
 
@@ -975,7 +975,7 @@ The _fork()_ clones the running process, but often what you need is to execute (
 
 While the function of _fork()_ has remained relatively constant over the years, _exec()_ has undergone a few changes since it was first defined. The version we will discuss is _execve()_ since its definition is rather clear. To be complete, you should look at the man pages for
 
-```
+```bash
 man 2 execve
 man 2 execl
 ```
@@ -986,7 +986,7 @@ However, we will constrain our remarks to _execve()_ for the sakes both of simpl
 
 Consider the code contained in [fork-3.c]({{site.url}}/assets/fork-3.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -1057,7 +1057,7 @@ Next, _execve()_ takes a list of arguments that it will pass (as the _char *argv
 
 So, for example, to get _fork-3_ to run _/bin/ls_ on the _/tmp_ directory you would execute
 
-```
+```bash
 ./fork-3 /bin/ls /tmp
 ```
 
@@ -1065,7 +1065,7 @@ and _/tmp_ will need to be passed to _/bin/ls_ through the call to _execve()_. F
 
 Try a few examples:
 
-```
+```bash
 ./fork-3 /bin/date
 pid: 75976 -- I forked pid: 75977 for: /bin/date
 pid: 75977 -- I am the child and I am going to exec /bin/date
@@ -1078,7 +1078,7 @@ Take a look at the process identifiers. Notice that the parent forks the child a
 
 Notice also that the message immediately after the call to _execve()_ in the child is **not** printed. That's because if the call to _execve()_ is successful, the child is **completely overwritten** by the new code and, thus, stops executing its own code. If the call to _execve()_ fails, however, then the child continues to execute. For example,
 
-```
+```bash
 ./fork-3 date
 pid: 76043 -- I forked pid: 76044 for: date
 pid: 76044 -- I am the child and I am going to exec date
@@ -1090,7 +1090,7 @@ pid: 76043 -- I am exiting
 
 Here, the path name to _/bin/date_ is not fully specified. The system call _execve()_ does not use the _$PATH_ environment variable to determine what to run. The simply specifying _date_ causes _execve()_ to fail because it can't find _date_ in the file system. Try it with _/usr/date_
 
-```
+```bash
 ./fork-3 /usr/date
 pid: 76096 -- I forked pid: 76097 for: /usr/date
 pid: 76097 -- I am the child and I am going to exec /usr/date
@@ -1104,7 +1104,7 @@ and it fails the same way because there is no file called _date_ in _/usr_.
 
 Now try it with _/bin/ls_
 
-```
+```bash
 ./fork-3 /bin/ls -al fork-3.c
 pid: 76113 -- I forked pid: 76114 for: /bin/ls
 pid: 76114 -- I am the child and I am going to exec /bin/ls
@@ -1115,7 +1115,7 @@ pid: 76113 -- I am exiting
 
 Compare that output to
 
-```
+```bash
 /bin/ls -al fork-3.c
 -rw-r--r--  1 rich  staff  1118 Jan 14 14:52 fork-3.c
 ```
@@ -1124,7 +1124,7 @@ Nifty. In fact, _fork-3_ is doing what _/bin/bash_ does when you tell the shell 
 
 Oh-oh. Buckle up.
 
-```
+```bash
 MossPiglet% ./fork-3 /bin/bash
 pid: 76193 -- I forked pid: 76194 for: /bin/bash
 pid: 76194 -- I am the child and I am going to exec /bin/bash
@@ -1133,7 +1133,7 @@ MossPiglet%
 
 What happened here? It started running bash and bash is blocked waiting for my input. Notice that the parent is still waiting for the child to exit. The child called _execve()_ on _/bin/bash_ and bash ran and is waiting for my input. If I type _exit_ or _ctrl-D_ that bash will exit, the parent will wake up, and _fork-3_ will exit.
 
-```
+```bash
 MossPiglet% ./fork-3 /bin/bash
 pid: 76241 -- I forked pid: 76242 for: /bin/bash
 pid: 76242 -- I am the child and I am going to exec /bin/bash
@@ -1145,7 +1145,7 @@ pid: 76241 -- I am exiting
 
 Why did this work? Keep in mind that the child overwrote itself with the code from the executable binary located in the file _/bin/bash_ but it **inherits everything else from the parent**. In particular, it gets the same open file descriptors and they remain open. What open file descriptors does bash need? Standard in, standard out, and standard error. Thus, bash gets the same standard in, standard out, and standard error that _fork-3_ had and, thus, it works just fine as its own shell. Only when you call _exit_ the _fork-3_ process is waiting and it wakes up to get the exit status. Try it with a different status:
 
-```
+```bash
 ./fork-3 /bin/bash
 pid: 76401 -- I forked pid: 76402 for: /bin/bash
 pid: 76402 -- I am the child and I am going to exec /bin/bash
@@ -1159,13 +1159,13 @@ Whoops. Why did _256_ come back as a status instead of _1_?
 
 Turns out _wait()_encodes the exit status in the status integer. The correct way to manage it is depcited in [fork-4.c]({{site.url}}/assets/fork-4.c):
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
 #include < string.h >
 #include < fcntl.h >
- **#include < sys/wait.h >** 
+#include < sys/wait.h >
 
 /*
  * run a program using fork and execve
@@ -1250,7 +1250,7 @@ Because they are represented using file descriptors, the same _read()_ and _writ
 
 In [pipe-1.c]({{site.url}}/assets/pipe-1.c), the code opens a pipe, writes a string to the "write end", and then reads the "read end" to get what ever is in the pipe (up to the size of the read buffer).
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -1306,7 +1306,7 @@ Similarly, the reader of read end of the pipe will block if there is no data to 
 
 Usually a pipe is established between processes that wish to communicate rather than within a single process (as in the previous example). In [pipe-2.c]({{site.url}}/assets/pipe-2.c)
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -1391,7 +1391,7 @@ Notice that the code creates a pipe before it calls _fork()_. As a result, both 
 
 To see the close of write end trigger the reading end to exit, take a look at the code in <a href="" example="" pipe-3.c="">pipe-3.c</a>
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -1478,7 +1478,7 @@ Here, the child reads the pipe in a while loop looking for the read to complete 
 
 The output
 
-```
+```bash
 ./pipe-3
 pid: 98839 -- writing a string made by the parent
  to pipe_desc[1]
@@ -1498,7 +1498,7 @@ At this point, you have enough to understand how to write a program that creates
 
 Consider the code in [my-cat.c]({{site.url}}/assets/my-cat.c) which is a program that implements functionality similar to the Linux _cat_ utility:
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -1536,7 +1536,7 @@ int main(int argc, char **argv)
 
 It simply reads data from Standard In (that it assumes is string data) and echos it to Standard Out. It also prints a message when it starts and when it ends. If you run it from the command line
 
-```
+```bash
 ./my-cat
 pid: 33672 -- I am my-cat and I have started
 I love the OS class more than any other class!
@@ -1575,7 +1575,7 @@ To change file descriptors you need to use the system calls _dup()_ or _dup2()_.
 
 For example
 
-```
+```c
 int fd = open("./my-file.txt",O_RDWR);
 close(0);
 dup(fd);
@@ -1583,7 +1583,7 @@ dup(fd);
 
 will set the Standard In file descriptor to be the same file descriptor as _fd_. Thus when your process calls _read(0,...)_ it will not be reading from the terminal any longer but from the file. The sequence
 
-```
+```c
 int fd = open("./my-file.txt",O_RDWR);
 close(0);
 dup2(fd,0);
@@ -1595,7 +1595,7 @@ Thus _dup()_ and _dup2()_ are ways that you can control file descriptors in gene
 
 In [pipe-4.c]({{site.url}}/assets/pipe-4.c) the code does, more or less what the shell does when you use the \| symbol create chains of programs separated by pipes.
 
-```
+```c
 #include < unistd.h >
 #include < stdlib.h >
 #include < stdio.h >
@@ -1715,7 +1715,7 @@ This code is worth understanding. It takes the name of a file as its first argum
 
 Try running it:
 
-```
+```bash
 ./pipe-4 ./my-cat 2
 pid: 34122 -- I am my-cat and I have started
 pid: 34123 -- I am my-cat and I have started
@@ -1731,7 +1731,7 @@ pid: 34123 -- I am my-cat and I am exiting
 
 The code forked two children (pid: 34122 and pid: 34123). When you type an important sentence to the terminal, 34122 wakes up, reads the message from Standard In (file descriptor 0) and writes it to Stabdard Out (file descriptor 1). The parent has been careful to leave file descriptor alone on its first fork so that the first child gets the terminal as Standard IN. Then 34123 wakes up, reads its Standard In, and writes it to its Standard Out. In this case, however, since it is the end of the chain, the parent has arranged that its Standard Out is the terminal. Thus you see the sentence a second time when 34123 writes it. Try it with three processes
 
-```
+```bash
 ./pipe-4 ./my-cat 3
 pid: 34201 -- I am my-cat and I have started
 pid: 34202 -- I am my-cat and I have started
@@ -1751,7 +1751,7 @@ pid: 34203 -- I am my-cat and I am exiting
 
 and with four
 
-```
+```bash
 ./pipe-4 ./my-cat 4
 pid: 34225 -- I am my-cat and I have started
 pid: 34226 -- I am my-cat and I have started

@@ -168,7 +168,7 @@ race1 nthreads stringsize iterations
 
 This is a pretty simple program. The command line arguments call for the user to specify the number of threads, a string size and a number of iterations. Then the program does the following. It allocates an array of **stringsize+1** characters (the **+1** accounts for the null terminator). Then it forks off **nthreads** threads, passing each thread its id, the number of iterations, and the character array. Here is the output if we call it with the arguments 4, 4, 1.
 
-```
+```bash
 ./race1 4 40 1
 Thread 3: DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 Thread 2: CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -178,7 +178,7 @@ Thread 0: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 Looks fine, doesn't it? Try again with more threads and iterations:
 
-```
+```bash
 ./race1 10 40 2
 Thread 1: DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 Thread 1: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
@@ -204,7 +204,7 @@ Thread 5: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
 Does this look right? Not exactly. In the main loop of each thread
 
-```
+```c
  for (j = 0; j < t->size-1; j++) {
     t->s[j] = 'A'+t->id;
  }
@@ -214,7 +214,7 @@ the thread should put its own letter (defined as the thread's ID + 'A') in the b
 
 Notice that all 4 threads share the same buffer _s_ in the program. Consider the output from [race2.c]({{ site.url }}/assets/race2.c)
 
-```
+```bash
 ./race2 4 40 2
 Thread 2: AAAAAAAAAAAAAAAAABBBCCCCCCCCCCCCCCCCCCCC
 Thread 3: CCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAABBBBBDDD
@@ -230,9 +230,9 @@ The code is **exactly the same** as [race1.c]({{ site.url }}/assets/race1.c) but
 
 **Just because your program runs and doesn't appear to have a race condition doesn't mean it is free from race conditions.**
 
-In this example, we can fix the race condition by enforcing the condition that no thread can be interrupted by another thread when it is modifying and printing **s**. This can be done with a **mutex** (which is short for **mutual exclusion**), sometimes called a ``lock.'' There are three procedures for dealing with mutexes in pthreads:
+In this example, we can fix the race condition by enforcing the condition that no thread can be interrupted by another thread when it is modifying and printing **s**. This can be done with a **mutex** (which is short for **mutual exclusion**), sometimes called a "lock." There are three procedures for dealing with mutexes in pthreads:
 
-```
+```c
 pthread_mutex_init(pthread_mutex_t *mutex, NULL);
 pthread_mutex_lock(pthread_mutex_t *mutex);
 pthread_mutex_unlock(pthread_mutex_t *mutex);
@@ -242,7 +242,7 @@ You create a mutex with **pthread_mutex_init()**. Then any thread may lock or un
 
 So, we fix the **race** program with [race3.c]({{ site.url }}/assets/race3.c). You'll notice that a thread locks the mutex just before modifying **s** and it unlocks the mutex just after printing **s**. This fixes the program so that the output makes sense:
 
-```
+```bash
 ./race3 10 40 2
 Thread 0: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 Thread 0: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA

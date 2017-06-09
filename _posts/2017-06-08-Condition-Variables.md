@@ -69,7 +69,7 @@ There four main data structures:
 
 Here are the C structure definitions for these data structures:
 
-```
+```c
 struct order
 {
     int stock_id;
@@ -99,7 +99,7 @@ Notice that the _struct market_ structure just uses an array of integers to repr
 
 The _struct order_que_ has a pointer to an array of pointers to orders, a head and tail pointer to use for the FIFO, and a size indicating how many elements there are in the array of pointers to orders. Thus each element in the queue points to an order that has been dynamically allocated. The size of that queue of pointers is also used to dynamically allocate the array itself. To see how this works, it is helpful to study the constructor function for a _struct order_que_
 
-```
+```c
 struct order_que *InitOrderQue(int size)
 {
         struct order_que *oq;
@@ -157,7 +157,7 @@ Each example uses the same argument list
 
 Thus, for example, the first solution discussed as
 
-```
+```bash
 ./market1 -c 10 -t 10 -s 100 -q 5 -o 1000
 ```
 
@@ -177,7 +177,7 @@ In the first attempted solution we'll look at how the syncronization works if yo
 
 First look at the arguments passed to the client thread:
 
-```
+```c
 struct client_arg
 {
         int id;
@@ -195,7 +195,7 @@ Note that the pointer the order queue will be the same for all clients so that t
 
 Next look at the body of the client thread code
 
-```
+```c
 void *ClientThread(void *arg)
 {
     struct client_arg *ca = (struct client_arg *)arg;
@@ -280,7 +280,7 @@ Notice also that the client comes out of the polling loop holding the lock so th
 
 The other tricky business here is in the code where the client waits for the trader to fulfill the order
 
-```                        
+```                        c
 // spin waiting until the order is fulfilled
 while(order->fulfilled == 0);
 ```
@@ -293,7 +293,7 @@ Thus the while loop shown above simply spins until the value in the order struct
 
 The trader thread code is as follows:
 
-```
+```c
 void *TraderThread(void *arg)
 {
     struct trader_arg *ta = (struct trader_arg *)arg;
@@ -369,7 +369,7 @@ Like with the client, the trader takes a lock, then tests the condition of the q
 
 The trader includes an additional wrinkle for shutting down the entire simulation. In the case of the client, the main loop runs for as many orders as there are going to be for each client. The traders, however, don't know when the clients are done. To tell the traders, the trader argument structure
 
-```
+```c
 struct trader_arg
 {
         int id;
@@ -390,7 +390,7 @@ Finally, once an order has been successfully executed, the trader sets the _int 
 
 On the machine I used (my laptop which is a Mac with a 2.8Hz i7 having 2 cores and hyperthreading), I get the following outputs:
 
-```
+```bash
 MossPiglet% ./market1 -c 1 -t 1 -q 1 -s 1 -o 100000
 160194.266347 transactions / sec
 
@@ -433,7 +433,7 @@ It turns out that OSX (and Linux) is likely smarter than I've indicated in this 
 
 Here is [the source code for a solution that uses condition variables to synchronize the order queue]({{ site.url }}/assets/market2.c). Notice a change to the order queue structure:
 
-```
+```c
 struct order_que
 {
         struct order **orders;
@@ -448,7 +448,7 @@ struct order_que
 
 in which two condition variables (for the full and empty conditions) have been added. In the client thread, the queue synchronization becomes
 
-```
+```c
 while(queued == 0) {
      **pthread_mutex_lock(&(ca->order_que->lock));** 
     next = (ca->order_que->head + 1) % ca->order_que->size;
@@ -470,7 +470,7 @@ The _pthread_cond_wait()_ primitive also has another important property. When th
 
 This features is called test-under-lock because it allows the caller of "wait" to hold a lock, conduct a condition test, and sleep all as a single atomic operation. It also, then, gives the caller the lock back once the wait completes. Note that you can't easily implement test-under-lock with mutexes and sleep. For example, if you were to write
 
-```
+```c
 pthread_mutex_lock(&lock);
 while(queue->full == 1) {
     pthread_mutex_unlock(&lock);
@@ -487,7 +487,7 @@ The _pthread_cond_wait()_ call is specially coded to avid this race condition.
 
 Now take a look at the trader thread just after the thread has determined that there is work to do:
 
-```   
+```   c
     //get the next order
     next = (ta->order_que->tail + 1) % ta->order_que->size;
     order = ta->order_que->orders[next];
@@ -501,7 +501,7 @@ The trader thread must call _pthread_cond_signal()_ on the same condition variab
 
 Similarly, the trader thread (before it processes an order) must ensure that there is work in the queue. That is, it cannot proceed until the queue is no longer empty. Its code is
 
-```
+```c
 dequeued = 0;
 while(dequeued == 0) {
     pthread_mutex_lock(&(ta->order_que->lock));
@@ -524,7 +524,7 @@ while(dequeued == 0) {
 
 Here the trader thread is waiting while the queue is empty. Thus, the client thread must signal a waiting trader (if there is one) once it has successfully queued an order. In the client thread
 
-```
+```c
     ca->order_que->orders[next] = order;
     ca->order_que->head = next;
     queued = 1;
@@ -561,7 +561,7 @@ Lastly, the specification does not say which thread (among more than one that ar
 
 Here are the performance results for the same set of tests as for Solution 1:
 
-```
+```bash
 MossPiglet% ./market2 -c 1 -t 1 -q 1 -s 1 -o 100000
 291456.104778 transactions / sec
 
@@ -592,7 +592,7 @@ The problem here with the last test is that all of the clever scheduling tricks 
 
 First, we add a condition variable to _struct order_
 
-```
+```c
 struct order
 {
         int stock_id;
@@ -608,7 +608,7 @@ Notice that we had to add a lock as well. Condition variables implement "test un
 
 Next, in the client thread, we lock the order, test its condition (in case the trader thread has already fulfilled the order) and wait if it hasn't:
 
-```
+```c
     //wait using condition variable until
     //order is fulfilled
      
@@ -621,7 +621,7 @@ Next, in the client thread, we lock the order, test its condition (in case the t
 
 Then, in the trader thread, instead of just setting the fulfilled flag
 
-```
+```c
     //tell the client the order is done
 
     pthread_mutex_lock(&order->lock);
@@ -636,7 +636,7 @@ Notice that the flag must be set inside a critical section observed by both the 
 
 Here are the same runs as before:
 
-```
+```bash
 MossPiglet% ./market3 -c 1 -t 1 -q 1 -s 1 -o 100000
 156951.367687 transactions / sec
 
@@ -665,7 +665,7 @@ This exercise illustrates an important point in performance debugging. What migh
 
 In this case, however, the likely situation is that you have many more clients than traders. Let's see how they compare in that case.
 
-```
+```bash
 MossPiglet% ./market3 -c 1000 -t 10 -q 10000 -s 1 -o 10
 68965.526313 transactions / sec
 
