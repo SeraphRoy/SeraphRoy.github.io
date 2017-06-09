@@ -18,6 +18,15 @@ degree of Computer Science from [University of California, Santa Barbara](http:/
 
 \#现充，\#死宅，\#中二，\#本命アティ@赫炎
 
+
+## Contact Me
+[Github](https://github.com/SeraphRoy)
+
+[LinkedIn](https://www.linkedin.com/in/yanxichen/)
+
+[Facebook](https://www.facebook.com/SeraphRoy)
+
+
 ## Comments
 
 {% include comments.html %}
