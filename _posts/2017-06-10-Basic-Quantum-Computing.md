@@ -249,8 +249,8 @@ Classically we have to evaluate twice: both $$f(0)$$ and $$f(1)$$.
 Quantumly we can solve it with one transformation and evaluate it.
 
 $input:\vert0,1>$
-1. $|0,1>\xrightarrow{H}|+,->$
-2. $|+,->\xrightarrow{U_f}???$
+1. $\vert0,1>\xrightarrow{H}\vert+,->$
+2. $\vert+,->\xrightarrow{U_f}???$
 
 So
 
