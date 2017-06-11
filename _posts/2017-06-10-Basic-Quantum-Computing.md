@@ -65,7 +65,7 @@ $$
 \left( \begin{array}{c} p_0 \\ 0 \\ 0 \\ p_1 \end{array} \right)
 $$
 
-But it is not possible (physically) to do something like this, which kind of does XOR iwth two independent bits:
+But it is not possible (physically) to do something like this, which kind of does XOR with two independent bits:
 
 $$
 \left( \begin{array}{c} p_{00} \\ p_{01} \\ p_{10} \\ p_{11} \end{array} \right)
@@ -199,7 +199,8 @@ SWAP:=
         0 & 0 & 0 & 1
     \end{array}
 \right)\\
-i.e.\ |X,Y>\xrightarrow{SWAP}=|Y,X>\\
+i.e.\ 
+(X,Y)\xrightarrow{SWAP}(Y,X)\\
 CNOT:=
 \left( \begin{array}{c} 
         1 & 0 & 0 & 0\\ 
@@ -208,11 +209,14 @@ CNOT:=
         0 & 0 & 1 & 0 
     \end{array}
 \right)\\
-i.e.\ |X,Y>\xrightarrow{CNOT}
+
+i.e.\ 
+(X,0/1)\xrightarrow{CNOT}
 \left\{ \begin{array}{rcl}
-|0,Y> & \mbox{if} & X=0 \\ 
-|1,Not(Y)>  & \mbox{if} & X=1 \\
+(X,0/1) & \mbox{if} & X=0 \\ 
+(X,1/0)  & \mbox{if} & X=1 \\
 \end{array}\right.\\
+
 CCNOT:=
 \left( \begin{array}{c} 
         1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 
@@ -225,8 +229,9 @@ CCNOT:=
         0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\ 
     \end{array}
 \right)\\
-i.e.\ |X,Y,Z>\xrightarrow{CCNOT}|X,Y,Z\oplus(X\wedge Y)>\\
-|X,Y,0>\xrightarrow{CCNOT}|X,Y,X\wedge Y>\\
+i.e.\ 
+(X,Y,Z)\xrightarrow{CCNOT}(X,Y,Z\oplus X\wedge Y)\\
+(X,Y,0)\xrightarrow{CCNOT}(X,Y,X\wedge Y)\\
 $$
 
 __Note__: all transformations are inversible. Specifically, for the above 3 trans., the inverse of them are themselves. Namely, apply it twice and we will be back to the original position.
