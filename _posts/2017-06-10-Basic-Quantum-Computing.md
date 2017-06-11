@@ -255,7 +255,7 @@ $input:\vert0,1>$
 So
 
 $$
-|b,->\xrightarrow{U_f}\cdots\rightarrow(-1)^{f(b)}|b,->\\
+|b,->\xrightarrow{U_f}\cdots\rightarrow|(-1)^{f(b)}b,->\\
 And\\
 |+,->\xrightarrow{U_f}
 1/\sqrt{2}((-1)^{f(0)}\centerdot|0>+(-1)^{f(1)}\centerdot|1>)\otimes|->\rightarrow\\
