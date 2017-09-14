@@ -2,8 +2,8 @@
 layout: post
 title: "Matrix Game Theory"
 date: 2017-09-10 15:23
-categories: Game-Theory
-tags: Game-Theory
+categories: ['Game Theory']
+tags: ['Game Theory']
 author: Yanxi Chen
 mathjax: true
 ---
