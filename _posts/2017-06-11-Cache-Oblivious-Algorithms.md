@@ -175,7 +175,7 @@ $$
 MT(N)=N^{1/3}MT(N^{2/3})+O(\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})+N^{1/3})\\
 MT(cM)=O(\frac{M}{B})\\
 N=\Omega(M)=\Omega(B^2)\\
-\frac{N}{B}=\Omega(\sqrt{N})=\Ometa(\sqrt[3]{N})
+\frac{N}{B}=\Omega(\sqrt{N})=\Omega(\sqrt[3]{N})
 $$
 
 So as long as it is not in the base case, $\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})$ dominates $N^{1/3}$
@@ -204,7 +204,7 @@ __Analysis__:
 - can also fit one block per input buffer (of J-funnel)
 
 $$
-J^2<=\frac{1}{4}M\RightarrowJ<=\frac{1}{2}\sqrt{M}\\
+J^2<=\frac{1}{4}M\Rightarrow J<=\frac{1}{2}\sqrt{M}\\
 B<=\sqrt{m}\\
 \Rightarrow J\centerdot B<=\frac{1}{2}M
 $$
