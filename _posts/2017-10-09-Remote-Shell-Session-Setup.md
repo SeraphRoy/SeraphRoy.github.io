@@ -45,7 +45,7 @@ Just `brew install tmux` and add a new line `new-session` to `~/.tmux.conf`; cre
 
 Go to `Preference->Profiles` and click the plus sign at the bottom to create a new profile. I create one profile per remote host I want to connect to. You can specify a name for your profile, and a shortcut key for opening that profile. Then type the mosh command you use to connect to the server in the "Send text at start" field. Here is my example:
 
-![]({{site.url}}/assets/Remote-Shell-Session-Setup-1)
+![]({{site.url}}/assets/Remote-Shell-Session-Setup-1.png)
 
 Just replace `r123s19` with your host. If you don't need to specify port, just omit the `--ssh` part.
 
