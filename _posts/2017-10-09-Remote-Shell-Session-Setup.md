@@ -47,6 +47,6 @@ Go to `Preference->Profiles` and click the plus sign at the bottom to create a n
 
 ![]({{site.url}}/assets/Remote-Shell-Session-Setup-1.png)
 
-Just replace `r123s19` with your host. If you don't need to specify port, just omit the `--ssh` part.
+where `sshcvp` is the alias of `mosh --ssh='ssh -p 10140' r123s19 -- sh -c "tmux ls | grep -vq attached && tmux a || tmux new"`. Why the heck is that so long? Becasue `"tmux ls | grep -vq attached && tmux a || tmux new"` is just the tmux way of saying `screen -R`, which attaches to an unattached session if one exists or create a new session if all sessions are attached or there is no session at all. I don't like screen becasue it is not aesthetically appealing so I choose tmux.
 
 Then you can just open a bunch of different profiles, each per tab, which are connected to different hosts. You can open more tabs than you usually need, just to be safe. Then click `Window->Save Window Arrangement`, which will save your arrangement for all of your tabs, which can be restored easily. To test that, press Cmd-q to close iTerm2. Then open iTerm2 again, go to `Window->Restore Window Arrangement` and select your saved arrangement and resotre it. You can see that all your tabs including your connections to those various hosts come back.
