@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Personal Remote Shell Session Setup"
+title: "Remote Shell Session Setup: iTerm2+tmux+mosh"
 date: 2017-10-09 15:45
 categories: ['Random']
 tags:
@@ -35,11 +35,11 @@ Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-she
 
 ### Mosh
 
-Just `brew install mosh` and replace your usual `ssh` command with `mosh` and it would just works.
+`brew install mosh` and replace your usual `ssh` command with `mosh` and it would just works.
 
 ### tmux
 
-Just `brew install tmux` and add a new line `new-session` to `~/.tmux.conf`; create the file if not exists already. The main reason why I need tmux is that mosh doesn't quite support scrollback well. In [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), the auther suggests one solution but scrolling is way less fluid than native, and most importantly, it requires me to build mosh from source on the server side and you need `sudo apt-get` or something to do that. Usually we don't have root access to the server, so I omit that part. If you have root access, that's great and follow his steps to get scrollback working. If not, use tmux/screen for scrollback.
+`brew install tmux`. The main reason why I need tmux is that mosh doesn't quite support scrollback well. In [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), the auther suggests one solution but scrolling is way less fluid than native, and most importantly, it requires me to build mosh from source on the server side and you need `sudo apt-get` or something to do that. Usually we don't have root access to the server, so I omit that part. If you have root access, that's great and follow his steps to get scrollback working. If not, use tmux/screen for scrollback.
 
 ### iTerm2
 
