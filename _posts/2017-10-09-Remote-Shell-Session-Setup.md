@@ -3,7 +3,7 @@ layout: post
 title: "Remote Shell Session Setup: iTerm2+tmux+mosh"
 date: 2017-10-09 15:45
 categories: ['Random']
-tags:
+tags: Mosh iTerm tmux
 author: Yanxi Chen
 mathjax: true
 ---
@@ -15,7 +15,7 @@ mathjax: true
 
 Inspired by [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/)
 
-My work requires me to connect to _a few_ hosts via ssh. Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/) while still a little different, my personal requirements are as follows:
+My work requires connecting to _a few_ different hosts via ssh. Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/) while still a little different, my personal requirements are as follows:
 
 1. I want one tab of the terminal I'm using to be connected to one remote host
 2. I want the shell to survive unaffected with no context loss the following events
@@ -31,7 +31,7 @@ Some requirements are just copy pasted. Specifically for requirement #1，I used
 
 ## My Solution
 
-Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), I also use iterm2+mosh+tmux, with some different settings.
+Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), I also use iterm2+mosh+tmux, with some different settings. I use Mac and `brew`, but similar commands should be available for linux as well. If you are using Windows, the best solution is to buy a Mac.
 
 ### Mosh
 
@@ -39,7 +39,7 @@ Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-she
 
 ### tmux
 
-`brew install tmux`. The main reason why I need tmux is that mosh doesn't quite support scrollback well. In [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), the auther suggests one solution but scrolling is way less fluid than native, and most importantly, it requires me to build mosh from source on the server side and you need `sudo apt-get` or something to do that. Usually we don't have root access to the server, so I omit that part. If you have root access, that's great and follow his steps to get scrollback working. If not, use tmux/screen for scrollback.
+`brew install tmux`. The main reason why I need tmux is that mosh doesn't quite support scrollback well. In [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), the author suggests one solution but scrolling is way less fluid than native, and most importantly, it requires building mosh from source on the server side and you need `sudo apt-get` to do that. Usually we don't have root access to the server, so I give up the scrollback feature. If you have root access, that's great and follow his steps to get scrollback working. If not, use tmux/screen for scrollback.
 
 ### iTerm2
 
@@ -47,6 +47,6 @@ Go to `Preference->Profiles` and click the plus sign at the bottom to create a n
 
 ![]({{site.url}}/assets/Remote-Shell-Session-Setup-1.png)
 
-where `sshcvp` is the alias of `mosh --ssh='ssh -p 10140' r123s19 -- sh -c "tmux ls | grep -vq attached && tmux a || tmux new"`. Why the heck is that so long? Becasue `"tmux ls | grep -vq attached && tmux a || tmux new"` is just the tmux way of saying `screen -R`, which attaches to an unattached session if one exists or create a new session if all sessions are attached or there is no session at all. I don't like screen becasue it is not aesthetically appealing so I choose tmux.
+where `sshcvp` is the alias of `mosh --ssh='ssh -p 10140' r123s19 -- sh -c "tmux ls | grep -vq attached && tmux a || tmux new"`. Why the heck is that so long? Becasue `"tmux ls | grep -vq attached && tmux a || tmux new"` is just the tmux way of saying `screen -R`, which attaches to an unattached session if one exists or creates a new session if all sessions are attached or there is no session at all. I don't like screen becasue it is not aesthetically appealing so I choose tmux. Why use `sh -c` but not directly run the following command? Because `mosh` doesn't like `grep` and we can't run `grep` directly. Adding `sh -c` is the workaround. [Issue with mosh when running with grep](https://github.com/mobile-shell/mosh/issues/931).
 
-Then you can just open a bunch of different profiles, each per tab, which are connected to different hosts. You can open more tabs than you usually need, just to be safe. Then click `Window->Save Window Arrangement`, which will save your arrangement for all of your tabs, which can be restored easily. To test that, press Cmd-q to close iTerm2. Then open iTerm2 again, go to `Window->Restore Window Arrangement` and select your saved arrangement and resotre it. You can see that all your tabs including your connections to those various hosts come back.
+Then you can just open a bunch of different profiles, each per tab, which are connected to different hosts. You can open more tabs than you usually need, just to be safe. Then click `Window->Save Window Arrangement`, which will save your arrangement for all of your tabs, and can be restored easily. To test that, press Cmd-q to close iTerm2. Then open iTerm2 again, go to `Window->Restore Window Arrangement` and select your saved arrangement and resotre it. You can see that all your tabs including your connections to those various hosts come back.
