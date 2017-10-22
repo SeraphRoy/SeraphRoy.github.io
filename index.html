@@ -71,11 +71,19 @@ layout: default
                 <!-- HTML elements for search -->
                 <div id="search-container">
                       <input type="text" id="search-input" placeholder="search...">
-                        <ul id="results-container"></ul>
+                      <ul id="results-container"></ul>
                 </div>
                 <!-- script pointing to jekyll-search.js -->
-                <!-- <script src="{{ site.baseurl }}/simple-jekyll-search.min.js"></script> -->
-                <script src="{{ site.baseurl }}/node_modules/simple-jekyll-search/dest/simple-jekyll-search.js"></script>
+                <script type="text/javascript" src="./assets/fetch.js"></script>
+                <script type="text/javascript" src="./assets/search.js"></script>
+                <script type="text/javascript">
+                    const search = new jekyllSearch(
+                        '{{site.url}}/assets/search.json',
+                        '#search-input',
+                        '#results-container',
+                    );
+                    search.init();
+                </script>
             </div>
             <div class="side">
                 <div>
