@@ -25,6 +25,8 @@ mathjax: true
 ![]({{site.url}}/assets/Fibonacci-Heap-Fig3.png)
 ![]({{site.url}}/assets/Fibonacci-Heap-Fig5.png)
 
+<!--more-->
+
 ### Amortized Time Complexity
 - `delete_min(h)` and `delete(i, h)` takes $O(\log n)$ time
 - Other operations take $O(1)$ time

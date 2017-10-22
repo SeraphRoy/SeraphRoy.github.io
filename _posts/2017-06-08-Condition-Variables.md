@@ -30,6 +30,8 @@ Condition variables are a feature of a syncronization primitive called a [monito
 
 which as we will see are more or less equivalent usages.
 
+<!--more-->
+
 ## The Client/Trader Example
 
 To make the concepts clearer, consider the following hypothetical example. Imagine that you are to write a simple trading program that allows "clients" to send stock orders to "traders" who are responsible for executing them in a market. Orders should be presented to the traders in first-come, first-served order, but the traders then execute the orders as fast as possible. Further, once a trader has executed an order, it needs to send a signal back to the client that initiated the order indicating that the order has been fulfilled.

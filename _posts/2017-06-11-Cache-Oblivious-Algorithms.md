@@ -29,6 +29,8 @@ We assume two level memory: cache and main memory. The block size is $B$. The si
 
 __Note__: if the algorithm is cache oblivious and is efficient in the 2-level model, it will be efficient for k-level model (L1, L2, L3, ... caches)
 
+<!--more-->
+
 ## Basic Algorithms
 
 - Single Scanning

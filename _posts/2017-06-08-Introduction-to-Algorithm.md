@@ -48,6 +48,8 @@ group. O(n)
     else then recurrsively select (i-k)th smallest element in upper part
 ```
 
+<!--more-->
+
 ## Hash Functions
 ### Division Method
 $h(k) = k\ mod\ m$

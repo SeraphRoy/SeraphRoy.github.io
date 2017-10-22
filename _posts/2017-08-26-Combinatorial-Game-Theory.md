@@ -35,6 +35,8 @@ where $\alpha_i$ is the position where Louise can move __from__ $\alpha$, and $\
 (N) Player who moves next has a winning strategy
 (P) Player who moves previous has a winning strategy
 
+<!--more-->
+
 # Definitions, Lemma, and Propositions
 
 >__Prop__: If $$\gamma=\{\alpha_1,\alpha_2,\dots,\alpha_n\mid\beta_1,\beta_2,\dots,\beta_m\}$$,then $\gamma$ has type:

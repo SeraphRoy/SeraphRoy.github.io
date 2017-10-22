@@ -68,6 +68,16 @@ layout: default
     <div class="right">
         <div class="wrap">
             <div class="side">
+                <!-- HTML elements for search -->
+                <div id="search-container">
+                      <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                </div>
+                <!-- script pointing to jekyll-search.js -->
+                <!-- <script src="{{ site.baseurl }}/simple-jekyll-search.min.js"></script> -->
+                <script src="{{ site.baseurl }}/node_modules/simple-jekyll-search/dest/simple-jekyll-search.js"></script>
+            </div>
+            <div class="side">
                 <div>
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     Recent Posts

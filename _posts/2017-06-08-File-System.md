@@ -35,6 +35,8 @@ will convert that to a track/sector tuple.
 refer to a file as a sequence of bytes) to logical block numbers which
 are then translated into disk addresses by the individual disk driver.
 
+<!--more-->
+
 ### The inode
 
 - maps individual byte addresses relative to the beginning of the file

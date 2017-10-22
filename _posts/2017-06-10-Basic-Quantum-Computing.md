@@ -76,6 +76,8 @@ $$
 
 In other words, physically, in our universe, __we can only do $l_1$ norm linear tranformation__.
 
+<!--more-->
+
 ## Quantum Bit (qubit)
 For qubit, we are able to do $l_2$ norm. A single qubit is difine as follows:
 

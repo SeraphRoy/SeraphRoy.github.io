@@ -41,6 +41,8 @@ Amazon provides web-service based access to its infrastructure via two separate 
 *   logging and auditing: [CloudTrail](http://aws.amazon.com/cloudtrail/)
 *   Docker: [Container Registry](https://aws.amazon.com/ecr/) and [Service](https://aws.amazon.com/ecs/)All services are accessible via SOAP, REST, command-line tools (Java), [SDKs](http://aws.amazon.com/tools/) (Java, PHP, .Net, Python, Ruby, iOS, Android) graphical [AWS console](https://aws.amazon.com/console/?nc1=f_m).
 
+<!--more-->
+
 ## Resource Pools
 
 AWS implements a pooling model in which resources are partitioned into separate groups, more or less in a hierarchy. Only S3 is global to the entire cloud although the credentials are valid for all AWS services no matter which pool they are in.

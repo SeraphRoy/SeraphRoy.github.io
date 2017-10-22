@@ -21,6 +21,8 @@ Before this time, IP defined network routes at layer 3 -- the network routing le
 
 With ATM and SONET, however, table-driven link-level protocols made it possible for an abstract "network link" to be implemented as a routed "path" across intermediate link nodes. These original technology-specific protocols eventually informed a standard for such link-level state management called [MPLS](http://en.wikipedia.org/wiki/Multiprotocol_Label_Switching).
 
+<!--more-->
+
 ## OpenFlow
 
 Like most techniques in networking, the idea of manipulating layer 2 network state is not unique. MPLS defines "label based routing" as a methodology for doing a table look up in the switch to determine where a packet is going based on a tag (or label) in the packet. Since it is a layer 2 protocol, it can (and usually does) rewrite the tag before the packet egresses based on the "path" through the layer 2 network that the packet needs to take (the table specifies the output port and the next tag).

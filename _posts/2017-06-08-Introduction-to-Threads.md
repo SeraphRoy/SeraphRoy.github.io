@@ -23,6 +23,8 @@ Some of the differences between having threads "in the language" and threads "as
 
 We'll study both before the end of the class but we'll start with POSIX threads since they a standard.
 
+<!--more-->
+
 ### So what is a Thread?
 
 There are many different kinds of thread abstractions. In this class, we'll use the typical "OS thread" abstraction that underpins POSIX threads, but particularly for language-defined threads, different definitions are possible.

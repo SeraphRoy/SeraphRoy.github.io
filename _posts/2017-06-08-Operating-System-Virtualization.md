@@ -39,6 +39,8 @@ These methodologies have had different implementations by various vendors. For e
 
 Today, the most widely used virtualization technologies are VMware, KVM, and Xen. There is also significant and growing interest in Linux containers in the form of [LXC](https://linuxcontainers.org) and [Docker](https://www.docker.io). This statement, in no way, is intended to pass judgment on the value of alternative technologies. It is just a statement about popularity.
 
+<!--more-->
+
 ## Isolation
 
 At the root of all virtualization approaches is the need to provide isolation. Even to implement effective resource arbitration, some degree of isolation is necessary or participants will be able to subvert what ever sharing mechanisms are in place.

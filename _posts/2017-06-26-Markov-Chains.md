@@ -50,6 +50,8 @@ $$
 \pi_t[i]=(\pi_0T^t)[i]
 $$
 
+<!--more-->
+
 ## Some Properties
 
 1. Suppose the Markov chain is "aperiodic", then as the system evolves, the probabilistic state __converges__ to a limiting probabilistic state:

@@ -56,6 +56,8 @@ This isn't a very satisfying or accurate way to determine whether a call is a de
 
 Mostly you just need to read the developer documentation to determine what are the system calls that are available in any specific version of Linux (because they change from version to version). We'll discuss a few system calls that are almost assured implemented in any version of Linux as system calls and not libraries.
 
+<!--more-->
+
 ### Getting the process identifier
 
 All processes in Linux get a unique identifier of type _pid_t_. Printing the value of a _pid_t_ turns out to a matter of some debate. Seriously. I'll go fast and loose on these examples but someone may give you grief down the road for a specific Linux or Unix version.

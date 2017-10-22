@@ -29,6 +29,8 @@ My work requires connecting to _a few_ different hosts via ssh. Similar to [My R
 
 Some requirements are just copy pasted. Specifically for requirement #1，I used to manage various tabs by using screen/tmux alone. The problem with that approach is when you want to switch to next tab/session, you have to press the escape key (usually ctrl-b or something else) plus another key, which is 3 keys in total. 3 keys are too many for me; I want 2 keys only, so using the tab of the terminal itself might be a good idea. Also, because I need to get access to different hosts, I actually need multiple tmux windows, which is quite inconvenient.
 
+<!--more-->
+
 ## My Solution
 
 Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-shell-session-setup/), I also use iterm2+mosh+tmux, with some different settings. I use Mac and `brew`, but similar commands should be available for linux as well. If you are using Windows, the best solution is to buy a Mac.

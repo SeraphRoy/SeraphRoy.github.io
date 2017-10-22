@@ -72,6 +72,8 @@ ax+b(1-x)=cx+d(1-x)\\
 x=\frac{d-b}{a-c+d-b}
 $$
 
+<!--more-->
+
 ## $m\times n$ Zero Sum Game
 
 __Von Neumann's Minimax Thm__: Every $m\times n$ game has a solution. Each player has a distribution of their choices such that Rose's average minimum payout is maximized, and Colin's maximum average payout is minimized, and two payouts are the same.

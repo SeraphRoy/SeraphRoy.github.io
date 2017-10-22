@@ -39,6 +39,8 @@ There are various ways that these operations are named and described, more or le
 
 </dl>
 
+<!--more-->
+
 ## Implementation
 
 The easiest way for me to think of semaphores is, of course, with code. Here is a little pseudo-code that may help.

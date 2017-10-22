@@ -59,6 +59,8 @@ LD SP, 0x7f00000C
 
 it will suddenly be accessing the stack variables of _Proc 2_.
 
+<!--more-->
+
 ## Base and Bounds
 
 One simple solution to both problems is for the CPU to include "base and bounds" registers that "fence" memory.

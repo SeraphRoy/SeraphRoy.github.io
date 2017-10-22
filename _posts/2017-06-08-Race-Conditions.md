@@ -23,6 +23,8 @@ The answer is that the OS and threading system to arrange to multiplex the threa
 
 The process of pausing one thread to run another is called **pre-emption** and the second thread is said to pre-empt the first. The process of switching to a new thread (as a result of a pre-emption event) is called **context switching** and the saved machine state that is necessary to get a thread running again after a pause is often called a **context**.
 
+<!--more-->
+
 ## An Example
 
 Consider the use of an ATM at a bank. Somewhere, in bowels of your bank's computer system, is a variable called "account balance" that stores your current balance. When you withdraw \$200, there is a piece of assembly language code that runs on some machine that does the following calculation:
