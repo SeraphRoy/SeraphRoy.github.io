@@ -68,24 +68,6 @@ layout: default
     <div class="right">
         <div class="wrap">
             <div class="side">
-                <!-- HTML elements for search -->
-                <div id="search-container">
-                      <input type="text" id="search-input" placeholder="search...">
-                      <ul id="results-container"></ul>
-                </div>
-                <!-- script pointing to jekyll-search.js -->
-                <script type="text/javascript" src="./assets/fetch.js"></script>
-                <script type="text/javascript" src="./assets/search.js"></script>
-                <script type="text/javascript">
-                    const search = new jekyllSearch(
-                        '{{site.url}}/assets/search.json',
-                        '#search-input',
-                        '#results-container',
-                    );
-                    search.init();
-                </script>
-            </div>
-            <div class="side">
                 <div>
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     Recent Posts
