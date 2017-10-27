@@ -2,7 +2,7 @@
 layout: post
 title: "Race Conditions"
 date: 2017-06-08 12:40
-categories: OS
+categories: ['Operating System']
 tags: Thread
 author: Yanxi Chen
 mathjax: true

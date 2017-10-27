@@ -2,7 +2,7 @@
 layout: post
 title: Semaphore
 date: 2017-06-08 14:54
-categories: OS
+categories: ['Operating System']
 tags: Thread
 author: Yanxi Chen
 mathjax: true

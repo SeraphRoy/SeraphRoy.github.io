@@ -2,7 +2,7 @@
 layout: post
 title: "Condition Variables"
 date: 2017-06-08 13:31
-categories: OS
+categories: ['Operating System']
 tags: Thread
 author: Yanxi Chen
 mathjax: true

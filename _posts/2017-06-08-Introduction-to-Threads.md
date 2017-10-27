@@ -2,7 +2,7 @@
 layout: post
 title: "Introduction to Threads"
 date: 2017-06-08 12:06
-categories: OS
+categories: ['Operating System']
 tags: Thread
 author: Yanxi Chen
 mathjax: true
