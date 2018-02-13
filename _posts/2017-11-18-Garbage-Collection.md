@@ -3,7 +3,7 @@ layout: post
 title: "Garbage Collection"
 date: 2017-11-18 17:30
 categories: ['Garbage Collection']
-tags: ['Garbage Collection', 'Slides']
+tags: ['Garbage-Collection', 'Slides']
 author: Yanxi Chen
 mathjax: true
 ---
