@@ -45,6 +45,8 @@ Here is a graph of a process memory:
 
 As we all know, we only do garbage collection on the heap for implicit memory allocation.
 
+<!--more-->
+
 # Terminology
 
 - Collector

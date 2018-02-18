@@ -26,12 +26,27 @@ Some examples of application of logic branches in programming languagues:
 To define a judgement, we must have __Introduction rules__ ($I$), and __Elimination rules__ ($E$).
 They must satisfy __Local Soundness__ (checks elimination rules are not too strong) such that
 for every way to apply the elimination rules, we can reduce it to one that already existed.
-The process of doing that is called __local reduction__.
+The process of doing that is called __local reduction__. ($\beta$ rule)
 They should also satisfy __Local Completeness__ (checks elimination rules are not too weak) such that
 there is someway to apply the elimination rules so that from the pieces we can
-re-introduce what the original proposition is. The process of doing that is called __local expansion__.
+re-introduce what the original proposition is. The process of doing that is called __local expansion__. ($\eta$ rule)
 
 Note: $MN$ means $M$ applies to $N$
+
+Some notations:
+
+$$
+\Gamma\vdash M:A
+$$
+means $M$ is a proof of $A$ is $true$, where
+$$
+\Gamma:=\cdot|\Gamma'x\cdot A
+$$
+
+$$
+[N/x]M
+$$
+means substitude $N$ for $x$ based on the structure of $M$ (plug in $N$ for $x$)
 
 ### Examples
 
@@ -47,8 +62,8 @@ $$
 or
 
 $$
-\frac{M:A,N:B}
-{<M,N>:A\wedge B}
+\frac{\Gamma\vdash M:A,\Gamma\vdash N:B}
+{\Gamma\vdash <M,N>:A\wedge B}
 $$
 
 Elimination rules ($E$):
@@ -61,8 +76,8 @@ $$
 or
 
 $$
-\frac{M:A\wedge B}
-{first\ M:A}
+\frac{\Gamma\vdash M:A\wedge B}
+{\Gamma\vdash first\ M:A}
 $$
 
 $$
@@ -73,8 +88,8 @@ $$
 or
 
 $$
-\frac{M:A\wedge B}
-{first\ M:B}
+\frac{\Gamma\vdash M:A\wedge B}
+{\Gamma\vdash second\ M:B}
 $$
 
 Check __Local Soundness__ by __local reduction__:
@@ -126,7 +141,7 @@ $$
 or
 
 $$
-\frac{x:A\vdash M:B}
+\frac{\Gamma x:A\vdash M:B}
 {\vdash\lambda x.M:A>B}
 $$
 
@@ -140,8 +155,8 @@ $$
 or
 
 $$
-\frac{M:A>B,N:A}
-{MN:B}
+\frac{\Gamma\vdash M:A>B,\Gamma\vdash N:A}
+{\Gamma\vdash MN:B}
 $$
 
 Check __Local Soundness__ by __local reduction__ (only use proof notation because it is easier to write):
