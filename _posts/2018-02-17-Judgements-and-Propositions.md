@@ -129,33 +129,33 @@ $$
 M:A\wedge B\Longrightarrow_E<first\ M,second\ M>
 $$
 
-#### To define implication($>$):
+#### To define implication($\supset$):
 
 Introduction rule($I^x$) (x means an assumption):
 
 $$
 \frac{\overline{A\ true}^x\ B\ true}
-{A>B\ true}
+{A\supset B\ true}
 $$
 
 or
 
 $$
 \frac{\Gamma x:A\vdash M:B}
-{\vdash\lambda x.M:A>B}
+{\vdash\lambda x.M:A\supset B}
 $$
 
 Elimination rule($E$):
 
 $$
-\frac{A>B\ true,A\ true}
+\frac{A\supset B\ true,A\ true}
 {B\ true}
 $$
 
 or
 
 $$
-\frac{\Gamma\vdash M:A>B,\Gamma\vdash N:A}
+\frac{\Gamma\vdash M:A\supset B,\Gamma\vdash N:A}
 {\Gamma\vdash MN:B}
 $$
 
@@ -168,5 +168,5 @@ $$
 __Local expansion__:
 
 $$
-M:A>B\Longrightarrow_E\lambda x.Mx
+M:A\supset B\Longrightarrow_E\lambda x.Mx
 $$
