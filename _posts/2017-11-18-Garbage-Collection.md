@@ -128,7 +128,7 @@ For the first two method, we need a thing called _Free List_ which keeps 1+ list
 - Locality of reference
   - Things related are accessed together (for memory hierarchy performance)
   - No worse than program itself
-- Shot-lived cells can be reused as soon as they are reclaimed
+- Short-lived cells can be reused as soon as they are reclaimed
   - We don't have to wait until memory is exhausted to free cells
   - Immediate reuse generates fewer page faults for virtual memory
   - Update in place is possible
@@ -150,7 +150,7 @@ For the first two method, we need a thing called _Free List_ which keeps 1+ list
 - Object are __not reclaimed__ immediately when they become garbage
   - Remain unreachable and undetected until storage is exhausted
 - When reclamation happens the program is paused
-  - _Sweep_ all currently unused cels back into the freeList
+  - _Sweep_ all currently unused cells back into the freeList
   - GC performs a global traversal of all live objects to determine which cells are reachable (_live or active_)
     - Trace, starting from roots, marking them as reachable
     - Free all unmarked cells

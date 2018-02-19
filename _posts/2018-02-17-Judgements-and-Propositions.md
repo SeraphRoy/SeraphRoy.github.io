@@ -38,9 +38,9 @@ Some notations:
 $$
 \Gamma\vdash M:A
 $$
-means $M$ is a proof of $A$ is $true$, where
+means $M$ is a proof of $A$ is $true$, or $M$ is a program of type $A$, where
 $$
-\Gamma:=\cdot|\Gamma'x\cdot A
+\Gamma:=\cdot|\Gamma'x:A
 $$
 
 $$
@@ -159,13 +159,13 @@ $$
 {\Gamma\vdash MN:B}
 $$
 
-Check __Local Soundness__ by __local reduction__ (only use proof notation because it is easier to write):
+__Local reduction__:
 
 $$
 (\lambda x.M)N\Longrightarrow_R[N/x]M
 $$
 
-Check __Local Completeness__ by __local expansion__:
+__Local expansion__:
 
 $$
 M:A>B\Longrightarrow_E\lambda x.Mx
