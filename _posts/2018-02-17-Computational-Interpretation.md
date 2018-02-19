@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Computational Interpretations of Lax Logic"
+title: "Computational Interpretations"
 date: 2018-02-18 13:30
 categories: ['Programming Languages', 'Proof Theory'] 
 tags: ['Programming-Languages', 'Proof-Theory', 'Logic', 'Philosophy'] 
@@ -10,6 +10,9 @@ mathjax: true
 
 * content
 {:toc}
+
+Here we will talk about computational interpretations by the example of lax logic.
+Hope from the example we can have sense of how logic and PL are connected.
 
 ## Lax and Monand
 
