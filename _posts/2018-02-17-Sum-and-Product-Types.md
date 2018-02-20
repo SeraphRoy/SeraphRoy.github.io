@@ -2,7 +2,7 @@
 layout: post
 title: "Sum and Product Types"
 date: 2018-02-17 18:50
-categories: ['Programming Languages'] 
+categories: ['Programming Language Theory'] 
 tags: ['Programming-Languages'] 
 author: Yanxi Chen
 mathjax: true

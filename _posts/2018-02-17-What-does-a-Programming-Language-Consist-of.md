@@ -2,7 +2,7 @@
 layout: post
 title: "What does a Programming Language Consist of?"
 date: 2018-02-17 15:15
-categories: ['Programming Languages'] 
+categories: ['Programming Language Theory'] 
 tags: ['Programming-Languages'] 
 author: Yanxi Chen
 mathjax: true

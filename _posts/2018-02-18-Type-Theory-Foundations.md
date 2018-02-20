@@ -2,8 +2,8 @@
 layout: post
 title: "Type Theory Foundations"
 date: 2018-02-18 23:00
-categories: ['Programming Languages'] 
-tags: ['Programming-Languages']
+categories: ['Programming Language Theory', 'Type Theory'] 
+tags: ['Programming-Languages', 'Type-Theory']
 author: Yanxi Chen
 mathjax: true
 ---
@@ -11,11 +11,30 @@ mathjax: true
 * content
 {:toc}
 
-## Intuitionistic Logic
+We can think of Type Theory as being a catalog of a variety of notions of computation.
+The type structure determines the "programming language features". For example,
+whether you have higher order functions amounts to saying "do you have exponential types";
+whether you have structs or tuples amounts to saying "do you have Cartesian product types";
+whether you have choices or multiple classes of data corresponds to
+"whether you have sum types". A programming language is really just a collection of types.
+So type theory is just a theory of construction. From that point of view, logic is
+just an application of type theory, because there are particular constructions which
+correspond to proofs. Other constructions like natural numbers or geometric objects
+don't correspond to proofs of particular propositions. They are just mathematical
+constructions. What type theory is intersted in is the general concept of what is
+a mathematical construction. That's why intuitionistic logic is also called constructive
+logic. From this point of view, we can say that logic is just a corner of mathematics,
+and mathematics is just a corner of computer science ;)
 
-"Logic as if people matters"
+## Intuitionistic Logic/Constructive Logic
 
-Some connections between logic:proof theory ($\vdash$) and algebra:category theory(pre-order) ($\leq$)
+"Logic as if people matters". We are talking about communication of knowledge.
+We treat proofs as mathematical objects, or programs. We claim
+that $A$ is true, we actually mean that we have a proof of $A$. $M:A$ means that
+$M$ is a proof of $A$, or $M$ is of type $A$, they are the same thing. There are
+many strong connections among proof theory, type theory, and category theory.
+
+Some connections between Intuitionisitc Propositional logic:proof theory ($\vdash$) and __Heyting Algebra__:category theory(Cartesian closed pre-order, which follows __Reflexivity__ and __Transitivity__) ($\leq$)
 
 | $$A\ true\vdash T\ true$$ | $$A\leq T$$ |
 | $$A\wedge B\ true\vdash A\ true$$,$$A\wedge B\ true\vdash B\ true$$ | $$A\wedge B\leq A$$,$$A\wedge B\leq B$$ |
@@ -23,12 +42,7 @@ Some connections between logic:proof theory ($\vdash$) and algebra:category theo
 | $$\perp\ true\vdash A\ true$$ | $$I\leq A$$ |
 | $$A\ true\vdash A\vee B\ true$$,$$A\ true\vdash A\vee B\ true$$ | $$A\leq A\vee B$$,$$B\leq A\vee B$$ |
 | $$\frac{A\ true\vdash C\ true,B\ true\vdash C\ true}{A\vee B\ true\vdash C\ true}$$ | $$\frac{A\leq C,B\leq C}{A\vee B\leq C}$$ |
-| $$A\ true,A>B\ true\vdash B\ true$$ | $$A\wedge B\leq C\ iff\ $$ |
-| $$\frac{C\ true,A\ true\vdash B\ true}{C\ true\vdash A>B\ true}$$ | $$ $$ |
-| $$ $$ | $$ $$ |
-| $$ $$ | $$ $$ |
-| $$ $$ | $$ $$ |
-| $$ $$ | $$ $$ |
+| Introduction rule: $$A\ true,A\supset B\ true\vdash B\ true$$ Elimination rule: $$\frac{C\ true,A\ true\vdash B\ true}{C\ true\vdash A\supset B\ true}$$ | $$A\wedge B\leq C\ iff\ A\leq(B\supset C)$$ or $$A\wedge B\leq C\ iff\ A\leq C^B$$ |
 
 ### Sythetic Judgement vs Analytic Judgement
 
@@ -48,6 +62,7 @@ $$\Gamma\vdash M\equiv N:A$$
 $$\Gamma\vdash M=N:A$$
 
 3. (Homotopy) Equivalence (synthetic judgement)
+$$\Gamma\vdash\alpha:M\cong N:A$$, where $\alpha$ is an evidence of equivalence.
 
 Example to distinguish 1 and 2:
 
@@ -68,4 +83,282 @@ true:x\in\mathbb{N}\vdash 0+x=x\\
 true:x\in\mathbb{N}\vdash succ(x)\equiv x+1\\
 false:x\in\mathbb{N}\vdash succ(x)\equiv 1+x\\
 true:x\in\mathbb{N}\vdash succ(x)=1+x\\
+true:x,y\in\mathbb{N}\vdash x+y=y+x\\
 $$
+
+For Denotational Equality, we are suppressing the trivial evidence which is always
+reflexivity/identity. But for Equivalence, $\alpha$ can be reflexivity but can also be
+something else.
+
+### Negation ($$\urcorner$$) in Heyting Algebra
+
+Introduction rule:
+
+$$
+\frac{C\vee A\leq\perp}
+{C\leq\urcorner A}
+$$
+
+Elimination rule:
+
+$$
+A\vee\urcorner A\leq\perp
+$$
+
+Note: negation in Heyting algebra is not complement!!!
+
+Namely, we _don't_ have the following:
+
+$$
+T\leq A\vee\urcorner A
+$$
+
+or in logic, we don't expect
+
+$$
+A\vee\urcorner A\ true
+$$
+
+__Boolean Algebra__ is __Heyting Algebra__ with negation equals complement, which is also called __law of excluded middle__.
+
+We can define in Heyting Algebra:
+
+$$
+A\ decidable\ iff\ (A\vee\urcorner A)\ true
+$$
+
+It just means that there are propositions that we neither have a proof nor refutation. Example: $P=NP$.
+
+Note: Failing to affirm the decidability of every proposition is _not the same_ as refuting the decidability of every proposition.
+
+We have the following theorm in intuitionistic logic:
+
+$$
+\urcorner(\urcorner(A\vee\urcorner A))
+$$
+
+To put it in human language, it says: intuitionistic logic does not refute the law of excluded middle. It does not affirm it, but it does not refute it also.
+
+The importance is: __we can always heuristically assume a proposition is decidable even if we don't have a proof. The apparent limitations of intuitionistic logic are the very source of its strength/expressiveness.__
+
+So far we have some elementry constructions:
+
+$$
+0,1,A\times B,A+B,A\rightarrow B
+$$
+
+or to write it in logic
+
+$$
+\perp,T,A\wedge B,A\vee B, A\supset B
+$$
+
+## Family of Types
+
+Family of types is a generalization of the concept of a predicate/relation.
+
+Formally, given a type $A:U$ in a universe of types $U$, one may havea __family of types__
+$B:A\rightarrow U$, which assigns to each term $a:A$ a type $B(a):U$. We say that the
+type $B(a)$ varies with $a$.
+
+e.g.
+
+the following proposition
+
+$$
+x:\mathbb{N}\vdash even(x)
+$$
+
+is a predicate / propositional function / a family of types (indexed by $$\mathbb{N}$$) / fibration.
+We can rewrite it as
+
+$$
+\{even(x)\ prop/type\}_{x:\mathbb{N}}
+$$
+
+_The idea is that we are exhibiting a family of types/proofs in that if you give me any
+particular choice of number, it's going to give me back a proposition, which may or maynot
+be inhabitied, but they are all types.
+
+For example, $$even(3)$$ will be uninhabited, and $$even(2)$$ will be inhabitited.
+
+### Some Notations
+
+$$ \Gamma\ ctx $$
+
+means $\Gamma$ being a context.
+
+$$\Gamma\equiv\Delta$$
+
+means definitionally equivalent context.
+
+$$\Gamma\vdash A\ type$$
+
+means we have a family of types named $A$ indexed by elements of $\Gamma$
+
+$$ x:A\vdash B_x\ type $$
+
+means we have a family of types named $B$ indexed by $x$, which are elements of type $A$
+(sometimes subscript $x$ might be omitted)
+
+$$\Gamma\vdash A\equiv B\ type$$
+
+means definitionally equivalent families of types.
+
+$$\Gamma\vdash M:A$$
+
+means we have an element of the type
+
+$$\Gamma\vdash M\equiv N:A$$
+
+means definitionally equivalent elements of that type
+
+### Functionality / Respect for Equality
+
+Here is the basic idea:
+
+$$
+x:A\vdash B_x\ type
+$$
+
+$$
+\frac{M:A}
+{[M/x]B_x\ type}
+$$
+
+Some important points:
+
+$$
+\frac{\Gamma\vdash M:A,\Gamma\vdash A\equiv B\ type}
+{\Gamma\vdash M:B}
+$$
+
+Functionality condition says more:
+
+$$
+\frac{x:A\vdash B\ type,M\equiv N:A}
+{[M/x]B\equiv[N/x]B\ type}
+$$
+
+In other words, if I give you definitionally equal instances, they they are going to be
+definitionally equal types.
+
+### $\Pi$ and $\Sigma$ Types
+
+$\Pi$ and $\Sigma$ types are both families of types.
+
+#### $\Pi$
+
+$\Pi$ types are a list of types, where each type is a function mapping from one type to another type.
+
+Formation of $\Pi$ ($\Pi-F$):
+
+$$
+\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash B\ type}
+{\Gamma\vdash\Pi_xA.B\ type}
+$$
+
+Introduction rule ($\Pi-I$):
+
+$$
+\frac{\Gamma x:A\vdash M_x:B_x}
+{\Gamma\vdash (\lambda_x.(A:M_x)):\Pi_xA.B}
+$$
+
+Elimination rule ($\Pi-E$):
+
+$$
+\frac{\Gamma\vdash M:\Pi_xA.B\ \ \ \Gamma\vdash N:A}
+{\Gamma\vdash MN:[N/x]B}
+$$
+
+$\Pi$ Computation / Equivalence rule ($\Pi-C$):
+
+$$
+\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash M:B}
+{\Gamma\vdash(\lambda_x.A:M_x)N\equiv[N/x]M:[N/x]B}
+$$
+
+#### $\Sigma$
+
+$\Sigma$ types are a list of indexed pair, where the first term is any type,
+and the second term is a function of the first term.
+
+Formation of $\Sigma$ ($\Sigma-F$):
+
+$$
+\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash B_x\ type}
+{\Gamma\vdash\Sigma_xA.B\ type}
+$$
+
+Introduction rule ($\Sigma-I$):
+
+$$
+\frac{\Gamma\vdash M:A\ \ \ \Gamma\vdash N:[M/x]B}
+{\Gamma\vdash<M,N>:\Sigma_xA.B}
+$$
+
+Elimination rule ($\Sigma-E$):
+
+$$
+\frac{\Gamma\vdash M:\Sigma_xA.B}
+{\Gamma\vdash\Pi_1(M):A}
+$$
+
+$$
+\frac{\Gamma\vdash M:\Sigma_xA.B}
+{\Gamma\vdash\Pi_2(M):[\Pi_1(M)/x]B}
+$$
+
+Equivalence rule:
+
+$$
+\Pi_1<M,N>\equiv M
+$$
+
+$$
+\Pi_2<M,N>\equiv N
+$$
+
+## "Axiom" (Theorm) of Choice
+
+Every total binary relation contains a funtion, where a total relation means:
+
+$$
+\forall x:A,\exists y:B,s.t.\ R(x,y)
+$$
+
+So the axiom of choice in set theory, where $f$ is the choice function:
+
+$$
+(\forall x:A,\exists y:B,R(x,y))\supset\exists f:A\rightarrow B\forall x:A,R(x,fx)
+$$
+
+In type theory, it is actually a therom:
+
+$$
+(\Pi_xA.(\Sigma_yB.R(x,y)))\longrightarrow(\Sigma_fA\rightarrow B.(\Pi_xA.R(x,fx)))
+$$
+
+We can write the proof:
+
+$$
+\lambda(t:(\Pi_xA.(\Sigma_yB.R(x,y)))).<\lambda(x:A).\Pi_1(tx),\lambda(x:A).\Pi_2(tx)>
+$$
+
+Explanation: first it's clear that what we want to proof is a map from left to right.
+Let's explain what's the types left and right and what should be the instance of those types.
+
+Left: the outer most is a $\Pi$ type of $A$ and something else, and we have $t$ the instance of left type.
+So $t$ must be a function mapping from $A$ to something. So we go one level deeper, it's a $\Sigma$ type.
+An instance of it must be a tuple, where the first term is type $B$, the second term
+is a mapping from $B$ to $R$. So $t$ is a mapping from $A$ to a tuple.
+
+Right: the outer most is a $\Sigma$ type, so an instance of it is a tuple.
+The first term is a mapping from $A$ to $B$, the second term is an instance $\Pi$ type.
+So it should be a function mapping from $A$ to $R$.
+
+Therefore, our outer most $\lambda$ should return a tuple, and each term of it should
+be a function mapping from $A$ to something. If we apply $t$ to $x$, we get a tuple, or
+an instance of $\Sigma$ type. We can now apply elimination rules to it. $\Pi_1$ would
+give us type $B$, and $\Pi_1$ would give us $[\Pi_1(tx)/y]R(x,y)$, which is what we want.

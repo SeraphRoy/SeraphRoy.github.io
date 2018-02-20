@@ -2,7 +2,7 @@
 layout: post
 title: "Sequent Calculus"
 date: 2018-02-18 19:30
-categories: ['Programming Languages', 'Proof Theory'] 
+categories: ['Programming Language Theory', 'Proof Theory'] 
 tags: ['Programming-Languages', 'Proof-Theory', 'Logic', 'Philosophy'] 
 author: Yanxi Chen
 mathjax: true
@@ -58,13 +58,13 @@ Introduction rule ($I^x$):
 
 $$
 \frac{\overline{A\downarrow}^x\ B\uparrow}
-{A>B\uparrow}
+{A\supset B\uparrow}
 $$
 
 Elimination rules ($E$):
 
 $$
-\frac{A>B\downarrow A\uparrow}
+\frac{A\supset B\downarrow A\uparrow}
 {B\downarrow}
 $$
 
@@ -146,14 +146,14 @@ Right rules:
 
 $$
 \frac{\Gamma,A\Rightarrow B}
-{\Gamma\Rightarrow A>B}
+{\Gamma\Rightarrow A\supset B}
 $$
 
 Left rules:
 
 $$
-\frac{\Gamma,A>B\Rightarrow A\ \ \ \Gamma,A>B,B\Rightarrow C}
-{\Gamma,A>B\Rightarrow C}
+\frac{\Gamma,A\supset B\Rightarrow A\ \ \ \Gamma,A\supset B,B\Rightarrow C}
+{\Gamma,A\supset B\Rightarrow C}
 $$
 
 ### Disjunctions

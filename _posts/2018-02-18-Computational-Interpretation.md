@@ -2,7 +2,7 @@
 layout: post
 title: "Computational Interpretations"
 date: 2018-02-18 13:30
-categories: ['Programming Languages', 'Proof Theory'] 
+categories: ['Programming Language Theory', 'Proof Theory'] 
 tags: ['Programming-Languages', 'Proof-Theory', 'Logic', 'Philosophy'] 
 author: Yanxi Chen
 mathjax: true
@@ -125,16 +125,16 @@ $$
 
 For
 $$
-(A>(B>C))>((A\wedge B)>C)
+(A\supset(B\supset C))\supset((A\wedge B)\supset C)
 $$
 which is _uncurrying_, we have the proof:
 $$
-\lambda f.\lambda p.(f(first\ p)(second\ p))
+\lambda f.\lambda p.f(first\ p)(second\ p)
 $$
 
 For
 $$
-((A\wedge B)>C)>(A>(B>C))
+((A\wedge B)\supset C)\supset (A\supset (B\supset C))
 $$
 which is _currying_, we have the proof:
 $$
@@ -144,8 +144,8 @@ $$
 For monad in functional programming we have two requirements to satisfy:
 
 $$
-return:A>\bigcirc A\\
-bind:\bigcirc A>(A>\bigcirc B)>\bigcirc B
+return:A\supset\bigcirc A\\
+bind:\bigcirc A\supset(A\supset \bigcirc B)\supset \bigcirc B
 $$
 
 such that
@@ -156,7 +156,7 @@ $$
 
 To proof $return$:
 
-$$A>\bigcirc A$$
+$$A\supset \bigcirc A$$
 
 we have:
 
@@ -164,7 +164,7 @@ $$\lambda x.\{x\}$$
 
 To proof $bind$:
 
-$$\bigcirc A>(A>\bigcirc B)>\bigcirc B$$
+$$\bigcirc A\supset (A\supset \bigcirc B)\supset \bigcirc B$$
 
 we have:
 
