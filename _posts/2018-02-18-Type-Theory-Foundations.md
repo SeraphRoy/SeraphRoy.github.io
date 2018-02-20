@@ -26,13 +26,15 @@ a mathematical construction. That's why intuitionistic logic is also called cons
 logic. From this point of view, we can say that logic is just a corner of mathematics,
 and mathematics is just a corner of computer science ;)
 
-## Intuitionistic Logic/Constructive Logic
+# Intuitionistic Logic/Constructive Logic
 
 "Logic as if people matters". We are talking about communication of knowledge.
 We treat proofs as mathematical objects, or programs. We claim
 that $A$ is true, we actually mean that we have a proof of $A$. $M:A$ means that
 $M$ is a proof of $A$, or $M$ is of type $A$, they are the same thing. There are
 many strong connections among proof theory, type theory, and category theory.
+
+<!--more-->
 
 Some connections between Intuitionisitc Propositional logic:proof theory ($\vdash$) and __Heyting Algebra__:category theory(Cartesian closed pre-order, which follows __Reflexivity__ and __Transitivity__) ($\leq$)
 
@@ -44,7 +46,7 @@ Some connections between Intuitionisitc Propositional logic:proof theory ($\vdas
 | $$\frac{A\ true\vdash C\ true,B\ true\vdash C\ true}{A\vee B\ true\vdash C\ true}$$ | $$\frac{A\leq C,B\leq C}{A\vee B\leq C}$$ |
 | Introduction rule: $$A\ true,A\supset B\ true\vdash B\ true$$ Elimination rule: $$\frac{C\ true,A\ true\vdash B\ true}{C\ true\vdash A\supset B\ true}$$ | $$A\wedge B\leq C\ iff\ A\leq(B\supset C)$$ or $$A\wedge B\leq C\ iff\ A\leq C^B$$ |
 
-### Sythetic Judgement vs Analytic Judgement
+## Sythetic Judgement vs Analytic Judgement
 
 For synthetic judgement, we have something like "$A$ is true", which requires a proof.
 It means that we need to do some proof searching.
@@ -53,7 +55,7 @@ For analytic judgement, we have "$M:A$", which gives me a proof of $A$ which is 
 All we need to do is to check whether $M$ is actually a proof of $A$, which is much
 easier than searching a proof. It is also called __self-evident__.
 
-### Equivalence of Proofs
+## Equivalence of Proofs
 
 1. Definitional Equality (analytic judgement): equality of sense
 $$\Gamma\vdash M\equiv N:A$$
@@ -90,7 +92,7 @@ For Denotational Equality, we are suppressing the trivial evidence which is alwa
 reflexivity/identity. But for Equivalence, $\alpha$ can be reflexivity but can also be
 something else.
 
-### Negation ($$\urcorner$$) in Heyting Algebra
+## Negation ($$\urcorner$$) in Heyting Algebra
 
 Introduction rule:
 
@@ -153,7 +155,7 @@ $$
 \perp,T,A\wedge B,A\vee B, A\supset B
 $$
 
-## Family of Types
+# Family of Types
 
 Family of types is a generalization of the concept of a predicate/relation.
 
@@ -182,7 +184,7 @@ be inhabitied, but they are all types.
 
 For example, $$even(3)$$ will be uninhabited, and $$even(2)$$ will be inhabitited.
 
-### Some Notations
+## Some Notations
 
 $$ \Gamma\ ctx $$
 
@@ -213,7 +215,7 @@ $$\Gamma\vdash M\equiv N:A$$
 
 means definitionally equivalent elements of that type
 
-### Functionality / Respect for Equality
+## Functionality / Respect for Equality
 
 Here is the basic idea:
 
@@ -243,11 +245,11 @@ $$
 In other words, if I give you definitionally equal instances, they they are going to be
 definitionally equal types.
 
-### $\Pi$ and $\Sigma$ Types
+## $\Pi$ and $\Sigma$ Types
 
 $\Pi$ and $\Sigma$ types are both families of types.
 
-#### $\Pi$
+### $\Pi$
 
 $\Pi$ types are a list of types, where each type is a function mapping from one type to another type.
 
@@ -262,7 +264,7 @@ Introduction rule ($\Pi-I$):
 
 $$
 \frac{\Gamma x:A\vdash M_x:B_x}
-{\Gamma\vdash (\lambda_x.(A:M_x)):\Pi_xA.B}
+{\Gamma\vdash (\lambda_{x:A}.M_x):\Pi_xA.B}
 $$
 
 Elimination rule ($\Pi-E$):
@@ -275,11 +277,11 @@ $$
 $\Pi$ Computation / Equivalence rule ($\Pi-C$):
 
 $$
-\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash M:B}
-{\Gamma\vdash(\lambda_x.A:M_x)N\equiv[N/x]M:[N/x]B}
+\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash M_x:B\ \ \ \Gamma\vdash N:A}
+{\Gamma\vdash(\lambda_{x:A}.M_x)N\equiv[N/x]M:[N/x]B}
 $$
 
-#### $\Sigma$
+### $\Sigma$
 
 $\Sigma$ types are a list of indexed pair, where the first term is any type,
 and the second term is a function of the first term.
@@ -320,7 +322,7 @@ $$
 \Pi_2<M,N>\equiv N
 $$
 
-## "Axiom" (Theorm) of Choice
+# "Axiom" (Theorm) of Choice
 
 Every total binary relation contains a funtion, where a total relation means:
 
@@ -362,3 +364,106 @@ Therefore, our outer most $\lambda$ should return a tuple, and each term of it s
 be a function mapping from $A$ to something. If we apply $t$ to $x$, we get a tuple, or
 an instance of $\Sigma$ type. We can now apply elimination rules to it. $\Pi_1$ would
 give us type $B$, and $\Pi_1$ would give us $[\Pi_1(tx)/y]R(x,y)$, which is what we want.
+
+# Natural Numbers $$\mathbb{N}$$
+
+Introduction rules:
+
+($$\mathbb{N}-I_0$$):
+
+$$
+\frac{}
+{\Gamma\vdash 0:\mathbb{N}}
+$$
+
+($$\mathbb{N}-I_s$$):
+
+$$
+\frac{\Gamma\vdash M:\mathbb{N}}
+{\Gamma\vdash s(M):\mathbb{N}}
+$$
+
+Elimination rules:
+
+- Computational/non-dependent "Godel's T"
+
+$$
+\frac{\Gamma\vdash M:\mathbb{N},\Gamma\vdash C\ type,\Gamma\vdash N_0:C,\Gamma x:C\vdash N_s:C}
+{\Gamma\vdash rec(M;N_0;x.N_s):C}
+$$
+
+where $rec$ has the following definition:
+
+$$
+rec(0;N_0;x.N_s)\equiv N_0\\
+rec(s(M);N_0;x.N_s)\equiv[rec(M;N_0;x.N_s)/x]N_s
+$$
+
+- Proof by induction / dependent
+
+$$
+\frac{\Gamma\vdash M:\mathbb{N},\Gamma x:\mathbb{N}\vdash C\ type,\Gamma\vdash N_0:[0/x]C,\Gamma x:\mathbb{N}\ y:C\vdash N_s:[s(x)/x]C}
+{\Gamma\vdash rec(M;N_0;x,y.N_s):[M/x]C}
+$$
+
+or
+
+$$
+\frac{\Gamma x:\mathbb{N}\vdash C\ type,\Gamma\vdash N_0:[0/x]C,\Gamma x:\mathbb{N}\ y:C\vdash N_s:[s(x)/x]C}
+{\Gamma\ u:\mathbb{N}\vdash rec(u;N_0;x,y.N_s):[u/x]C}
+$$
+
+where $rec$ has the following definition:
+
+$$
+rec(0;N_0;x,y.N_s)\equiv N_0\\
+rec(s(M);N_0;x,y.N_s)\equiv[M,rec(M;N_0;x,y.N_s)/x,y]N_s
+$$
+
+# Identity Type
+
+Identity formation ($Id_A-F$):
+
+$$
+\frac{\Gamma\vdash A\ type,\Gamma\vdash M:A,\Gamma\vdash N:A}
+{\Gamma\vdash Id_A(M,N)\ type}
+$$
+
+It is a type of proofs that $M$ and $N$ are equal(?) elements of type $A$.
+
+($Id_A-I$) (It is the least reflexive relation):
+
+$$
+\frac{\Gamma\vdash M:A}
+{\Gamma\vdash refl_A(M):Id_A(M,M)}
+$$
+
+Elimination rule:
+
+$$
+\frac{\Gamma\vdash P:Id_A(M,N),\Gamma x:A\ y:A\ z:Id_A(x,y)\vdash C_{x,y,z}\ type,\Gamma x:A\vdash Q:[x,x,refl(x)/x,y,z]C}
+{\Gamma\vdash J_{x,y,z.C}(P;x.Q):[M,N,P/x,y,z]C}
+$$
+
+Side Note: $$\Gamma x:A\ y:A\ z:Id_A(x,y)\vdash C_{x,y,z}\ type$$_ and any others that
+"construct" the "$C\ type$" like things is also called __motive__.
+
+- equality is symmetric
+
+define $sym$ such that ($sym(x)$ can also be written as $x^{-1}$):
+
+$$
+x:Id_A(M,N)\vdash sym(x):Id_A(N,M)
+$$
+
+Proof:
+
+We use the motive: $$ u,v,\_:Id_A(v,u) $$ for $J$, similar to the above elimination rule:
+
+$$
+y:A\vdash refl_A(y):Id_A(y,y)\\
+sym(x):=J(x;y.refl_A(y)):[M,N/u,v]Id_A(v,u)=Id_A(N,M)
+$$
+
+- equality is transitive: find $$trans(x,y)$$ such that $$x:Id_A(M,N),y:Id_A(N,P)\vdash trans(x,y):Id_A(M,P)$$
+where $trans(x,y)$ is just like composition $y\cdot x$.
