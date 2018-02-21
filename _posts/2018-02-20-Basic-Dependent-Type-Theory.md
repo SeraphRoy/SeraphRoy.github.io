@@ -308,7 +308,7 @@ $$
 {\Gamma\vdash J_{x,y,z.C}(P;x.Q):[M,N,P/x,y,z]C}
 $$
 
-Side Note: $$\Gamma x:A\ y:A\ z:Id_A(x,y)\vdash C_{x,y,z}\ type$$_ and any others that
+Side Note: $$\Gamma x:A,y:A,z:Id_A(x,y)\vdash C_{x,y,z}\ type$$ and any others that
 "construct" the "$C\ type$" like things is also called __motive__.
 
 Computation rule:
@@ -317,7 +317,7 @@ $$
 J(refl(M);x.Q)\equiv[M/x]Q
 $$
 
-- equality is symmetric
+## Equality is Symmetric
 
 define $sym$ such that ($sym(x)$ can also be written as $x^{-1}$):
 
@@ -327,50 +327,57 @@ $$
 
 Proof:
 
-We use the motive: $$ u,v,\_.Id_A(v,u) $$ for $J$, similar to the above elimination rule:
+We use the motive: $$ u,v,\_,Id_A(v,u) $$ for $J$, corresponding to $x,y,z,C$ in the above elimination rule motive:
 
 $$
 y:A\vdash refl_A(y):Id_A(y,y)\\
 sym(x):=J(x;y.refl_A(y)):[M,N/u,v]Id_A(v,u)=Id_A(N,M)
 $$
 
-- equality is transitive: find $$trans(x,y)$$ such that $$x:Id_A(M,N),y:Id_A(N,P)\vdash trans(x,y):Id_A(M,P)$$
+## Equality is Transitive
+
+find $$trans(x,y)$$ such that $$x:Id_A(M,N),y:Id_A(N,P)\vdash trans(x,y):Id_A(M,P)$$
 where $trans(x,y)$ is just like composition $y\cdot x$.
 
 Proof:
 
-We use the motive: $$ u,v,\_.Id_A(v,p)\rightarrow Id_A(u,p) $$ for $J$, similar to the above elimination rule:
+We use the motive: $$ u,v,\_,Id_A(v,P)\rightarrow Id_A(u,P) $$ for $J$,
+corresponding to $x,y,z,C$ in the above elimination rule motive:
 
 $$
-J(x;?)(y):Id_A(N,T)\rightarrow Id_A(M,P)
+z:A\vdash Q:Id_A(v,P)\rightarrow Id_A(u,P)\\
+J(x;Q):[M,N/u,v]Id_A(v,P)\rightarrow Id_A(u,P)=Id_A(N,P)\rightarrow Id_A(M,P)\\
+then\\
+J(x;Q)(y):Id_A(M,P)
 $$
 
-- __substitutivity__ / __functionality__ / __transport__
+## Substitutivity/Functionality/Transport
 
 $$
-frac{\Gamma x:A\vdash B\ type,\Gamma\vdash P:Id_A(M,N),\Gamma\vdash Q:[M/x]B}
+\frac{\Gamma x:A\vdash B\ type,\Gamma\vdash P:Id_A(M,N),\Gamma\vdash Q:[M/x]B}
 {\Gamma\vdash subst(P,Q):[N/x]B}
 $$
 
 Proof:
 
-We use the motive: $$ u,v,\_.[u/x]B\rightarrow[v/x]B $$ for $J$, similar to the above elimination rule:
+We use the motive: $$ u,v,\_,[u/x]B\rightarrow[v/x]B $$ for $J$,
+corresponding to $x,y,z,C$ in the above elimination rule motive:
 
-- __respect__
+## Respect
 
 $$
 \frac{\Gamma x:A\vdash Q:B,\Gamma\vdash P:Id_A(M,N)}
 {\Gamma\vdash resp(Q;P):Id_B([M/x]Q,[N/x]Q)}
 $$
 
-Therom[Martin-Lof]:
+## Therom[Martin-Lof]
 
 If $P:Id_A(M,N)$ (closed), then $M\equiv N:A$ (definitionally). Which means $Id_A$
 internalizes definitional equality.
 
 Fact(1): There is a $P$ such that $$x:\mathbb{N},y:\mathbb{N}\vdash P:Id_{\mathbb{N}}(x+y,y+x)$$
 
-But!The type $$Id_{\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}}(\lambda_x\lambda_y.x+y,\lambda_x\lambda_y.y+x)$$
+But! The type $$Id_{\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}}(\lambda_x\lambda_y.x+y,\lambda_x\lambda_y.y+x)$$
 has no proof (not inhabited).
 
 # Function Extensionality / Principle of Extensionality
@@ -422,7 +429,7 @@ $$
 {\Gamma\vdash P=refl(M):Id_A(M,N)}
 $$
 
-In ETT, Fact(1) means that $x,y:\mathbb{N}\vdash x+y=y+x:\mathbb{N}$, then
+In ETT, Fact(1) means that: $x,y:\mathbb{N}\vdash x+y=y+x:\mathbb{N}$, and so it follows as a corollary that:
 $\lambda_x\lambda_y.x+y=\lambda_x\lambda_y.y+x:\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}$,
 then we will have a proof $refl:Id_{\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}}(...,...)$
 
@@ -443,3 +450,5 @@ $$
 Id_{\Pi_xA.B}(M,N):=\Pi_{x:A}Id_B(Mx,Nx)\\
 refl_{\Pi_xA.B}(M):=\lambda_{x:A}.refl_B(Mx)
 $$
+
+So that the function extensionality can be proof here in OTT
