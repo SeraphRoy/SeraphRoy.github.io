@@ -308,6 +308,12 @@ $$
 Side Note: $$\Gamma x:A\ y:A\ z:Id_A(x,y)\vdash C_{x,y,z}\ type$$_ and any others that
 "construct" the "$C\ type$" like things is also called __motive__.
 
+Computation rule:
+
+$$
+J(refl(M);x.Q)\equiv[m/x]Q
+$$
+
 - equality is symmetric
 
 define $sym$ such that ($sym(x)$ can also be written as $x^{-1}$):
