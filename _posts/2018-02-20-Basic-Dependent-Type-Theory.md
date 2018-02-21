@@ -291,12 +291,15 @@ $$
 
 It is a type of proofs that $M$ and $N$ are equal(?) elements of type $A$.
 
-($Id_A-I$) (It is the least reflexive relation):
+($Id_A-I$):
 
 $$
 \frac{\Gamma\vdash M:A}
 {\Gamma\vdash refl_A(M):Id_A(M,M)}
 $$
+
+It is the least reflexive relation, meaning that that's the only rule we have for identiy,
+$refl$ is the only thing we can have eventually.
 
 Elimination rule:
 
