@@ -311,7 +311,7 @@ Side Note: $$\Gamma x:A\ y:A\ z:Id_A(x,y)\vdash C_{x,y,z}\ type$$_ and any other
 Computation rule:
 
 $$
-J(refl(M);x.Q)\equiv[m/x]Q
+J(refl(M);x.Q)\equiv[M/x]Q
 $$
 
 - equality is symmetric
