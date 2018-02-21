@@ -180,6 +180,8 @@ $$
 \Pi_2<M,N>\equiv N
 $$
 
+<!--more-->
+
 # "Axiom" (Theorm) of Choice
 
 Every total binary relation contains a funtion, where a total relation means:
