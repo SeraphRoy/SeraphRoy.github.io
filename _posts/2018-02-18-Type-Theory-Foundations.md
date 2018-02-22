@@ -71,8 +71,8 @@ Example to distinguish 1 and 2:
 Define addition as follows:
 
 $$
-a+0=a\\
-a+succ(b)=succ(a+b)
+a+0\equiv a\\
+a+succ(b)\equiv succ(a+b)
 $$
 
 Then we have the following equalities:
