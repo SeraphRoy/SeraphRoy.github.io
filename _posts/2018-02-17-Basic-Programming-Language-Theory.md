@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "What does a Programming Language Consist of?"
+title: "Basic Programming Language Theory"
 date: 2018-02-17 15:15
 categories: ['Programming Language Theory'] 
 tags: ['Programming-Languages'] 
@@ -10,6 +10,11 @@ mathjax: true
 
 * content
 {:toc}
+
+# Total Programming Language
+
+E.Coli of Total PLs - Godel's T:
+It codifies higher order functions and inductive types (nat)
 
 ## What does it mean for a PL to exist?
 
@@ -26,6 +31,13 @@ We will talk about _abstract syntax_ and _context-sensitive-conditions on well-f
 Formal = typing is _inductively_ defined.
 
 We only have information about the types but not the elements themselves.
+
+So we only care about two things, higher order functions, and nat.
+
+$$
+\tau:=nat|\tau_1\rightarrow\tau_2\\
+e:=x|z|s(e)|iter(e_0x.e_1)(e)|\lambda x:\tau.e|e_1(e_2)
+$$
 
 Hypothetical Judgement (Structural):
 
@@ -64,6 +76,7 @@ $$
 How to execute?
 
 We need to specify:
+- $e\ val$
 - States of execution $S$
 - Transition $S\mapsto S'$
 - Initial State and final state
