@@ -60,4 +60,7 @@ plugins:
     - jekyll-paginate
 paginate: 6
 
-
+algolia:
+   application_id: 'VQQEF0782J'
+   index_name:     'SeraphRoy'
+   search_only_api_key: 'b66031155929f70634dffecb4a9d7eba'
