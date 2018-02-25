@@ -36,7 +36,7 @@ $$
 \{even(x)\ prop/type\}_{x:\mathbb{N}}
 $$
 
-_The idea is that we are exhibiting a family of types/proofs in that if you give me any
+The idea is that we are exhibiting a family of types/proofs in that if you give me any
 particular choice of number, it's going to give me back a proposition, which may or maynot
 be inhabitied, but they are all types.
 
@@ -107,8 +107,6 @@ definitionally equal types.
 
 $\Pi$ and $\Sigma$ types are both families of types.
 
-### $\Pi$
-
 $\Pi$ types are a list of types, where each type is a function mapping from one type to another type.
 
 Formation of $\Pi$ ($\Pi-F$):
@@ -138,8 +136,6 @@ $$
 \frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash M_x:B\ \ \ \Gamma\vdash N:A}
 {\Gamma\vdash(\lambda_{x:A}.M_x)N\equiv[N/x]M:[N/x]B}
 $$
-
-### $\Sigma$
 
 $\Sigma$ types are a list of indexed pair, where the first term is any type,
 and the second term is a function of the first term.
@@ -317,7 +313,7 @@ $$
 J(refl(M);x.Q)\equiv[M/x]Q
 $$
 
-## Equality is Symmetric
+- Equality is Symmetric
 
 define $sym$ such that ($sym(x)$ can also be written as $x^{-1}$):
 
@@ -334,7 +330,7 @@ y:A\vdash refl_A(y):Id_A(y,y)\\
 sym(x):=J(x;y.refl_A(y)):[M,N/u,v]Id_A(v,u)=Id_A(N,M)
 $$
 
-## Equality is Transitive
+- Equality is Transitive
 
 find $$trans(x,y)$$ such that $$x:Id_A(M,N),y:Id_A(N,P)\vdash trans(x,y):Id_A(M,P)$$
 where $trans(x,y)$ is just like composition $y\cdot x$.
@@ -351,7 +347,7 @@ then\\
 J(x;Q)(y):Id_A(M,P)
 $$
 
-## Substitutivity/Functionality/Transport
+- Substitutivity/Functionality/Transport
 
 $$
 \frac{\Gamma x:A\vdash B\ type,\Gamma\vdash P:Id_A(M,N),\Gamma\vdash Q:[M/x]B}
@@ -363,7 +359,7 @@ Proof:
 We use the motive: $$ u,v,\_,[u/x]B\rightarrow[v/x]B $$ for $J$,
 corresponding to $x,y,z,C$ in the above elimination rule motive:
 
-## Respect
+- Respect
 
 $$
 \frac{\Gamma x:A\vdash Q:B,\Gamma\vdash P:Id_A(M,N)}
