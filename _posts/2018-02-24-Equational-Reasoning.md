@@ -79,6 +79,12 @@ It is equivalence defined by _logical relations_.
 - $$e=^{log}_{\tau_1\rightarrow \tau_2}e'\ iff\ \forall e_1,e_1':\tau_1,
 if\ e_1=^{log}_{\tau_1}e_1',then\ ee_1=^{log}_{\tau_2}e'e_1'$$
 
+Thm:
+
+$$
+e:\tau\ implies\ e=^{obs}_{int}e
+$$
+
 Proof $$ e=^{obs}_\tau e'\ iff\ e^{log}_\tau e' $$:
 
 From left to right should be easier because we are coming from $\forall$ to $int$
@@ -114,3 +120,9 @@ where $$\mapsto$$ is the transition in dynamics from
 [here]({% post_url 2018-02-17-Basic-Programming-Language-Theory %}).
 
 Then we can proof it by the above therom and lemma, we will just skip it here ;)
+
+## Relationship to Hereditary Termination
+
+$$
+e=^{obs}_\tau e\ iff\ HT_\tau(e)
+$$

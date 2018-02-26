@@ -182,10 +182,12 @@ Therefor we introduct a strong property called __hereditary termination__: $$HT_
 
 - Want: $HT_{nat}(e)$ implies $T(e)$
 - Define: $HT_\tau(e)$ by induction on type $\tau$ [Tait's Method]
-   - $$HT_{nat}(e)$$ iff $$e\mapsto^*z$$ or $$e\mapsto^*s(e')$$ with $$HT_{nat}(e')$$ (it is 
+   - $$HT_{nat}(e)\ iff\ e\mapsto^*z$$ or $$e\mapsto^*s(e')$$ with $$HT_{nat}(e')$$ (it is 
      well-defined because it is the _strongest predicate satisfying these rules_)
-   - $$HT_{\tau_1\rightarrow\tau_2}(e)$$ iff $$e\mapsto^*\lambda x:\tau_1.e'$$ and
-     for every $e_1$ such that $$HT_{\tau_1}(e_1),HT_{\tau_2}([e_1/x]e')$$ (meaning "type goes down")
+   - $$HT_{\tau_1\rightarrow\tau_2}(e)\ iff\ e\mapsto^*\lambda x:\tau_1.e'$$ and
+     for every $e_1$ such that $$HT_{\tau_1}(e_1),HT_{\tau_2}([e_1/x]e')$$ (meaning "type goes down").
+     To write this in another form,
+     $$HT_{\tau_1\rightarrow\tau_2}(e)\ iff\ (if\ HT_{\tau_1}(e_1),then\ HT_{\tau_2}(e(e_1)))$$
 
 And we have $Thm(v2)$:
 
