@@ -1,6 +1,6 @@
 # SeraphRoy.github.io
 
-Used theme: https://github.com/Gaohaoyang/gaohaoyang.github.io
+Adapted theme: https://github.com/Gaohaoyang/gaohaoyang.github.io and do some upgrades
 
 Modifications:
 - Add sidebar search for title/tag/category/content
