@@ -45,7 +45,7 @@
 function setContentMaxHeightInPC() {
     var windowHeight = window.innerHeight
     var contentUl = document.querySelector('#content-side')
-    var contentMaxHeight = windowHeight - 260 - $('#search-div').height()
+    var contentMaxHeight = windowHeight - $('#top').height() - 240 - $('#search-div').height()
     contentUl.style.maxHeight = contentMaxHeight + 'px'
 }
 
