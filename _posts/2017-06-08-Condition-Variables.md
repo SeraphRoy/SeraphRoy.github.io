@@ -21,7 +21,7 @@ This form of parallelism is often called "producer-consumer" parallelism and it 
 
 Perhaps more germane to the class at hand, this problem is also called the **bounded buffer** problem since the buffer used to speed-match the producers and consumers has a fixed length. In an operating systems context, these types of synchronization problems occur frequently. There are cases where threads and/or devices need to communicate, their speeds differ or vary, and the OS must allocate a fixed memory footprint to enable efficient producer-consumer parallelism.
 
-While it is logically possible to spawn a new thread that runs ever time a new value is produced and to have that thread terminate after it has consumed the value, the overhead of all of the create and join calls would be large. Instead, pthreads includes a way for one thread to wait for a signal from another before proceeding. It is called a **condition variable** and it is used to implement producer-consumer style parallelism without the constant need to spawn and join threads.
+While it is logically possible to spawn a new thread that runs every time a new value is produced and to have that thread terminate after it has consumed the value, the overhead of all of the create and join calls would be large. Instead, pthreads includes a way for one thread to wait for a signal from another before proceeding. It is called a **condition variable** and it is used to implement producer-consumer style parallelism without the constant need to spawn and join threads.
 
 Condition variables are a feature of a syncronization primitive called a [monitor](http://en.wikipedia.org/wiki/Monitor_(synchronization)) which is similar to the way in which operating systems kernels work. We won't discuss them formally at this juncture but their use will become clear as the class progresses. For pthreads, however, condition variables are used to
 
@@ -226,8 +226,8 @@ void *ClientThread(void *arg)
             fprintf(stderr,"no space for order\n");
             exit(1);
         }
-         **/*
-         * queue it for the traders
+         /*
+           queue it for the traders
          */
         queued = 0;
         while(queued == 0) {
@@ -443,7 +443,7 @@ struct order_que
         int head;
         int tail;
         pthread_mutex_t lock;
- **pthread_cond_t full;
+        pthread_cond_t full;
         pthread_cond_t empty;** 
 };
 ```
@@ -485,7 +485,7 @@ while(queue->full == 1) {
 
 There is a moment in time right between the call to _pthread_mutex_unlock()_ and _sleep()_ where the queue status could change from full to not full. However, the thread will have already decided to go to sleep and, thus, will never wake up.
 
-The _pthread_cond_wait()_ call is specially coded to avid this race condition.
+The _pthread_cond_wait()_ call is specially coded to avoid this race condition.
 
 Now take a look at the trader thread just after the thread has determined that there is work to do:
 

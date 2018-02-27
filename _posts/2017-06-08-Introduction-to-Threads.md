@@ -320,7 +320,7 @@ The marshaling into a _(void *)_ of the _(struct result_struct *)_ takes place d
 return((void *)result);
 ```
 
-From the _my_args_ variable, the thread can then access the _size_ value and the _data_ pointer that points to the array of numbers. Notice that the very next thing the thread does is to call _free()_ on the _arg_ pointer. In a C program it is essential that you keep track of how memory is allocated an freed. Good practive is to free memory as soon as you know the memory is no longer needed. In this example, the code that creates this thread in the _main()_ function calls _malloc_ to allocate the memory that is needed to hold the argument structure.
+From the _my_args_ variable, the thread can then access the _size_ value and the _data_ pointer that points to the array of numbers. Notice that the very next thing the thread does is to call _free()_ on the _arg_ pointer. In a C program it is essential that you keep track of how memory is allocated and freed. Good practive is to free memory as soon as you know the memory is no longer needed. In this example, the code that creates this thread in the _main()_ function calls _malloc_ to allocate the memory that is needed to hold the argument structure.
 
 Notice that the thread has called _malloc()_ to create a result variable to pass back the sum. It must be the case that the _main()_ thread calls _free()_ on the result structure it gets back from the thread. Look for the _free()_ call in the _main()_ routine to see where this takes place.
 
