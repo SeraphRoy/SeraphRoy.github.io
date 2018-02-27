@@ -73,24 +73,17 @@ P(x\rightarrow y):=
 $$
 
       - identities: $$id(x):=x\leq x$$
-
       - composition: $$x\leq y\cdot y\leq z:=x\leq z$$
-
    - So the simplest category satisfying above requirements is call __Interval Category__ ($I$),
 where there are only two objects, two $id$ rules, and one arrow from one to the other.
 
 - __Monoid Category__: For a __monoid__ ($$M',*,\varepsilon$$)
 (a set $M'$, an associative binary operation $*$,
 and a unit for the operation $\varepsilon$), the category $M$ with
-
    - objects: $$M_0:=\{\star\}$$
-
    - arrows: $$M(\star\rightarrow\star):=M'$$
-
       - identity: $$id(\star):=\varepsilon$$
-
       - composition: $$x\cdot y:=x*y$$
-
    - An example monoid is ($$\mathbb{N},+,0$$)
 
 # Categories of Structured Sets
@@ -105,9 +98,7 @@ called a __proper class__, and a class that is a set is sometimes called a __sma
 - Category of preordered sets $PREORD$, where objects are the preordered sets,
 and arrows are monotone maps (functions that preserve the order).
 - Category of monoids $MON$
-
    - objects: monoids
-
    - arrows: monoid homomorphisms (structure preserving maps of monoids)
 
 $$
