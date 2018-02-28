@@ -6,3 +6,4 @@ Modifications:
 - Add sidebar search for title/tag/category/content
 - Add algolia search with search result highlight
 - Archive by month instead of year
+- SEO optimization
