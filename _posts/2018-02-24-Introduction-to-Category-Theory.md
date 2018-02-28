@@ -48,6 +48,8 @@ And rather than reasoning structurally like PL does, it reasons "behaviorally".
    - __Pasting__: If we two diagrams, both commute, and they have a common path, then we can "stick"
    those two diagrams along that path, and the resulting diagram still commutes.
 
+<!--more-->
+
 # Structured Sets as Categories
 
 We can construct a category from _a_ set.
