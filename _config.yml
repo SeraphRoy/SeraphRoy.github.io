@@ -58,6 +58,7 @@ excerpt_separator: "<!--more-->"
 # paginate
 plugins:
     - jekyll-paginate
+    - jekyll-seo-tag
 paginate: 6
 
 algolia:
