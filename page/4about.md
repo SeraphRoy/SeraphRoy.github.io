@@ -9,6 +9,8 @@ type: page
 * content
 {:toc}
 
+<iframe src="https://githubbadge.appspot.com/SeraphRoy" style="border: 0;height: 142px;width: 200px;overflow: hidden;" frameBorder="0"></iframe>
+
 ## About Me
 
 ![]({{site.url}}/assets/My-Photo.JPG){:height="50%" width="50%"}
