@@ -3,7 +3,7 @@ layout: post
 title: "Basic Dependent Type Theory"
 date: 2018-02-20 20:00
 categories: ['Programming Language Theory', 'Type Theory'] 
-tags: ['Programming-Languages', 'Type-Theory']
+tags: ['Programming-Languages', 'Type Theory']
 author: Yanxi Chen
 mathjax: true
 ---
