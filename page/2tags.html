@@ -10,13 +10,11 @@ type: page
     <div class="left">
         <h1>{{page.title}}</h1>
         <hr>
-        {% capture tags %}
-          {% for tag in site.tags %}
-            {{ tag[0] }}
-          {% endfor %}
-        {% endcapture %}
-        {% assign sortedtags = tags | split:' ' | sort %}
-
+        {% assign alltags = '' | split: '' %}
+        {% for tag in site.tags %}
+          {% assign alltags = alltags | push: tag[0]%}
+        {% endfor %}
+        {% assign sortedtags = alltags | sort %}
         <ul>
         {% for tag in sortedtags %}
           <h2 id="{{ tag }}">{{ tag }}</h2>
