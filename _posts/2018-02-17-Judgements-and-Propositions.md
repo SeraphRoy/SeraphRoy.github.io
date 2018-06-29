@@ -3,7 +3,7 @@ layout: post
 title: "Judgements and Propositions"
 date: 2018-02-18 09:30
 categories: ['Programming Language Theory', 'Proof Theory'] 
-tags: ['Programming-Languages', 'Proof Theory', 'Logic', 'Philosophy'] 
+tags: ['Programming Languages', 'Proof Theory', 'Logic', 'Philosophy'] 
 author: Yanxi Chen
 mathjax: true
 ---
