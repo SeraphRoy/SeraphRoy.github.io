@@ -42,6 +42,8 @@ be inhabitied, but they are all types.
 
 For example, $$even(3)$$ will be uninhabited, and $$even(2)$$ will be inhabitited.
 
+<!--more-->
+
 ## Some Notations
 
 $$ \Gamma\ ctx $$

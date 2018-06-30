@@ -15,6 +15,8 @@ The main question is, how do we define two programs are equal, and how do we pro
 
 So for setup we have type $int$, and $k$ which is a $int$, and $e_1+e_2$.
 
+<!--more-->
+
 # Observational Equavalence
 
 We say that 2 programs are equal $iff$ you can't tell them apart, which means:

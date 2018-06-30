@@ -24,6 +24,8 @@ A PL consists of two parts:
 
 Basic criterion: __Coherence__
 
+<!--more-->
+
 ## Statics
 
 We will talk about _abstract syntax_ and _context-sensitive-conditions on well-formation_. 

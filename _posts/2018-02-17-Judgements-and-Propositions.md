@@ -48,6 +48,8 @@ $$
 $$
 means substitude $N$ for $x$ based on the structure of $M$ (plug in $N$ for $x$)
 
+<!--more-->
+
 ### Examples
 
 #### To define $A\wedge B\ true$:
