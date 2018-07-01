@@ -7,9 +7,9 @@
 
 # Site settings
 title: GaeBlogX
-blogname: SeraphRoy'Blog
+blogname: SeraphRoy's Blog
 blogabout: Notes, Word Salad, etc.
-brief-intro: "Arista Networks, CloudVision® Portal"
+brief-intro: "Arista Networks, Software-Defined Networking"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://seraphroy.github.io" # the base hostname & protocol for your site
 
