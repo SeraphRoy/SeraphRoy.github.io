@@ -25,7 +25,7 @@ linkedIn_username: yanxichen
 
 description_footer:
 
-theme: jekyll-theme-gaeblogx
+remote_theme: SeraphRoy/GaeBlogx
 
 # comments
 # two ways to comment, only choose one, and use your own short name
