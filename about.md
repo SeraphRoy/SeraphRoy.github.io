@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: about
 title: About
 permalink: /about/
 icon: heart
@@ -28,7 +28,3 @@ degree of Computer Science from [University of California, Santa Barbara](http:/
 [LinkedIn](https://www.linkedin.com/in/{{ site.linkedIn_username }}/)
 
 [Facebook](https://www.facebook.com/{{ site.facebook_username }})
-
-## Comments
-
-{% include comments.html %}
