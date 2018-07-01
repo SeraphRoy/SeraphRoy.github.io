@@ -25,6 +25,8 @@ linkedIn_username: yanxichen
 
 description_footer:
 
+theme: jekyll-theme-gaeblogx
+
 # comments
 # two ways to comment, only choose one, and use your own short name
 # 两种评论插件，选一个就好了，使用自己的 short_name
