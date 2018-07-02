@@ -63,6 +63,7 @@ excerpt_separator: "<!--more-->"
 plugins:
     - jekyll-paginate
     - jekyll-seo-tag
+    - jekyll-sitemap
 paginate: 6
 
 algolia:
