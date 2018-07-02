@@ -11,7 +11,7 @@ blogname: SeraphRoy's Blog
 blogabout: Notes, Word Salad, etc.
 brief-intro: "Arista Networks, Software-Defined Networking"
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://gaeblogx.com" # the base hostname & protocol for your site
+url: "https://seraphroy.github.io" # the base hostname & protocol for your site
 
 permalink: /:year/:month/:day/:title/
 
