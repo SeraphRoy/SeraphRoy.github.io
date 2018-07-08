@@ -2,8 +2,8 @@
 layout: post
 title: Some Slides about Containers
 date: 2017-06-08 17:09
-categories: Cloud Container
-tags: Cloud Container Slides
+categories: ['Cloud Computing']
+tags: ['Container', 'Slides']
 author: Yanxi Chen
 mathjax: true
 ---

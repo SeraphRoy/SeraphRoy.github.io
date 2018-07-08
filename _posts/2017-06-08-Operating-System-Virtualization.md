@@ -2,8 +2,8 @@
 layout: post
 title: "Operating System Virtualization"
 date: 2017-06-08 16:56
-categories: ['Operating System', 'Virtualization', 'Cloud'] 
-tags: Cloud Virtualization
+categories: ['Operating System', 'Virtualization', 'Cloud Computing'] 
+tags: ['Virtualization']
 author: Yanxi Chen
 mathjax: true
 ---

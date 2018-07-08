@@ -2,8 +2,8 @@
 layout: post
 title: "SDN Introduction"
 date: 2017-06-08 16:48
-categories: SDN Cloud
-tags: SDN Cloud
+categories: ['Software-Defined Networking', 'Cloud Computing']
+tags: ['SDN']
 author: Yanxi Chen
 mathjax: true
 ---
