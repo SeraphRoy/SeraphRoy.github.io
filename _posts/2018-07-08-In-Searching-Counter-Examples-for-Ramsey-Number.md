@@ -35,6 +35,8 @@ we are to design an algorithm/system that make use of basically endless computin
 power from both super-computers (XSEDE, CondorHTC), and cloud platforms (AWS) to
 find the largest counter example of $R(10,10)$.
 
+<!--more-->
+
 # Some Basic Ideas
 
 We didn't do edge coloring in our implementation. Instead, we split the graph into

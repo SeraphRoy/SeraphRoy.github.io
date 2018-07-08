@@ -4,5 +4,6 @@ _site
 .vscode
 .idea
 .DS_Store
+_algolia_api_key
 
 .*.swp
