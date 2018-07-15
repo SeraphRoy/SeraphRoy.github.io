@@ -94,6 +94,8 @@ $$
 {\langle e_1,e_2\rangle\cdot i\mapsto e_i}
 $$
 
+<!--more-->
+
 ## Sums
 
 For sums, we have types $\tau$:

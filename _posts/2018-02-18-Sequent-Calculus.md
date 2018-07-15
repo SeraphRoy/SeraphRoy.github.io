@@ -32,6 +32,8 @@ $$
 
 where $P$ is atomic
 
+<!--more-->
+
 ### Conjunctions
 
 Introduction rule ($I$):

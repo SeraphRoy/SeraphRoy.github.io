@@ -23,6 +23,8 @@ Even this definition is a bit tricky since Intel introduced hardware support for
 
 From a systems design perspective, virtualization is the notion that the operating system (and not the process) is the resource container. That is, each operating system believes it has full control over a set of machine resources and some other "system" (usually called a hypervisor) is able to arbitrate sharing among operating systems (in a way analogous to the way in which an operating system arbitrates sharing among processes). The Linux containers community might take exception to this last definition but so be it.
 
+<!--more-->
+
 Virtualization (as it is commonly implemented today) attempts to meet two requirements:
 
 *   **resource arbitration**: virtualized systems share a common set of physical resources according to a set of policies that must be arbitrated
@@ -38,8 +40,6 @@ There are generally four approaches to virtualization:
 These methodologies have had different implementations by various vendors. For example, [VMware's](http://www.vmware.com) proprietary virtualization technology began as hardware emulation but is today implemented via hardware assist. Sun Microsystem's Zones are a Solaris container solution that has morphed into an open approach for Linux called [OpenVZ](http://openvz.org/Main_Page).
 
 Today, the most widely used virtualization technologies are VMware, KVM, and Xen. There is also significant and growing interest in Linux containers in the form of [LXC](https://linuxcontainers.org) and [Docker](https://www.docker.io). This statement, in no way, is intended to pass judgment on the value of alternative technologies. It is just a statement about popularity.
-
-<!--more-->
 
 ## Isolation
 

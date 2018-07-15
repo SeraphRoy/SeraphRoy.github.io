@@ -107,8 +107,8 @@ GEM
       pathutil (~> 0.9)
       rouge (>= 1.7, < 4)
       safe_yaml (~> 1.0)
-    jekyll-algolia (1.4.3)
-      algolia_html_extractor (~> 2.6)
+    jekyll-algolia (1.4.0)
+      algolia_html_extractor (~> 2.6.1)
       algoliasearch (~> 1.18)
       filesize (~> 0.1)
       jekyll (~> 3.0)
@@ -264,7 +264,7 @@ PLATFORMS
 
 DEPENDENCIES
   github-pages
-  jekyll-algolia
+  jekyll-algolia (= 1.4.0)
 
 BUNDLED WITH
    1.16.2
