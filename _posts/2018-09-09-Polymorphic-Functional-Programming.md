@@ -68,6 +68,8 @@ $$
 \frac{\Delta,t\ type\vdash\tau\ type}{\Delta\vdash\forall\ t.\tau\ type}
 $$
 
+<!--more-->
+
 # System F (Girard|Reynolds)
 
 The idea is: allow $\lambda$ and application for _type_ variables
