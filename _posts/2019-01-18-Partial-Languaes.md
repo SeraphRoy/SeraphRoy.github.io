@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Partial Languages"
+title: "Partial Languages, Recursive Programs, and PCF"
 date: 2019-01-18 22:25
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
