@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Jekyll Search Solutions"
-date: 2018-02-22 23:22
+date: 2019-01-20 15:13
 categories: ['Jekyll'] 
 tags: ['Jekyll', 'Blog']
 author: Yanxi Chen
@@ -10,6 +10,18 @@ mathjax: true
 
 * content
 {:toc}
+
+# Updates
+
+终于我找到了[这个](https://github.com/wzpan/hexo-theme-freemind/blob/master/source/js/search.js)。
+但是这个其实充满了各种bug，比如我提交的[这个](https://github.com/wzpan/hexo-theme-freemind/issues/83)。
+里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正
+所以我现在自己写了[我自己的版本](https://github.com/SeraphRoy/SimpleBlogSearch)。
+现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概
+
+Agolia的我还是先留着吧，毕竟我自己写的也没有特别满意，而且他们也帮我[卖广告](https://community.algolia.com/jekyll-algolia/themes.html)
+了所以就
+都保留着想用哪个用哪个吧。。
 
 # 问题和需求
 
