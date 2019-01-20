@@ -14,3 +14,5 @@ mathjax: true
 [Anchor-The Rapid Rise of Containers in Production]({{site.url}}/assets/Some-Slides-about-Containers-UCSB-nurmi.pdf)
 
 [Kubernetes]({{site.url}}/assets/Some-Slides-about-Containers-Kubernetes.pdf)
+
+<!--more-->

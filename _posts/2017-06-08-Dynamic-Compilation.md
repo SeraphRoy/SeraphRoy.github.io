@@ -22,3 +22,5 @@ mathjax: true
 [YouTube Part3](https://www.youtube.com/watch?v=BbAT3rpxjZg&feature=youtu.be)
 
 [YouTube Part4](https://www.youtube.com/watch?v=vU5pH8lOyR0&feature=youtu.be)
+
+<!--more-->

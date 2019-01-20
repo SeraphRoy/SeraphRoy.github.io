@@ -18,3 +18,4 @@ mathjax: true
 [(YouTube: Simple class bytecode walk through)](https://www.youtube.com/watch?v=8COBoAibFGY&feature=youtu.be)
 
 [(YouTube: Part 2/2)](https://www.youtube.com/watch?v=5HTbyEoIkdE&feature=youtu.be)
+<!--more-->

@@ -14,3 +14,5 @@ mathjax: true
 First post
 * haha
 * nima
+
+<!--more-->

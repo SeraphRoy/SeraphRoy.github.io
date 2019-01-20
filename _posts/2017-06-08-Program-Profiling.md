@@ -16,3 +16,5 @@ mathjax: true
 [YouTube Part1](https://www.youtube.com/watch?v=mQq4Dmw477w&feature=youtu.be)
 
 [YouTube Part2](https://www.youtube.com/watch?v=tAPwPz-53hQ&feature=youtu.be)
+
+<!--more-->

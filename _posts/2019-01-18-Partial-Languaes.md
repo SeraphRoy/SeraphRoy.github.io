@@ -41,6 +41,8 @@ We are looking for a __FIXED POINT__.
 
 The equations only make sense (solution exists) with _computable partial functions_.
 
+<!--more-->
+
 # Plokin PCF
 
 

@@ -27,6 +27,8 @@ Some theorem:
 - $e\sim_{\tau}e'$ $iff$ $e\simeq_{\tau}e'$
 - $e\sim_{\tau}e\ iff\ HT_{\tau}(e)$
 
+<!--more-->
+
 # Extension to Polymorphic Types
 
 ## System T - Extend to F
