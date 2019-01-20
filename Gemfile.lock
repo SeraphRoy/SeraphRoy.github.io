@@ -263,7 +263,7 @@ PLATFORMS
 
 DEPENDENCIES
   github-pages
-  jekyll-algolia (= 1.4.0)
+  jekyll-algolia (>= 1.4.0)
 
 BUNDLED WITH
    1.16.2
