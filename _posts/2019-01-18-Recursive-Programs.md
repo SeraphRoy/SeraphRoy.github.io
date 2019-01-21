@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Partial Languages, Recursive Programs, and PCF"
+title: "Recursive Programs"
 date: 2019-01-18 22:25
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
@@ -11,9 +11,11 @@ mathjax: true
 * content
 {:toc}
 
+# Partial Functions
+
 System $T$, $F$ are total languages.
 
-PCF (Programming Language for Computable Functions) (By Gordon Plokin) - E. col. of partial languages.
+PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of partial languages.
 
 Idea: Extending the theory of computability to _HIGHER TYPE_. Standard computability
 courses only talk about computation over $\mathbb{N}$, but nothing beyond that.
@@ -43,7 +45,7 @@ The equations only make sense (solution exists) with _computable partial functio
 
 <!--more-->
 
-# Plokin PCF
+# Recursive Programs in Plotkin PCF
 
 
 ($\rightharpoonup$ means _partial functions_)
