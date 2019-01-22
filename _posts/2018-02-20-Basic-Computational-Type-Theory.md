@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Basic Dependent Type Theory"
+title: "Basic Computational Type Theory"
 date: 2018-02-20 20:00
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
@@ -10,8 +10,6 @@ mathjax: true
 
 * content
 {:toc}
-
-Loosely speaking, dependent types are similar to the type of an indexed family of sets.
 
 # Family of Types
 
