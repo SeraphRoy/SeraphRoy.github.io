@@ -53,7 +53,7 @@ some rules
 Note: $$\Gamma$$ can be viewed as a "context". It could be written as something like
 $$\Gamma=x_1:\tau_1,x_2:\tau_2,\ldots,x_n:\tau_n$$
 
-e.g. [natural number]({{site.baseurl}}{% link _posts/2018-02-20-Basic-Dependent-Type-Theory.md %})
+e.g. [natural number]({{site.baseurl}}{% link _posts/2018-02-20-Basic-Computational-Type-Theory.md %})
 
 Hypothetical Judgement (Structural):
 
