@@ -9,7 +9,7 @@
 title: GaeBlogX
 blogname: SeraphRoy's Blog
 blogabout: Notes, Word Salad, etc.
-brief-intro: "Arista Networks, Software-Defined Networking"
+brief-intro: "Software Development Engineer@Amazon@Irvine"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.gaeblogx.com" # the base hostname & protocol for your site
 
@@ -71,3 +71,7 @@ algolia:
    application_id: 'VQQEF0782J'
    index_name:     'VQQEF0782J'
    search_only_api_key: 'b66031155929f70634dffecb4a9d7eba'
+
+jekyll_admin:
+ hidden_links:
+   - datafiles

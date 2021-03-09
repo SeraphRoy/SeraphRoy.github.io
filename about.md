@@ -14,10 +14,9 @@ type: page
 
 ![]({{site.url}}/assets/My-Photo.JPG){:height="50%" width="50%"}
 
-I am currently working in Arista Networks Inc.. In June 2017, I got the B.S.
-degree of Computer Science from [University of California, Santa Barbara](https://www.ucsb.edu).
+Software Development Engineer@Amazon@Irvine. Previously an SDE in Arista Networks Inc. in Bay Area.
 
-\#现充，\#死宅，\#中二，\#本命アティ@赫炎
+\#现充，\#死宅，\#中二
 
 ## Contact Me
 
