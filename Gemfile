@@ -10,3 +10,5 @@ group :jekyll_plugins do
    # gem 'jekyll-sitemap'
    # gem 'jekyll-theme-gaeblogx'
 end
+
+gem "webrick", "~> 1.7" # https://github.com/jekyll/jekyll/issues/8523

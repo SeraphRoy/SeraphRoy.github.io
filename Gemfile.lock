@@ -296,6 +296,7 @@ GEM
     unf_ext (0.0.7.7)
     unicode-display_width (1.7.0)
     verbal_expressions (0.1.5)
+    webrick (1.7.0)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -306,6 +307,7 @@ DEPENDENCIES
   jekyll-admin
   jekyll-algolia (>= 1.4.0)
   nokogiri (>= 1.8.5)
+  webrick (~> 1.7)
 
 BUNDLED WITH
-   1.17.3
+   2.2.3
