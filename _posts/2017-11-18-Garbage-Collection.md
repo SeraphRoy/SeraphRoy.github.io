@@ -39,7 +39,7 @@ For primitive variables, there are 3 categories (given different lifetimes)
 
 Here is a graph of a process memory:
 
-![]({{site.url}}/assets/Garbage-Collection-process.png)
+![](/assets/Garbage-Collection-process.png)
 
 As we all know, we only do garbage collection on the heap for implicit memory allocation.
 
@@ -97,7 +97,7 @@ There are mainly three classic GC algorithms
 
 For the first two method, we need a thing called _Free List_ which keeps 1+ lists of free chunks that we then fill or break off pieces of to allocated an object
 
-![]({{site.url}}/assets/Garbage-Collection-free-list.png)
+![](/assets/Garbage-Collection-free-list.png)
 
 ## Reference Counting GC
 
@@ -115,7 +115,7 @@ For the first two method, we need a thing called _Free List_ which keeps 1+ list
   - Removed from free list
     - Assume, for now, that all cells are the same size and each has 3 fields left and right which are references
 
-![]({{site.url}}/assets/Garbage-Collection-ref-counting.png)
+![](/assets/Garbage-Collection-ref-counting.png)
 
 ### Strengths
 
@@ -156,7 +156,7 @@ For the first two method, we need a thing called _Free List_ which keeps 1+ list
 - Cells in freeList have markBit set to 0
 - No `Update(...)` routine necessary
 
-![]({{site.url}}/assets/Garbage-Collection-mark-sweep.png)
+![](/assets/Garbage-Collection-mark-sweep.png)
 
 ### Strengths
 
@@ -193,8 +193,8 @@ For the first two method, we need a thing called _Free List_ which keeps 1+ list
   - _Scavengers_
     - `FromSpace` is not reclaimed, just abandoned
 
-![]({{site.url}}/assets/Garbage-Collection-copying-1.png)
-![]({{site.url}}/assets/Garbage-Collection-copying-2.png)
+![](/assets/Garbage-Collection-copying-1.png)
+![](/assets/Garbage-Collection-copying-2.png)
 
 ### Strengths
 
@@ -261,17 +261,17 @@ Goal: Make large heaps more efficient by concentrating effort where the reatest 
 - Can have more than 2 generations
   - Each requiring collection of those lower/younger
 
-![]({{site.url}}/assets/Garbage-Collection-nursery-1.png)
-![]({{site.url}}/assets/Garbage-Collection-nursery-2.png)
-![]({{site.url}}/assets/Garbage-Collection-nursery-3.png)
-![]({{site.url}}/assets/Garbage-Collection-nursery-4.png)
-![]({{site.url}}/assets/Garbage-Collection-nursery-5.png)
+![](/assets/Garbage-Collection-nursery-1.png)
+![](/assets/Garbage-Collection-nursery-2.png)
+![](/assets/Garbage-Collection-nursery-3.png)
+![](/assets/Garbage-Collection-nursery-4.png)
+![](/assets/Garbage-Collection-nursery-5.png)
 
 - Minor Collection must be __independent__ of major
   - need to remember old-to-young references
   - Usually not too many - mutations to old objects are infrequent
 
-![]({{site.url}}/assets/Garbage-Collection-generation-1.png)
+![](/assets/Garbage-Collection-generation-1.png)
 
 - _What about young-to-old?_
   - We don't need to worry about them if we always collect the young each time we collect the old (__major collection__)
@@ -286,7 +286,7 @@ Goal: Make large heaps more efficient by concentrating effort where the reatest 
 
 # Links
 
-[Garbage Collection]({{site.url}}}/assets/Garbage-Collection-Slides-gc.pdf)
+[Garbage Collection](}/assets/Garbage-Collection-Slides-gc.pdf)
 
 [(YouTube: Part 1/3)](https://www.youtube.com/watch?v=aBehbABx52g&feature=youtu.be)
 

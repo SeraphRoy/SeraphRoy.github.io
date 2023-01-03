@@ -45,7 +45,7 @@ Similar to [My Remote Shell Session Setup](https://blog.filippo.io/my-remote-she
 
 Go to `Preference->Profiles` and click the plus sign at the bottom to create a new profile. I create one profile per remote host I want to connect to. You can specify a name for your profile, and a shortcut key for opening that profile. Then type the mosh command you use to connect to the server in the "Send text at start" field. Here is my example:
 
-![]({{site.url}}/assets/Remote-Shell-Session-Setup-1.png)
+![](/assets/Remote-Shell-Session-Setup-1.png)
 
 where `sshcvp` is the alias of `mosh --ssh='ssh -p 10140' r123s19 -- sh -c "tmux ls | grep -vq attached && tmux a || tmux new"`. Why the heck is that so long? Becasue `"tmux ls | grep -vq attached && tmux a || tmux new"` is just the tmux way of saying `screen -R`, which attaches to an unattached session if one exists or creates a new session if all sessions are attached or there is no session at all. I don't like screen becasue it is not aesthetically appealing so I choose tmux. Why use `sh -c` but not directly run the following command? Because `mosh` doesn't like `grep` and we can't run `grep` directly. Adding `sh -c` is the workaround. [Issue with mosh when running with grep](https://github.com/mobile-shell/mosh/issues/931).
 

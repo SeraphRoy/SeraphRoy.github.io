@@ -12,7 +12,7 @@ mathjax: true
 This is a project I did in my undergrad, so I might forget some of the details.
 Also some of the design choices might seen stupid for now, but I am writing them
 down anyway just for note-taking. The codes on [Github](https://github.com/Beokro/r1010).
-And here is the [presentation]({{site.url}}/assets/Ramsey_Presentation.pdf) we have.
+And here is the [presentation](/assets/Ramsey_Presentation.pdf) we have.
 I assume the readers of this post have basically knowledge of computer science,
 like graphs, but not necessarily mathematics (I am really bad at mathematics in fact).
 
@@ -313,10 +313,10 @@ void changeEdgeToClique(Edge edge, long delta) {
 ```
 
 And here is a picture illustration:
-![]({{site.url}}/assets/Ramsey_Trick.png)
+![](/assets/Ramsey_Trick.png)
 
 Again all codes are on [Github](https://github.com/Beokro/r1010) and here is the
-[presentation]({{site.url}}/assets/Ramsey_Presentation.pdf).
+[presentation](/assets/Ramsey_Presentation.pdf).
 
 ## Server-Client Protocol
 

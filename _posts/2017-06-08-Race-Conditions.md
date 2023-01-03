@@ -13,7 +13,7 @@ mathjax: true
 
 Okay -- we are ready for our second operating systems concept. Operating systems must be able to protect shared state from **<font color="red">race conditions</font>**. Rather than giving you a formal definition for a race condition (which I will provide later), we will start with a very simple example.
 
-The first thing to understand is that it is possible to run more than one thread on each CPU. Try running the [avg-manythread.c]({{ site.url }}/assets/avg-manythread.c) on 50 threads or so. The machines you can access have at most _8_ processors. How could they run 50 threads?
+The first thing to understand is that it is possible to run more than one thread on each CPU. Try running the [avg-manythread.c](/assets/avg-manythread.c) on 50 threads or so. The machines you can access have at most _8_ processors. How could they run 50 threads?
 
 ### Pre-emption and Context Switching
 
@@ -160,7 +160,7 @@ Thus, you typically try and keep the length of each critical section as small as
 
 ## A Code Example
 
-Look at [race1.c]({{ site.url }}/assets/race1.c). Its usage is
+Look at [race1.c](/assets/race1.c). Its usage is
 
 ```
 race1 nthreads stringsize iterations
@@ -212,7 +212,7 @@ Does this look right? Not exactly. In the main loop of each thread
 
 the thread should put its own letter (defined as the thread's ID + 'A') in the buffer. Thus, for example, Thread 1 should always print 'B' and not any other character.
 
-Notice that all 4 threads share the same buffer _s_ in the program. Consider the output from [race2.c]({{ site.url }}/assets/race2.c)
+Notice that all 4 threads share the same buffer _s_ in the program. Consider the output from [race2.c](/assets/race2.c)
 
 ```bash
 ./race2 4 40 2
@@ -226,7 +226,7 @@ Thread 1: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCCC
 Thread 0: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ```
 
-The code is **exactly the same** as [race1.c]({{ site.url }}/assets/race1.c) but with a delay loop scheduled in the main write loop to allow a greater chance for preemption. The reason you don't see this problem in the first execution is because the machine is too fast and Linux is too smart. That is, without the delay loop sometimes the speed of the machine and the Linux thread schedule "get it right" and you get the answer you are expecting. However, if you ran this program over and over, eventually you'd see an output that you didn't expect. Don't care? Well you should because things like airplanes which rely on many such calculations per second need to get the right answer **every** time. Race conditions are difficult to debug because they often manifest only rarely. Thus be forewarned:
+The code is **exactly the same** as [race1.c](/assets/race1.c) but with a delay loop scheduled in the main write loop to allow a greater chance for preemption. The reason you don't see this problem in the first execution is because the machine is too fast and Linux is too smart. That is, without the delay loop sometimes the speed of the machine and the Linux thread schedule "get it right" and you get the answer you are expecting. However, if you ran this program over and over, eventually you'd see an output that you didn't expect. Don't care? Well you should because things like airplanes which rely on many such calculations per second need to get the right answer **every** time. Race conditions are difficult to debug because they often manifest only rarely. Thus be forewarned:
 
 **Just because your program runs and doesn't appear to have a race condition doesn't mean it is free from race conditions.**
 
@@ -240,7 +240,7 @@ pthread_mutex_unlock(pthread_mutex_t *mutex);
 
 You create a mutex with **pthread_mutex_init()**. Then any thread may lock or unlock the mutex. When a thread locks the mutex, no other thread may lock it. If they call **pthread_mutex_lock()** while the thread is locked, then they will block until the thread is unlocked. Only one thread may lock the mutex at a time.
 
-So, we fix the **race** program with [race3.c]({{ site.url }}/assets/race3.c). You'll notice that a thread locks the mutex just before modifying **s** and it unlocks the mutex just after printing **s**. This fixes the program so that the output makes sense:
+So, we fix the **race** program with [race3.c](/assets/race3.c). You'll notice that a thread locks the mutex just before modifying **s** and it unlocks the mutex just after printing **s**. This fixes the program so that the output makes sense:
 
 ```bash
 ./race3 10 40 2
@@ -276,7 +276,7 @@ Now we'll try for a formal definition.
 
 **_<font color="green">Race condition:</font>_** the possibility in a program consisting of concurrent threads that all legal instruction orderings do not result in exactly the same output.
 
-Notice that under this definition of **race condition** the program [race3.c]({{ site.url }}/assets/race3.c) still has a race condition -- just a different one than the one we fixed with a mutex lock. Technically, because the threads can run in any order, different outputs from the same execution are possible. The question of whether a race condition is a bug or not has to do with what the programmer intended. If any thread ordering is fine but we want each thread to fill and print its buffer, than this version of the code is correct even though it has a race condition.
+Notice that under this definition of **race condition** the program [race3.c](/assets/race3.c) still has a race condition -- just a different one than the one we fixed with a mutex lock. Technically, because the threads can run in any order, different outputs from the same execution are possible. The question of whether a race condition is a bug or not has to do with what the programmer intended. If any thread ordering is fine but we want each thread to fill and print its buffer, than this version of the code is correct even though it has a race condition.
 
 ### Terse advice on mutexes
 
@@ -284,4 +284,4 @@ Race conditions exist, and mutexes and condition variables (see next lecture) ar
 
 ### Race Condition Thought Question
 
-Consider the code in [race_ABC.c]({{ site.url }}/assets/race_ABC.c) What does it do? Does it contain a race condition?
+Consider the code in [race_ABC.c](/assets/race_ABC.c) What does it do? Does it contain a race condition?

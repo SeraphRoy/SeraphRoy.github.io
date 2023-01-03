@@ -24,7 +24,7 @@ This lecture will attempt to cover the various concepts that are important to th
 
 When the code is loaded into memory, the compiler generates code so that variables are accessed via offsets from memory locations that are determined when the program boots. For example, consider the fictitious code depicted in the following figure:
 
-![]({{site.url}}/assets/Memory-Management-fig1.png)
+![](/assets/Memory-Management-fig1.png)
 
 The local variables _A,B, and C_ are all addressed via the _SP_ register by computing a memory address by adding the contents of the _SP_ to the contents of an offset register (_R1_ in the figure).
 
@@ -32,7 +32,7 @@ Thus, when the program is loaded into memory, the loader "knows" that the stack 
 
 That's fine for the stack where there is always a machine register that defines the top of the stack. CPUs do not have explicit registers for the other segments in a Linux a.out process image, however. Thus, when accessing global variables, the compiler must either "burn" a register for the start of the data segment (which is costly since there aren't enough registers as it is) or it must "hard code" addresses (as in the following figure):
 
-![]({{site.url}}/assets/Memory-Management-fig2.png)
+![](/assets/Memory-Management-fig2.png)
 
 Again, the compiler has chosen to access memory via indirect addressing, but it does so with address constants to save registers for computation.
 
@@ -43,7 +43,7 @@ This work fine when
 
 However, consider what happens if there are to be two processes in memory at the same time.
 
-![]({{site.url}}/assets/Memory-Management-fig3.png)
+![](/assets/Memory-Management-fig3.png)
 
 On this figure, _Proc1_ has been loaded into the top half of the physical memory and _Proc 2_ into the bottom half. Presumably the OS is prepared to switch back and forth between the two processes using time slicing and context switching.
 
@@ -132,7 +132,7 @@ For these reasons the typical implementation would give each process a maximum _
 
 For example, consider the three processes that have been loaded into memory as shown in the following figure.
 
-![]({{site.url}}/assets/Memory-Management-fig4.png)
+![](/assets/Memory-Management-fig4.png)
 
 In the figure, _Proc1_ occupies the first 100 MB of space in a memory that is 1GB is total size. _Proc2_ occupies the next 200 MB and _Proc 3_ occupies the 500 MB after that. The last 200 MB are free.
 
@@ -142,7 +142,7 @@ When these processes were loaded, the OS chose the _base_ register value for eac
 
 Next, consider what happens if _Proc2_ finishes execution.
 
-![]({{site.url}}/assets/Memory-Management-fig5.png)
+![](/assets/Memory-Management-fig5.png)
 
 The region freed by _Proc2_ between _Proc1_ and _Proc3_ can now be assigned to a new process as can the free region between the end of _Proc3_ and the end of memory.
 
@@ -154,7 +154,7 @@ This type of fragmentation is often called **external fragmentation** because th
 
 Notice that the OS has a choice when it goes to assign a newly arrived process that does fit. For example, if a new process that requires 100 MB arrives, the OS can either place it in the hole left by _Proc2_ or in the hole between the end of _Proc3_ and the end of memory. Let's say it chooses the hole left by _Proc2_:
 
-![]({{site.url}}/assets/Memory-Management-fig6.png)
+![](/assets/Memory-Management-fig6.png)
 
 as shown for _Proc4_.
 
@@ -289,7 +289,7 @@ The page table is a one-dimensional array of page table entries, indexed by page
 
 Ignoring these additional bits for a minute, the following figure shows a possible page mapping
 
-![]({{site.url}}/assets/Memory-Management-fig7.png)
+![](/assets/Memory-Management-fig7.png)
 
 The address space on the left is partially mapped to the physical memory on the right. Address _720_ with a 512 byte page size indexes to the second entry (counting from zero) in the page table. This entry contains frame number 2 which, when multiplied by the page size and added to the 208 byte offset yields the physical address.
 
@@ -355,7 +355,7 @@ In summary,
 
 Note that the frame table is shared among all processes executing at the same time. The OS uses it to identify when frames are free and, when they are not free, which page table entry corresponds to the page that occupies a Frame. For example, the following figure shows two processes that each have their first three pages mapped to frames.
 
-![]({{site.url}}/assets/Memory-Management-fig8.png)
+![](/assets/Memory-Management-fig8.png)
 
 Each frame table entry for memory indicates which page table entry corresponds to the mapped page in the frame.
 

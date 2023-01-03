@@ -20,8 +20,8 @@ mathjax: true
 - `decrease_key(delta, i, h)` Assume that position of $i$ is known. Decrease the value of item $i$ of delta (delta > 0)
 - `delete(i, h)` Assume that position of $i$ is known. Delete $i$ from heap
 
-![]({{site.url}}/assets/Fibonacci-Heap-Fig3.png)
-![]({{site.url}}/assets/Fibonacci-Heap-Fig5.png)
+![](/assets/Fibonacci-Heap-Fig3.png)
+![](/assets/Fibonacci-Heap-Fig5.png)
 
 <!--more-->
 
@@ -98,7 +98,7 @@ _Note_: Implementation (use an array indexed by ranks).
 - When node $x$ has been made a child of another node by a linking step and it loses 2 of its children through cuts, we cut the edge joining $x$ and its parent and we make $x$ ad new root (as in `decrease_key`)
 - A `decrease_key` or `delete` operation my casue a possibly large number of cascading cuts.
 
-![]({{site.url}}/assets/Fibonacci-Heap-Fig6.png)
+![](/assets/Fibonacci-Heap-Fig6.png)
 
 ### Marking Nodes
 - Purpose: Keep track of where to make cascade cuts.
@@ -119,7 +119,7 @@ __Lemma 1__: Let $x$ be any node in a F-heap. Arrange the children of $x$ in the
 
 __Corollary 1__: A node of rank $k$ in an F-heap has at least $F_{k+2}\geq\phi^k$ descendants, including itself, where $F_k$ is the $k^{th}$ Fibonacci number and $\phi$ is the golden ratio.
 
-![]({{site.url}}/assets/Fibonacci-Heap-Fig7.png)
+![](/assets/Fibonacci-Heap-Fig7.png)
 
 ### Redefinition
 - Potential: Total numbere of trees plus twice the number of marked nonroot nodes.

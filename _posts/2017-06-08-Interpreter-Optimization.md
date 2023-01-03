@@ -9,7 +9,7 @@ mathjax: true
 ---
 
 
-[Interpreter]({{site.url}}/assets/Interpreter-Optimization-interp.pdf)
+[Interpreter](/assets/Interpreter-Optimization-interp.pdf)
 
 [YouTube](https://www.youtube.com/watch?v=Rh17e7CFaso&feature=youtu.be)
 

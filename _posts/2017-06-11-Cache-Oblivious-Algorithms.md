@@ -185,7 +185,7 @@ MT(N)=\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})
 $$
 
 ### Revisit K-funnel
-![]({{site.url}}/assets/Cache-Oblivious-Algorithms-FunnelSort.jpg)
+![](/assets/Cache-Oblivious-Algorithms-FunnelSort.jpg)
 
 First take a look at space excluding input and output buffers
 

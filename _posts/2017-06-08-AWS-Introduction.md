@@ -114,7 +114,7 @@ Amazon's EC2 provides essentially three functionalities:
 *   network provisioning (including firewalls)
 *   block storage provisioning (persistent volumes)We'll cover each and then describe how they are managed using euca2ools using the following figure:
 
-![]({{site.url}}/assets/AWS-Introduction-ec2.png)
+![](/assets/AWS-Introduction-ec2.png)
 
 ### Virtual Machines
 

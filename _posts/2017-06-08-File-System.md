@@ -242,7 +242,7 @@ are then translated into disk addresses by the individual disk driver.
 - hash table is used to look up block numbers
 - free list is used to locate free blocks
 
-![]({{site.url}}/assets/File-System-bc.jpg)
+![](/assets/File-System-bc.jpg)
 
 - when a logical block number is requested from disk the hash is 
        consulted to determine if a copy is already available
@@ -264,7 +264,7 @@ are then translated into disk addresses by the individual disk driver.
 - each inode for an open file is stored in an "in-core" inode table
        entry with a reference count
 
-![]({{site.url}}/assets/File-System-filetable.rich.jpg)
+![](/assets/File-System-filetable.rich.jpg)
 
 - in this example
     - Proc A has forked Proc B, thereby copying file descriptors

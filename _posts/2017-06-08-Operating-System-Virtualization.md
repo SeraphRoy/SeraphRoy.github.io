@@ -92,7 +92,7 @@ It is this last option that turned out to be most troubling. If all "protected" 
 
 Thus Intel added host mode and guest mode. In each mode, the processor can be set in any ring. However protected instructions from Guest-0 generate faults that can be checked in host mode.
 
-![]({{site.url}}/assets/Operating-System-Virtualization-vtx.png)
+![](/assets/Operating-System-Virtualization-vtx.png)
 
 The main idea behind KVM is to run a process on the host OS that KVM turns into a guest OS. To do so, a host OS process loads up the code for the guest that is necessary and then "launches" the VM in the correct guest mode ring level. Using the hardware triggers provided by VT-x, KVM (host ring 0) directs privileged events to QEMU code (running in host ring 3). If you are stuck with the Linux process model in your head, then the way to think of this is
 
@@ -101,11 +101,11 @@ The main idea behind KVM is to run a process on the host OS that KVM turns into 
 *   there is a host kernel that handles guest OS isolation
 *   there is a process (QEMU) running on the host that runs much of the code to keep the kernel on the Host OS from being too bulky
 
-![]({{site.url}}/assets/Operating-System-Virtualization-kvm-process.png)
+![](/assets/Operating-System-Virtualization-kvm-process.png)
 
 The state management via VT-x is relatively straight forward in that the extensions define a data structure to consult (set up in Host mode) when making transitions.
 
-![]({{site.url}}/assets/Operating-System-Virtualization-kvm-state.png)
+![](/assets/Operating-System-Virtualization-kvm-state.png)
 
 When the guest requires service when either
 
@@ -114,11 +114,11 @@ When the guest requires service when either
 
 KVM gets control via VMEXIT when the guest "traps" out of its usual operating mode for either of these reasons. Either it handles the request (in the case that it is a hypervisor function) or it forwards the request to the host's kernel for service (in the case that it is a hardware access function). In this latter case, KVM gets control again so that it can deliver the requested host kernel functionality to the guest.
 
-![]({{site.url}}/assets/Operating-System-Virtualization-kvm-arch.png)
+![](/assets/Operating-System-Virtualization-kvm-arch.png)
 
 In the case of hypervisor functionality, unless it is a simple kernel function, KVM pushes the actual processing into a user space process (QEMU) by returning from a system call that the process has made that has been blocked. When QEMU handles the request, it calls back into the host kernel via the system call.
 
-![]({{site.url}}/assets/Operating-System-Virtualization-kvm-qemu.png)
+![](/assets/Operating-System-Virtualization-kvm-qemu.png)
 
 This previous discussion outlines the control flow relationships between a guest process, a guest kernel, KVM, the host kernel, and a host process (that contains the guest process, the guest kernel, and the QEMU code). Notice that the goal of KVM is to make a guest OS "look" like a regular process to the host OS since most of the functionality needed to service the guest is actually available in the host. Notice also that the guest doesn't "know" it is embedded in a host process because the VT-x support handles transitions into the hypervisor when ever the guest _**might**_ be doing something that requires privileged control.
 
@@ -143,13 +143,13 @@ Herein lies the rub.
 
 The x86 architecture is designed with the notion that there is one page table and one TLB per operating system. Worse, each page table entry refers to a physical frame number in the machine's memory. Thus each guest will believe that it has the ability to use all frames in the physical memory -- a situation that the hypervisor must prevent.
 
-![]({{site.url}}/assets/Operating-System-Virtualization-guest-page.png)
+![](/assets/Operating-System-Virtualization-guest-page.png)
 
 In the case of KVM-style virtualization, however, each guest has a page table as does the host. Further (unlike in the control-flow case) it is not possible to interpose KVM on each memory access because the access checking is done _strictly_ in hardware.
 
 KVM relies on another Intel VT feature called the "Extended Page Table" (EPT) to resolve this difficulty. EPT allows the host kernel to set up a "shadow" page table in the processor that gets used when the processor is running in guest mode. It is a shadow page table in that it gets used by the hardware to check memory accesses (like a true page table). However, the references in the shadow page table are to host page table entries (the host page table essentially forms another two levels of hierarchy). Thus, the host can maintain one, large page table that it partitions among guest page tables, each of which "believes" it has the full, unshared memory space.
 
-![]({{site.url}}/assets/Operating-System-Virtualization-ept.png)
+![](/assets/Operating-System-Virtualization-ept.png)
 
 TLB management in the case of EPT is a joy, to put it mildly. Notice that "the" TLB for the machine now needs to handle shadow mapping and host mapping. Worse, when a guest VM is descheduled because another guest is to be run, the TLB entries for the old guest must be invalidated. In an unvirtualized setting, the TLB is usually flushed at process context switch time for the same reason. However, with an extra level of indirection, a full flush can cause a serious performance problem. Thus EPT (in some implementations) also implements a tagged TLB which allows the hypervisor to decide on exactly which TLB entries to flush when guests are switched.
 
@@ -179,7 +179,7 @@ Unlike KVM, however, they relied on code changes to the guest kernel to implemen
 
 Unsurprisingly, the Xen architecture is also different than KVM's
 
-![]({{site.url}}/assets/Operating-System-Virtualization-xen-arch.png)
+![](/assets/Operating-System-Virtualization-xen-arch.png)
 
 The guest is not logically a process from the perspective of the host. Rather, each guest runs independently on the hypervisor which (in theory) is the control software for the host. That is, there is no host OS running in ring 0\. Instead, the hypervisor runs in ring 0, and each guest runs in ring 1.
 

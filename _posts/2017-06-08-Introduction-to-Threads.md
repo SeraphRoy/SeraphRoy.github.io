@@ -70,7 +70,7 @@ To begin with, consider a simple program that computes the average over a set of
 
 The basic program generates an array that it fills with random numbers from the interval (0,1). It then sums the values in the array and divides by the number of values (which is passed as an argument from the command line).
 
-Here is the C code. I've put a commented version of the code in [avg-nothread.c]({{ site.url }}/assets/avg-nothread.c) that also includes argument sanity checks. To improve readability in these notes, however, the in-lined code will remove parts that are good practice but don't shed light on the use of threads. We'll also describe how to build and run the examples in this lecture in its last section.
+Here is the C code. I've put a commented version of the code in [avg-nothread.c](/assets/avg-nothread.c) that also includes argument sanity checks. To improve readability in these notes, however, the in-lined code will remove parts that are good practice but don't shed light on the use of threads. We'll also describe how to build and run the examples in this lecture in its last section.
 
 Here is the code
 
@@ -131,7 +131,7 @@ Now is a good time to take a moment to make sure that you understand each line o
 
 ### Computing the Average using One Thread
 
-The next program performs the same computation, but does so using a single thread rather than in the main body as in the previous program. The full version of this program is available from [avg-1thread.c]({{ site.url }}/assets/avg-1thread.c)
+The next program performs the same computation, but does so using a single thread rather than in the main body as in the previous program. The full version of this program is available from [avg-1thread.c](/assets/avg-1thread.c)
 
 ```c
 #include < unistd.h >

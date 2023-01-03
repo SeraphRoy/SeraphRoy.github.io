@@ -175,7 +175,7 @@ at a particular time (here, each row represents a customer's purchase of a produ
 If we were analyzing website traffic rather than retail sales, each row might
 represent a page view or a click by a user.
 
-![]({{site.url}}/assets/Star-Schema-in-Data-Warehouse.png)
+![](/assets/Star-Schema-in-Data-Warehouse.png)
 
 In a typical data warehouse, tables are often very wide: fact tables often have over
 100 columns, sometimes several hundred. Dimension tables can also be very wide, as
@@ -196,7 +196,7 @@ column is stored in a separate file, a query only needs to read and parse those
 columns that are used in that query, which can save a lot of work.
 This principle is illustrated below.
 
-![]({{site.url}}/assets/Column-Oriented-Storage.png)
+![](/assets/Column-Oriented-Storage.png)
 
 Besides only loading those columns from disk that are required for a query, we can
 further reduce the demands on disk throughput by compressing data. Fortunately,
@@ -209,7 +209,7 @@ values), those bitmaps can be stored with one bit per row. But if n is bigger, t
 will be a lot of zeros in most of the bitmaps (we say that they are sparse). In that
 case, the bitmaps can additionally be run-length encoded, as shown below.
 
-![]({{site.url}}/assets/Column-Compression.png)
+![](/assets/Column-Compression.png)
 
 Note: Cassandra and HBase have a concept of _column families_, which they inherited from
 Bigtable. However, it is very misleading to call them column-oriented: within each

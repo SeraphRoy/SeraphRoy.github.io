@@ -66,7 +66,7 @@ The system call to get the process identifier under Linux is _getpid()_. If you 
 man getpid
 ```
 
-you will see that you need to include _sys/types.h_ to get the type specifier and _unistd.h_ to get the right prototype for the compiler. It takes no arguments and returns a _pid_t_. Try it out using [sys-call1.c]({{site.url}}/assets/sys-call1.c):
+you will see that you need to include _sys/types.h_ to get the type specifier and _unistd.h_ to get the right prototype for the compiler. It takes no arguments and returns a _pid_t_. Try it out using [sys-call1.c](/assets/sys-call1.c):
 
 ```c
 #include < sys/types.h >
@@ -109,7 +109,7 @@ First, you are probably familiar with the notion of a file being visible in the 
 
 Secondly, the OS keeps a "current offset" from the beginning of the file for you while the file is open on a specific file descriptor. When the file is first opened, the offset is zero. Subsequent calls to _read()_ and _write()_ on the file descriptor cause the offset to advance. To make the offset "back up" you either need to close the file, re-open it, and then advance the offset with read calls (which are non-destructive) or use the _lseek()_ call to set the offset to a specific number.
 
-Let's start by writing a program that takes a file name as an argument, creates the file, and writes an important and pitch message into it as a string. Consider the program code available in [file-create1.c]({{site.url}}/assets/file-create1.c):
+Let's start by writing a program that takes a file name as an argument, creates the file, and writes an important and pitch message into it as a string. Consider the program code available in [file-create1.c](/assets/file-create1.c):
 
 ```c
 #include < unistd.h >
@@ -234,7 +234,7 @@ man 2 chmod
 
 for details on specifying permissions. It is possible to use constants for these instead of numbers but I think of them as numbers.
 
-Finally, notice that the open returns an integer (the type of _my_file_desc_ is _int_). That value is passed to _write()_ to indicate which file I want to write. If the code had opened two different files, each would have a different file descriptor number. For example, as in [file-create2.c]({{site.url}}/assets/file-create2.c):
+Finally, notice that the open returns an integer (the type of _my_file_desc_ is _int_). That value is passed to _write()_ to indicate which file I want to write. If the code had opened two different files, each would have a different file descriptor number. For example, as in [file-create2.c](/assets/file-create2.c):
 
 ```c
 #include < unistd.h >
@@ -361,7 +361,7 @@ You should read through this example and notice that the two files are reference
 
 ### Reading the data back
 
-Now let's try reading the data back from a file, as in [file-read1.c]({{site.url}}/assets/file-read1.c):
+Now let's try reading the data back from a file, as in [file-read1.c](/assets/file-read1.c):
 
 ```c
 #include < unistd.h >
@@ -442,7 +442,7 @@ Also, the read is a little different
 
 In the case of _read()_ the system call will read bytes up to the number specified in the third argument. If there are fewer than that number of bytes, it will return the ones it read and leave the current offset at the end of the file. Another read at the end will return a zero indicating that the file is empty.
 
-If you wanted to read the entire contents of the file, then you will need to loop until there is no more data as in [file-read2.c]({{site.url}}/assets/file-read2.c).
+If you wanted to read the entire contents of the file, then you will need to loop until there is no more data as in [file-read2.c](/assets/file-read2.c).
 
 ```c
 #include < unistd.h >
@@ -523,7 +523,7 @@ and see if you get the text from the HTML for this web page back.
 
 ### Seeking to an offset
 
-The _lseek()_ system call moves the current offset pointer by the number of bytes specified from a starting location that is taken from its third argument. For example, consider [file-seek1.c]({{site.url}}/assets/file-seek1.c).
+The _lseek()_ system call moves the current offset pointer by the number of bytes specified from a starting location that is taken from its third argument. For example, consider [file-seek1.c](/assets/file-seek1.c).
 
 ```c
 #include < unistd.h >
@@ -638,7 +638,7 @@ where the first 10 bytes of the line are missing from the line in the file _foo.
 
 ### Standard In, Standard Out and Standard Error
 
-Take a look at the code in [file-fd1.c]({{site.url}}/assets/file-fd1.c).
+Take a look at the code in [file-fd1.c](/assets/file-fd1.c).
 
 ```c
 #include < unistd.h >
@@ -725,7 +725,7 @@ The three "special" file descriptors Linux opens for you at process launch are
 
 Thus, the call to write tells the OS to write from the string buffer the _strlen()_ of the string to the standard out device which (unless you closed it) will be the terminal. Notice that the call to _write()_ doesn't know whether the destination is standard out or a file -- it just writes the data to the file that the OS has associated with the file descriptor and that "file" has cleverly been impersonated by the terminal.
 
-To see the difference between **standard out** and **standard error** try running the code in [file-fd2.c]({{site.url}}/assets/file-fd2.c)
+To see the difference between **standard out** and **standard error** try running the code in [file-fd2.c](/assets/file-fd2.c)
 
 ```c
 #include < unistd.h >
@@ -768,7 +768,7 @@ a string written to standard out
 
 In the first execution, both standard out and standard error were sent to the terminal. In the second, standard out the shell opened a file and sent the output on standard out to the file. The _>_ operator in the shell implements this file writing function. However standard error was not redirected so the string written on file descriptor _2_ was sent to the terminal.
 
-Standard in works the same way, but it needs to know when there is no more input from the keyboard. When you tun the code in [file-fd3.c]({{site.url}}/assets/file-fd3.c)
+Standard in works the same way, but it needs to know when there is no more input from the keyboard. When you tun the code in [file-fd3.c](/assets/file-fd3.c)
 
 ```c
 #include < unistd.h >
@@ -831,7 +831,7 @@ But how does the shell (or any other C program since the shell, itself, is just 
 
 The way one program runs another in Linux is a little odd. First, it makes an exact copy of itself using the _fork()_ system call. When _fork()_ completes, there are two copies of the same program. Then, the second copy calls _exec()_ which loads the binary for the second program over itself and starts it from the beginning. I know. It gets easier once you see it.
 
-Take a look at the code in [fork-1.c]({{site.url}}/assets/fork-1.c):
+Take a look at the code in [fork-1.c](/assets/fork-1.c):
 
 ```c
 #include < unistd.h >
@@ -888,7 +888,7 @@ pid: 40286 -- I am exiting
 
 On each line, the code prints the process identifier of the process calling _printf()_. Thus the parent or origibal process is process _40285_. It creates a child process and Linux chooses _40286_ for that process' identifier which is returned from the call to _fork()_ to the parent. The parent then prints a message indicating that it has created the child and the child prints a message with its identifier. Both then print before they exit.
 
-The parent can wait for the child to complete using the _wait()_ system call. Take a look at [fork-2.c]({{site.url}}/assets/fork-2.c):
+The parent can wait for the child to complete using the _wait()_ system call. Take a look at [fork-2.c](/assets/fork-2.c):
 
 ```c
 #include < unistd.h >
@@ -984,7 +984,7 @@ The latter call will decsribe different variants of _exec()_ each of which has i
 
 However, we will constrain our remarks to _execve()_ for the sakes both of simplicity and brevity.
 
-Consider the code contained in [fork-3.c]({{site.url}}/assets/fork-3.c):
+Consider the code contained in [fork-3.c](/assets/fork-3.c):
 
 ```c
 #include < unistd.h >
@@ -1157,7 +1157,7 @@ pid: 76401 -- I am exiting
 
 Whoops. Why did _256_ come back as a status instead of _1_?
 
-Turns out _wait()_encodes the exit status in the status integer. The correct way to manage it is depcited in [fork-4.c]({{site.url}}/assets/fork-4.c):
+Turns out _wait()_encodes the exit status in the status integer. The correct way to manage it is depcited in [fork-4.c](/assets/fork-4.c):
 
 ```c
 #include < unistd.h >
@@ -1248,7 +1248,7 @@ Pipes are a way for two processes to communicate. When you create a pipe, you gi
 
 Because they are represented using file descriptors, the same _read()_ and _write()_ calls that work for files also work for pipes. You can't call _lseek()_ on them and you used the _pipe()_ call to open then instead of calling _open()_ but once they are set up, they behave like files from a usage perspective.
 
-In [pipe-1.c]({{site.url}}/assets/pipe-1.c), the code opens a pipe, writes a string to the "write end", and then reads the "read end" to get what ever is in the pipe (up to the size of the read buffer).
+In [pipe-1.c](/assets/pipe-1.c), the code opens a pipe, writes a string to the "write end", and then reads the "read end" to get what ever is in the pipe (up to the size of the read buffer).
 
 ```c
 #include < unistd.h >
@@ -1304,7 +1304,7 @@ Pipes are really designed to be used between processes so having the writing pro
 
 Similarly, the reader of read end of the pipe will block if there is no data to read in the pipe. However, if and when the write end is closed, the read end will unblock and the read will read no data. This interaction between reading a pipe, blocking, and closing a pipe will become clearer as we look at pipes between processes. The easiest way to think of it, though, is to realize that the reader of a pipe waiting for data would wait forever if the writer died without a way to inform the reader that the write end will never produce more data.
 
-Usually a pipe is established between processes that wish to communicate rather than within a single process (as in the previous example). In [pipe-2.c]({{site.url}}/assets/pipe-2.c)
+Usually a pipe is established between processes that wish to communicate rather than within a single process (as in the previous example). In [pipe-2.c](/assets/pipe-2.c)
 
 ```c
 #include < unistd.h >
@@ -1496,7 +1496,7 @@ also shows the parent writing both strings and exiting before the child runs. Th
 
 At this point, you have enough to understand how to write a program that creates arbitrary chains of pipes that communicate via processes that use Standard In and Standard Out.
 
-Consider the code in [my-cat.c]({{site.url}}/assets/my-cat.c) which is a program that implements functionality similar to the Linux _cat_ utility:
+Consider the code in [my-cat.c](/assets/my-cat.c) which is a program that implements functionality similar to the Linux _cat_ utility:
 
 ```c
 #include < unistd.h >
@@ -1593,7 +1593,7 @@ does the same. If you leave out the call to _close()_ for the target, it will cl
 
 Thus _dup()_ and _dup2()_ are ways that you can control file descriptors in general. More specifically, you can use them to change the Standard In and Standard Out of a process to be the read and write ends of a pipe.
 
-In [pipe-4.c]({{site.url}}/assets/pipe-4.c) the code does, more or less what the shell does when you use the \| symbol create chains of programs separated by pipes.
+In [pipe-4.c](/assets/pipe-4.c) the code does, more or less what the shell does when you use the \| symbol create chains of programs separated by pipes.
 
 ```c
 #include < unistd.h >
@@ -1711,7 +1711,7 @@ int main(int argc, char **argv, char **envp)
 }
 ```
 
-This code is worth understanding. It takes the name of a file as its first argument and the number of processes to create as its second argument. The processes must read and write Standard In and Standard Out (like [my-cat.c]({{site.url}}/assets/my-cat.c).
+This code is worth understanding. It takes the name of a file as its first argument and the number of processes to create as its second argument. The processes must read and write Standard In and Standard Out (like [my-cat.c](/assets/my-cat.c).
 
 Try running it:
 

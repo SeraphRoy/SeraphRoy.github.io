@@ -9,7 +9,7 @@ mathjax: true
 ---
 
 
-[Profiler]({{site.url}}/assets/Program-Profiling-profiling.pdf)
+[Profiler](/assets/Program-Profiling-profiling.pdf)
 
 [YouTube Part1](https://www.youtube.com/watch?v=mQq4Dmw477w&feature=youtu.be)
 

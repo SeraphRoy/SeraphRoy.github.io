@@ -9,9 +9,9 @@ mathjax: true
 ---
 
 
-[Dynamic Compilation Part1-3]({{site.url}}/assets/Dynamic-Compilation-dyncomp.pdf)
+[Dynamic Compilation Part1-3](/assets/Dynamic-Compilation-dyncomp.pdf)
 
-[Dynamic Compilation Part4]({{site.url}}/assets/Dynamic-Compilation-adaptJVM.pdf)
+[Dynamic Compilation Part4](/assets/Dynamic-Compilation-adaptJVM.pdf)
 
 [YouTube Part1](https://www.youtube.com/watch?v=bolHh-ppOOg&feature=youtu.be)
 

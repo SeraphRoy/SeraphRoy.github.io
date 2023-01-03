@@ -9,7 +9,7 @@ mathjax: true
 ---
 
 
-[Virtual Machine]({{site.url}}/assets/Programming-Language-Virtual-Machine-vm.pdf)
+[Virtual Machine](/assets/Programming-Language-Virtual-Machine-vm.pdf)
 
 [(YouTube: Part 1/2)](https://www.youtube.com/watch?v=7R9ZTzZzffc&feature=youtu.be)
 

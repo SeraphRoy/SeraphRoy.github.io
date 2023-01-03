@@ -250,7 +250,7 @@ Much of the research that went into the design of these primitives centered on h
 
 ## The Client-Trader Example Revisited
 
-Take a look at the code for the [Client-Trader simulation written for semaphores]({{site.url}}/assets/market-semaphore.c). Study it for a minute. You should notice two features when comparing it to the [Client-Trader code written for condition variables]({{site.url}}/assets/market4.c) discussed in the [lecture on Condition Variables](http://www.cs.ucsb.edu/~rich/class/cs170/notes/CondVar/index.html).
+Take a look at the code for the [Client-Trader simulation written for semaphores](/assets/market-semaphore.c). Study it for a minute. You should notice two features when comparing it to the [Client-Trader code written for condition variables](/assets/market4.c) discussed in the [lecture on Condition Variables](http://www.cs.ucsb.edu/~rich/class/cs170/notes/CondVar/index.html).
 
 *   the client thread and trader thread are **MUCH** simpler
 *   the initialization of the semaphores in the constructor routines is **REALLY** important
@@ -356,7 +356,7 @@ Simpler, no? Notice, also, that there are really three different uses of a sempa
 *   to count the number of full and empty slots and syncronize the threads based on this count
 *   to send a "wake up" signal to a client from a trader when its order has been fulfilled
 
-Before we discuss these three uses (and it is important that you undertand all three), take a moment to marvel at the magic of the counting semaphore. Look at how much that one primitive replaces in the corresponding [pthreads implementation of this code]({{site.url}}/assets/market4.c). Really -- I think the pthreads implementation is nice, but it is just stunning that so much of the mutex this, wait that, loop here and there just melts away with semaphores. So much so that one wonders why the pthreads specification doesn't include them as a first class primitive? Perhaps it is because they are easy to implement, but it is still a bit of a mystery.
+Before we discuss these three uses (and it is important that you undertand all three), take a moment to marvel at the magic of the counting semaphore. Look at how much that one primitive replaces in the corresponding [pthreads implementation of this code](/assets/market4.c). Really -- I think the pthreads implementation is nice, but it is just stunning that so much of the mutex this, wait that, loop here and there just melts away with semaphores. So much so that one wonders why the pthreads specification doesn't include them as a first class primitive? Perhaps it is because they are easy to implement, but it is still a bit of a mystery.
 
 Okay -- having enjoyed that reverie for a moment, it is important to understand that the semaphore primitive in this program is doing three different syncronization jobs _entirely alone_. You should notice that there are no other suncronization calls in the code (no calls to pthread_mutex_lock() or pthread_cond_wait()) -- it is only done with the semaphore.
 
@@ -424,7 +424,7 @@ Also you should check that the threads always call _P()_ when the try to enter a
 
 ## Atomic Update of a Counter
 
-The second use of semaphores in the code is to keep track of how many full and empty slots there are in the queue. In the [code based on condition variables]({{site.url}}/assets/market4.c) the client and trader threads test (under a lock) whether the queue is full or empty as needed. Notice that in the semaphore example, neither the client thread nor the trader thread test the head and tail pointers.
+The second use of semaphores in the code is to keep track of how many full and empty slots there are in the queue. In the [code based on condition variables](/assets/market4.c) the client and trader threads test (under a lock) whether the queue is full or empty as needed. Notice that in the semaphore example, neither the client thread nor the trader thread test the head and tail pointers.
 
 Instead, the code uses the ability of the semaphore to implement a simple integer counter atomically.
 
@@ -475,7 +475,7 @@ MossPiglet% ./market-semaphore -c 100 -t 100 -q 100 -s 1 -o 10
 55894.243070 transactions / sec
 ```
 
-Curiously, the performance is a little slower than that for the [market3]({{site.url}}/assets/market3.c) solution. That's weird since it is basically doing the same kind of computation and synchronization and there are no cases where the code loops back to retest. However, the code is **MUCH** simpler to understand which makes it easier to maintain. The loss of performance (which would need to be verified over many runs) might be okay in exchange for the simplicity of the solution.
+Curiously, the performance is a little slower than that for the [market3](/assets/market3.c) solution. That's weird since it is basically doing the same kind of computation and synchronization and there are no cases where the code loops back to retest. However, the code is **MUCH** simpler to understand which makes it easier to maintain. The loss of performance (which would need to be verified over many runs) might be okay in exchange for the simplicity of the solution.
 
 ## Summarizing
 

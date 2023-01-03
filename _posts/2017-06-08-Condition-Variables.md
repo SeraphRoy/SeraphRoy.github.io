@@ -52,7 +52,7 @@ Simple enough?
 
 First, let's start with a picture. Often the easiest way to begin to understand these types of syncronization problems is with a picture.
 
-![]({{site.url}}/assets/Condition-Variables-fig1.png)
+![](/assets/Condition-Variables-fig1.png)
 
 This will be a simplified example that we'll implement using pthreads. In it, clients use the queue to send their orders to traders, the traders interact via a single shared "market" and then send responses directly back to clients.
 
@@ -173,7 +173,7 @@ All of the examples and a makefile are available from [http://www.cs.ucsb.edu/~r
 
 ## Solution 1: Synchronization using Mutexes Only
 
-In the first attempted solution we'll look at how the syncronization works if you used only the pthread mutex data type. The [market1]({{ site.url }}/assets/market1.c).
+In the first attempted solution we'll look at how the syncronization works if you used only the pthread mutex data type. The [market1](/assets/market1.c).
 
 First look at the arguments passed to the client thread:
 
@@ -380,7 +380,7 @@ struct trader_arg
 };
 ```
 
-includes a pointer to an integer (_int *done_) which will be set to _1_ by the main thread once it has joined with all of the clients. That is, the main thread will try and join will all clients (which will each finish once their set of orders is processed), set the done flag, and then join with all traders. Take a look at the _main()_ function in [the source code]({{ site.url}}/assets/market1.c) to see the details. However, in the spin loop where the trader is waiting for the queue not to be empty, it must also test to see if the main thread has signaled that the simulation is done.
+includes a pointer to an integer (_int *done_) which will be set to _1_ by the main thread once it has joined with all of the clients. That is, the main thread will try and join will all clients (which will each finish once their set of orders is processed), set the done flag, and then join with all traders. Take a look at the _main()_ function in [the source code](/assets/market1.c) to see the details. However, in the spin loop where the trader is waiting for the queue not to be empty, it must also test to see if the main thread has signaled that the simulation is done.
 
 Note also that the traders must synchronize when accessing the market since each BUY or SELL order must be processed atomically. That is, there is a race condition with respect to updating the stock balance that the traders must avoid by accessing the market atomically.
 
@@ -431,7 +431,7 @@ It turns out that OSX (and Linux) is likely smarter than I've indicated in this 
 
 ## Solution 2: Synchronizing the Order Queue using Condition Variables
 
-Here is [the source code for a solution that uses condition variables to synchronize the order queue]({{ site.url }}/assets/market2.c). Notice a change to the order queue structure:
+Here is [the source code for a solution that uses condition variables to synchronize the order queue](/assets/market2.c). Notice a change to the order queue structure:
 
 ```c
 struct order_que
@@ -588,7 +588,7 @@ Yee haw! Not bad, eh? The best Solution 1 could do was about 178K transactions p
 
 ## Solution 3: Using a condition variable to signal order fulfillment
 
-The problem here with the last test is that all of the clever scheduling tricks that the pthreads implementation is using are failing for the spin loop in the client where it waits for the order to be fulfilled. The pthreads code doesn't "know" a spin is taking place so it can't tell the OS to deprioritize the clients while they wait. When there are a lot of clients there is a lot of useless spinning. However we now know how to fix this problem: use a condition variable to implement a wait and signal. [Here is the complete source code for Solution 3]({{ site.url }}/assets/market3.c).
+The problem here with the last test is that all of the clever scheduling tricks that the pthreads implementation is using are failing for the spin loop in the client where it waits for the order to be fulfilled. The pthreads code doesn't "know" a spin is taking place so it can't tell the OS to deprioritize the clients while they wait. When there are a lot of clients there is a lot of useless spinning. However we now know how to fix this problem: use a condition variable to implement a wait and signal. [Here is the complete source code for Solution 3](/assets/market3.c).
 
 First, we add a condition variable to _struct order_
 
@@ -676,7 +676,7 @@ That's right, market2 doesn't finish. In fact, it pretty much kills my laptop. I
 
 ## For your Personal Enjoyment
 
-So far, in these examples, we haven't focuses on the number of stocks in the market. That is, in each case, I've tested the system with only one stock that clients and traders manipulate (the _-s_ parameter is _1_). It could be that there is additional performance to be gained by using a lock for each stock instead of a global lock on the whole market. [Here is the full source code for a solution that uses a separate lock per stock]({{ site.url }}/assets/market4.c).
+So far, in these examples, we haven't focuses on the number of stocks in the market. That is, in each case, I've tested the system with only one stock that clients and traders manipulate (the _-s_ parameter is _1_). It could be that there is additional performance to be gained by using a lock for each stock instead of a global lock on the whole market. [Here is the full source code for a solution that uses a separate lock per stock](/assets/market4.c).
 
 We'll leave the analysis of this code to you as an exercise that might prove both helpful and informative (especially as you prepare for the midterm and final in this class). Does it make the code even faster?
 

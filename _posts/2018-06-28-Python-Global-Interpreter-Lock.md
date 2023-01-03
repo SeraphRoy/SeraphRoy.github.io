@@ -96,17 +96,17 @@ So that operations in the interpreter implicitly depend this variable to know wh
 
 Threads hold the GIL when running; however they release it when blocking for I/O
 
-![]({{site.url}}/assets/GIL-IO.png)
+![](/assets/GIL-IO.png)
 
 Basically any time a thread is forced to wait other "ready" threads get their chance to run.
 
 But for CPU-bound threads that never perform any I/O, the interpreter periodically performs a "check". By default, every 100 interpreter "__ticks__" it does a check.
 
-![]({{site.url}}/assets/GIL-CPU.png)
+![](/assets/GIL-CPU.png)
 
 The check interval is a global counter that is completely independent of thread scheduling. See `sys.setcheckinterval()` and `sys.getcheckinterval`
 
-![]({{site.url}}/assets/GIL-Check.png)
+![](/assets/GIL-Check.png)
 
 What happens during the periodic check?
 - In the __main thread only__, signal handlers will execute if there are any pending signals
@@ -114,7 +114,7 @@ What happens during the periodic check?
 
 A __Tick__ loosely map to interpreter instruction(s)
 
-![]({{site.url}}/assets/GIL-Tick.png)
+![](/assets/GIL-Tick.png)
 
 Noted that:
 - Ticks are __not__ time-based
@@ -127,7 +127,7 @@ A very common problem encountered with Python thread programming is that threade
 
 If a signal arrives, the interpreter runs the "check" __after every tick__ until the main thread runs. Since signal handlers can only run in the main thread, the interpreter quickly acquires/releases the GIL after every tick until it gets scheduled. Because Python has no control over scheduling so it just attempts to thread swithc as fast as possible with the hope that main will run.
 
-![]({{site.url}}/assets/GIL-Signal.png)
+![](/assets/GIL-Signal.png)
 
 The reason Ctrl-C doesn't work with threaded programs is that the main thread is opten blocked on an uninterruptible thread-join or lock. Since it's blocked, it __never gets scheduled__ to run any kind of signal handler for it. And as an extra bonus, the interpreter is left in a state where it tries to thread-switch after every tick, so not only can you not interrupt the program, it runs slow as hell!!!
 
@@ -141,9 +141,9 @@ As we saw earlier CPU-bound threads have terrible performances, and two threads 
 
 Answer: Signaling: After every 100 ticks, the interpreter locks a mutex, signals on a conditional variable/semaphore where another thread is __always__ waiting. And because another thread is waiting, extra pthreads processing and system calls get triggered to deliver the signal.
 
-![]({{site.url}}/assets/GIL-Measure-1.png)
-![]({{site.url}}/assets/GIL-Measure-2.png)
-![]({{site.url}}/assets/GIL-Battle.png)
+![](/assets/GIL-Measure-1.png)
+![](/assets/GIL-Measure-2.png)
+![](/assets/GIL-Battle.png)
 
 What's happening above is a battle between two competing and incompatible goals:
 - Python - only wants to run single-threaded but doesn't want anything to do with thread scheduling (up to OS)
@@ -153,7 +153,7 @@ What's happening above is a battle between two competing and incompatible goals:
 
 Even 1 CPU-bound thread causes problems: it degrades response time of I/O-bound threads
 
-![]({{site.url}}/assets/Multicore-GIL-1.png)
-![]({{site.url}}/assets/Multicore-GIL-2.png)
+![](/assets/Multicore-GIL-1.png)
+![](/assets/Multicore-GIL-2.png)
 
 This scenario is a bizarre sort of "priority inversion" problem: A CPU-bound thread (low priority) is blocking the execution of an I/O-bound thread (high priority). It occurs because the I/O thread can't wake up fast enough to acquire the GIL before the CPU-bound thread reacquires it. ANd it only happens on multicore...
