@@ -7,9 +7,9 @@
 
 # Site settings
 title: Gae Blog
-blogname: A Blog about Everything, Updated Irregularly
+blogname: Blog about Everything
 blogabout: Notes, Word Salad, etc.
-brief-intro: "A Blog about Everything, Updated Irregularly"
+brief-intro: "Software Engineer@Amazon"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.gaeblog.com" # the base hostname & protocol for your site
 
