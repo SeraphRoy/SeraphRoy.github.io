@@ -16,7 +16,7 @@ mathjax: true
 This blog talks about various data encoding methods and their advantages/limitations,
 along with protocols of transmitting them.
 
-
+![Test](/assets/10.jpg "Test")
 
 Efficiency is certainly one of the main concerns for various encoding methods. The other
 thing we need to care about is *compatibility*. *Backward compatibility* means that
