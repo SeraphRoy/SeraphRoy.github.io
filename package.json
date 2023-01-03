@@ -1,0 +1,26 @@
+{
+  "name": "seraphroy.github.io",
+  "version": "1.0.0",
+  "description": "Use my own theme: https://github.com/SeraphRoy/GaeBlogx",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tinacms dev -c \"bundle exec jekyll serve\"",
+    "build": "npx tinacms build && jekyll build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeraphRoy/SeraphRoy.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SeraphRoy/SeraphRoy.github.io/issues"
+  },
+  "homepage": "https://github.com/SeraphRoy/SeraphRoy.github.io#readme",
+  "dependencies": {
+    "@tinacms/cli": "^1.0.5",
+    "tinacms": "^1.1.2"
+  }
+}

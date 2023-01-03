@@ -7,3 +7,5 @@ _site
 _algolia_api_key
 
 .*.swp
+
+node_modules
