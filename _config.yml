@@ -65,6 +65,7 @@ plugins:
     - jekyll-paginate
     - jekyll-seo-tag
     - jekyll-sitemap
+    - jekyll-toc
 paginate: 6
 
 algolia:
@@ -75,3 +76,9 @@ algolia:
 jekyll_admin:
  hidden_links:
    - datafiles
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      toc: true

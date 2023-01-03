@@ -8,9 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
-
 This blog talks about various data encoding methods and their advantages/limitations,
 along with protocols of transmitting them.
 
