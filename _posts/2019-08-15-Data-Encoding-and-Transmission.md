@@ -93,9 +93,9 @@ outweighs most other concerns.
 
 MessagePack is a binary encoding for JSON. Here is an example:
 
-![](/assets/MessagePack-1.png "")
+![](/assets/MessagePack-1.png)
 
-![](/assets/MessagePack-2.png "")
+![](/assets/MessagePack-2.png)
 
 1. The first byte, 0x83, indicates that what follows is an object (top four bits =
    0x80) with three fields (bottom four bits = 0x03). (In case you're wondering what
@@ -125,11 +125,11 @@ Both Thrift and Protocol Buffers require a schema for any data that is encoded.
 To encode the data above in Thrift, you would describe the schema in the Thrift
 interface definition language (IDL) like this:
 
-![](/assets/Thrift-1.png "")
+![](/assets/Thrift-1.png)
 
 The equivalent schema definition for Protocol Buffers looks very similar:
 
-![](/assets/Protobuf-1.png "")
+![](/assets/Protobuf-1.png)
 
 Thrift and Protocol Buffers each come with a code generation tool that takes a schema
 definition like the ones shown here, and produces classes that implement the schema
@@ -139,7 +139,7 @@ to encode or decode records of the schema.
 Confusingly, Thrift has two different binary encoding formats, called BinaryProtocol
 and CompactProtocol, respectively. Let's look at BinaryProtocol first.
 
-![](/assets/Thrift-2.png "")
+![](/assets/Thrift-2.png)
 
 Similarly to MessagePack, each field has a type annotation (to indicate whether it is
 a string, integer, list, etc.) and, where required, a length indication (length of a
@@ -161,14 +161,14 @@ there are still more bytes to come. This means numbers between –64 and 63 are 
 in one byte, numbers between –8192 and 8191 are encoded in two bytes, etc.
 Bigger numbers use more bytes.
 
-![](/assets/Thrift-3.png "")
+![](/assets/Thrift-3.png)
 
 Finally, Protocol Buffers (which has only one binary encoding format) encodes the same
 data as shown in Figure 4-4. It does the bit packing slightly differently, but is
 otherwise very similar to Thrift's CompactProtocol. Protocol Buffers fits the same
 record in 33 bytes.
 
-![](/assets/Protobuf-2.png "")
+![](/assets/Protobuf-2.png)
 
 #### Compatibility
 
@@ -212,15 +212,15 @@ JSON) that is more easily machine-readable.
 
 Our example schema, written in Avro IDL, might look like this:
 
-![](/assets/Avro-1.png "")
+![](/assets/Avro-1.png)
 
 The equivalent JSON representation of that schema is as follows:
 
-![](/assets/Avro-2.png "")
+![](/assets/Avro-2.png)
 
 Here is the breakdown of the encoded byte sequence:
 
-![](/assets/Avro-3.png "")
+![](/assets/Avro-3.png)
 
 First of all, notice that there are no tag numbers in the schema.
 
@@ -257,7 +257,7 @@ reader's schema side by side and translating the data from the writer's schema
 into the reader's schema. The Avro specification defines exactly how this resolution
 works, and it is illustrated below.
 
-![](/assets/Avro-4.png "")
+![](/assets/Avro-4.png)
 
 For example, it's no problem if the writer's schema and the reader's schema have
 their fields in a different order, because the schema resolution matches up the fields
