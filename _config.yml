@@ -11,7 +11,7 @@ blogname: A Blog about Everything, Updated Irregularly
 blogabout: Notes, Word Salad, etc.
 brief-intro: "A Blog about Everything, Updated Irregularly"
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://www.gaeblog.com" # the base hostname & protocol for your site
+url: "https://seraphroy.github.io" # the base hostname & protocol for your site
 
 permalink: /:year/:month/:day/:title/
 
