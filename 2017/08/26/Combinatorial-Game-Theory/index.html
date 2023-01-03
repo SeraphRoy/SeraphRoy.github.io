@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Combinatorial Game Theory</title>
+    <meta name="description" content="  Basic Definitions  Types of PositionsBasic Definitions  Normal play: first player who cannot move loses (and therefore no draws)Two kinds of normal play:  ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Combinatorial Game Theory | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Combinatorial Game Theory" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Basic Definitions Types of Positions Basic Definitions Normal play: first player who cannot move loses (and therefore no draws) Two kinds of normal play: Impartial: For every position the moves available doesn’t depend on whose turn it is. Partisan: Not impartial Two players are called Louise and Richard. Let $\alpha$ be a position in some normal game: [\alpha={\alpha_1,\alpha_2,\dots,\alpha_n\mid\beta_1,\beta_2,\dots,\beta_m}] where $\alpha_i$ is the position where Louise can move from $\alpha$, and $\beta_j$ is the position where $R$ can move from $\alpha$ Types of Positions (L) Louise has a winning strategy regardless of who moves first at $\alpha$ (R) Richard has a winning strategy regardless of who moves first at $\alpha$ (N) Player who moves next has a winning strategy (P) Player who moves previous has a winning strategy" />
+<meta property="og:description" content="Basic Definitions Types of Positions Basic Definitions Normal play: first player who cannot move loses (and therefore no draws) Two kinds of normal play: Impartial: For every position the moves available doesn’t depend on whose turn it is. Partisan: Not impartial Two players are called Louise and Richard. Let $\alpha$ be a position in some normal game: [\alpha={\alpha_1,\alpha_2,\dots,\alpha_n\mid\beta_1,\beta_2,\dots,\beta_m}] where $\alpha_i$ is the position where Louise can move from $\alpha$, and $\beta_j$ is the position where $R$ can move from $\alpha$ Types of Positions (L) Louise has a winning strategy regardless of who moves first at $\alpha$ (R) Richard has a winning strategy regardless of who moves first at $\alpha$ (N) Player who moves next has a winning strategy (P) Player who moves previous has a winning strategy" />
+<link rel="canonical" href="https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-08-26T09:51:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Combinatorial Game Theory" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Basic Definitions Types of Positions Basic Definitions Normal play: first player who cannot move loses (and therefore no draws) Two kinds of normal play: Impartial: For every position the moves available doesn’t depend on whose turn it is. Partisan: Not impartial Two players are called Louise and Richard. Let $\\alpha$ be a position in some normal game: [\\alpha={\\alpha_1,\\alpha_2,\\dots,\\alpha_n\\mid\\beta_1,\\beta_2,\\dots,\\beta_m}] where $\\alpha_i$ is the position where Louise can move from $\\alpha$, and $\\beta_j$ is the position where $R$ can move from $\\alpha$ Types of Positions (L) Louise has a winning strategy regardless of who moves first at $\\alpha$ (R) Richard has a winning strategy regardless of who moves first at $\\alpha$ (N) Player who moves next has a winning strategy (P) Player who moves previous has a winning strategy","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/"},"@type":"BlogPosting","headline":"Combinatorial Game Theory","dateModified":"2017-08-26T09:51:00+00:00","datePublished":"2017-08-26T09:51:00+00:00","url":"https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Combinatorial Game Theory</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-08-26
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Game Theory" title="Category: Game Theory" rel="category">Game Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Game+Theory" title="Tag: Game Theory" rel="tag">Game Theory</a-->
+        <a href="/tag/#Game Theory" title="Tag: Game Theory" rel="tag">Game Theory</a>&nbsp;
+    
+        <!--a href="/tag/#Math" title="Tag: Math" rel="tag">Math</a-->
+        <a href="/tag/#Math" title="Tag: Math" rel="tag">Math</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#basic-definitions" id="markdown-toc-basic-definitions">Basic Definitions</a></li>
+  <li><a href="#types-of-positions" id="markdown-toc-types-of-positions">Types of Positions</a></li>
+  <li><a href="#definitions-lemma-and-propositions" id="markdown-toc-definitions-lemma-and-propositions">Definitions, Lemma, and Propositions</a></li>
+  <li><a href="#inverse-element" id="markdown-toc-inverse-element">Inverse Element</a></li>
+  <li><a href="#impartial-games" id="markdown-toc-impartial-games">Impartial Games</a>    <ul>
+      <li><a href="#nim" id="markdown-toc-nim">Nim</a></li>
+      <li><a href="#spraguegrundy-theorem" id="markdown-toc-spraguegrundy-theorem">Sprague–Grundy Theorem</a></li>
+    </ul>
+  </li>
+  <li><a href="#partisan-games" id="markdown-toc-partisan-games">Partisan Games</a>    <ul>
+      <li><a href="#hackenbush" id="markdown-toc-hackenbush">Hackenbush</a>        <ul>
+          <li><a href="#some-definitions" id="markdown-toc-some-definitions">Some Definitions</a></li>
+          <li><a href="#dyadic-number" id="markdown-toc-dyadic-number">Dyadic Number</a>            <ul>
+              <li><a href="#construction" id="markdown-toc-construction">Construction</a></li>
+            </ul>
+          </li>
+          <li><a href="#the-simplicity-principle" id="markdown-toc-the-simplicity-principle">The Simplicity Principle</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="basic-definitions">Basic Definitions</h1>
+
+<blockquote>
+  <p>Normal play: first player who cannot move loses (and therefore no draws)</p>
+</blockquote>
+
+<p>Two kinds of normal play:</p>
+
+<blockquote>
+  <p>Impartial: For every position the moves available doesn’t depend on whose turn it is.
+Partisan: Not impartial</p>
+</blockquote>
+
+<p>Two players are called Louise and Richard. Let $\alpha$ be a position in some normal game:</p>
+
+\[\alpha=\{\alpha_1,\alpha_2,\dots,\alpha_n\mid\beta_1,\beta_2,\dots,\beta_m\}\]
+
+<p>where $\alpha_i$ is the position where Louise can move <strong>from</strong> $\alpha$, and $\beta_j$ is the position where $R$ can move <strong>from</strong> $\alpha$</p>
+
+<h1 id="types-of-positions">Types of Positions</h1>
+
+<p>(L) Louise has a winning strategy regardless of who moves first at $\alpha$
+(R) Richard has a winning strategy regardless of who moves first at $\alpha$
+(N) Player who moves next has a winning strategy
+(P) Player who moves previous has a winning strategy</p>
+
+<!--more-->
+
+<h1 id="definitions-lemma-and-propositions">Definitions, Lemma, and Propositions</h1>
+
+<blockquote>
+  <p><strong>Prop</strong>: If \(\gamma=\{\alpha_1,\alpha_2,\dots,\alpha_n\mid\beta_1,\beta_2,\dots,\beta_m\}\),then $\gamma$ has type:</p>
+</blockquote>
+
+<table>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>Some $\beta_i$ is (R) or (P)</td>
+      <td>All $\beta_i$ is (L) or (N)</td>
+    </tr>
+    <tr>
+      <td>Some $\alpha_i$ is (L) or (P)</td>
+      <td>N</td>
+      <td>L</td>
+    </tr>
+    <tr>
+      <td>Some $\alpha_i$ is (R) or (N)</td>
+      <td>R</td>
+      <td>P</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Def</strong>: Given position $\alpha$,$\beta$, not necessary in the same game, define $\alpha+\beta$ to be a new position where move at $\alpha+\beta$ consists of moves in $\alpha$ or $\beta$</p>
+</blockquote>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$\alpha+\beta$</td>
+      <td>L</td>
+      <td>R</td>
+      <td>P</td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>L</td>
+      <td>L</td>
+      <td>?</td>
+      <td>L</td>
+      <td>?</td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>?</td>
+      <td>R</td>
+      <td>R</td>
+      <td>?</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>L</td>
+      <td>R</td>
+      <td>P</td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td>?</td>
+      <td>?</td>
+      <td>N</td>
+      <td>?</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Def</strong>: If $\forall\gamma$, $\alpha+\gamma=\beta+\gamma$, we say $\alpha\equiv\beta$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Lemma</strong>: If $\alpha\equiv\beta$, then $\alpha$ and $\beta$ has same type</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Prop</strong>:
+(1) $\forall\alpha\equiv\alpha$
+(2) $\alpha\equiv\beta\implies\beta\equiv\alpha$
+(3) $\alpha\equiv\beta,\beta\equiv\gamma\implies\alpha\equiv\gamma$
+(4) $\alpha+\beta\equiv\beta+\alpha$
+(5) $(\alpha+\beta)+\gamma\equiv\alpha+(\beta+\gamma)$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Lemma</strong>:If $\alpha\equiv\alpha’$, then $\alpha+\beta\equiv\alpha’+\beta\forall\beta$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Lemma</strong>:If $\beta$ is (P), then $\forall\alpha,\alpha+\beta\equiv\alpha$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Prop</strong>: If $\alpha,\alpha’$ are (P), then $\alpha\equiv\alpha’$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Lemma</strong>: If $\alpha+\beta,\alpha’+\beta$ are both (P), then $\alpha\equiv\alpha’$</p>
+</blockquote>
+
+<h1 id="inverse-element">Inverse Element</h1>
+
+<p>We have the identity element (P) now, what about the inverse element, namely: $\alpha+(-\alpha)=(P)$?</p>
+
+<p>For impartial games: $\alpha+\alpha=(P)$. The strategy is that the second player just copies the first player’s move in other game.</p>
+
+<p>In general normal game:</p>
+
+\[\alpha=\{\alpha_1,\alpha_2,\dots,\alpha_n\mid\beta_1,\beta_2,\dots,\beta_m\}\\
+-\alpha=\{\beta_1,\beta_2,\dots,\beta_m\mid\alpha_1,\alpha_2,\dots,\alpha_n\}\\
+\alpha+(-\alpha)=(P)\]
+
+<h1 id="impartial-games">Impartial Games</h1>
+
+<h2 id="nim">Nim</h2>
+
+<p>Here is the rule and other info about <a href="https://en.wikipedia.org/wiki/Nim">Nim</a>. In short there are multiple heaps of stones. Each turn each player takes out any number(at least one) of stones from one heap.</p>
+
+<p>We define $*a$ as one heap with $a$ stones (Nimber)</p>
+
+<blockquote>
+  <p><strong>Def</strong>: $*a_1+*a_2+\dots+*a_k$ is <em>balanced</em> if $\forall k$, $2^k$ in binary appears in even number of $a_i$’s.</p>
+</blockquote>
+
+<p>We know that no stone at all is <em>balanced</em>. Then how do we make unbalanced pile balanced with <em>one</em> move?</p>
+
+<p>Look for the max $2^l$ that appears on odd number of times; take that away, and adjust the lower positions as you like. It is always valie because $2^n-1=2^{n-1}+2^{n-2}+\dots+2+1$</p>
+
+<p><strong>Note</strong>: $*a_1+*a_2+\dots+*a_n\equiv*0$ when $\sum*a_i$ is balanced</p>
+
+<p><strong>Claim</strong>: Every unbalanced pile is equivalent to $*b$:</p>
+
+\[\exists b\in\mathbb{Z}\geq0\\
+*a_1+\dots+*a_k=*b\]
+
+<p><strong>Idea</strong>: $*a_1+\dots+*a_k+*b\equiv*0$
+<strong>Then</strong>: $b=\sum_{i=0}^{\infty}c_i 2^i$ where</p>
+
+\[c_i=
+\left\{ \begin{array}{rcl}
+1 &amp; \mbox{if} &amp; 2^i\ appears\ in\ an\ odd\ number\ of\ a_i \\ 
+0  &amp; \mbox{if} &amp; otherwise \\
+\end{array}\right.\]
+
+<h2 id="spraguegrundy-theorem">Sprague–Grundy Theorem</h2>
+
+<p><strong>Sprague-Grundy Theorm</strong>: Every impartial game is equivalent to a nimber.</p>
+
+<p><strong>Def</strong>: If $S={a_1,\dots,a_n}\subseteq\mathbb{Z}_{\geq0}$, then</p>
+
+\[mex(S):=smallest\ b\in\mathbb{Z}_{\geq0}\setminus S,\ (mex(S)\geq0)\]
+
+<p><strong>Claim</strong>: \((\alpha=\{*a_1,\dots,*a_n\})+*b\) is (P) when $b=mex(a_1,\dots,a_n)$ (note that $\alpha$ can be the position an any game, not just nim). We skip the proof here because I am lazy</p>
+
+<p><strong>Corollary</strong>: if \(\alpha_i\equiv*a_i\), $i=1,2,\dots,n$, then \(\{\alpha_1,\dots,\alpha_n\}\equiv*b\), where \(b=mex(a_1,\dots,a_n)\)</p>
+
+<h1 id="partisan-games">Partisan Games</h1>
+
+<h2 id="hackenbush">Hackenbush</h2>
+
+<p>Here is the rule and other info about <a href="https://en.wikipedia.org/wiki/Hackenbush">Hackenbush</a>, and let’s have Richard plays Red and Louise plays Black. Since it is a partisan game, we might want to have some kind of definition of “advantage”. All the following definitions are from Louise’s perspective; namely, Black’s advantage is positive and Red’s is negative.</p>
+
+<p>We use $\bullet n$ notation to define an advantage of $n$.</p>
+
+<h3 id="some-definitions">Some Definitions</h3>
+
+<p>Only ground and nothing else is $\bullet0$</p>
+
+<p>Ground with one black on it is $\bullet1$, and ground with one red on it is $\bullet(-1)$</p>
+
+<p>Ground with $n$ blacks on it is $\bullet n$, and vice versa for red.</p>
+
+<p>What is advantage of $\frac{1}{2}$?</p>
+
+<p>We want $\alpha+\alpha=\bullet1$, or $\alpha+\alpha+\bullet(-1)=\bullet0$, which is (P)</p>
+
+<p>So we define one black on the ground, and one red on the <em>black</em> is $\bullet\frac{1}{2}$. Similarly, one black on the ground and $k$ red on the <em>black</em> is $\bullet\frac{1}{2^k}$. (It doesn’t matter how those reds are put on the black, as long as once we take out the black and they all die)</p>
+
+<blockquote>
+  <p><strong>Prop</strong>: $\bullet\frac{1}{2^k}+\bullet\frac{1}{2^k}=\bullet\frac{1}{2^{k-1}}$</p>
+</blockquote>
+
+<h3 id="dyadic-number">Dyadic Number</h3>
+
+<p>Dyadic numbers are rationals of form $\frac{a}{2^k},a,k\in\mathbb{Z}$</p>
+
+<h4 id="construction">Construction</h4>
+
+<p>$0$ is born on day 0</p>
+
+<p>$-1,1$ are born on day 1</p>
+
+<p>$-2,2,-\frac{1}{2},\frac{1}{2}$ are born on day 2</p>
+
+<p>$\dots$</p>
+
+<p>If $a_0&lt;a_1&lt;\dots&lt;a_n$ are born on days $0,1,\dots,n$, the numbers born on day $n+1$ are: $a_0-1,a_k+1,\frac{a_i+a_{i+1}}{2}\forall i=0,\dots,k-1$</p>
+
+<p>It can be easily known that all dyadic numbers will be born.</p>
+
+<blockquote>
+  <p><strong>Lemma</strong>: Every open interval in $\mathbb{R}$ has a unique <em>oldest</em> dyadic number</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Def</strong>: $\bullet\frac{a}{2^k}=\bullet(\sum_{d\in\mathbb{Z}}2^d):=\sum\bullet2^d$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Lemma</strong>: If $a_i=0\ or\ 2^d$, and if $a_1+\dots+a_k=0$, then $\bullet a_1+\bullet a_2+\dots+\bullet a_k=\bullet0$</p>
+</blockquote>
+
+<p><strong>Collery</strong>: If $a,b$ are dyadic numbers:</p>
+
+\[-\bullet a=\bullet-a\\
+\bullet a+\bullet b=\bullet(a+b)\]
+
+<p>If $a$ is dyadic:</p>
+
+\[a&gt;0\implies\bullet a\ is\ (L)\\
+a&lt;0\implies\bullet a\ is\ (R)\\
+a=0\implies\bullet a\ is\ (P)\]
+
+<h3 id="the-simplicity-principle">The Simplicity Principle</h3>
+
+<blockquote>
+  <p><strong>Theorm</strong>: \(\gamma=\{\alpha_1,\dots,\alpha_m\mid\beta_1,\dots,\beta_n\}\). Suppose $\alpha_i\equiv\bullet a_i$, $\beta_j\equiv\bullet b_j$ for some dyadic number $a_i,b_j\ \forall i,j$, assuming $a_1&lt;a_2&lt;\dots&lt;a_m$, $b_1&lt;b_2&lt;\dots&lt;b_n$. Then if $a_m&lt;b_1$, then $\gamma\equiv\bullet c$, where $c$ is the unique oldest dyadic number in interval $(a_m,b_1)$</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Lemma</strong>: Let $c=\frac{a}{2^k},\ a\neq0,k\geq1$. Suppose a player moves $\bullet c$ to $\bullet c’$. 
+If Louise moved, $c’\leq c-\frac{1}{2^k}$ 
+If Richard moved, $c’\leq c+\frac{1}{2^k}$</p>
+</blockquote>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/26/Markov-Chains/">Markov Chains</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/09/10/Matrix-Game-Theory/">Matrix Game Theory</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/08/26/Combinatorial-Game-Theory/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#basic-definitions">Basic Definitions</a></li>
+<li class="toc-entry toc-h1"><a href="#types-of-positions">Types of Positions</a></li>
+<li class="toc-entry toc-h1"><a href="#definitions-lemma-and-propositions">Definitions, Lemma, and Propositions</a></li>
+<li class="toc-entry toc-h1"><a href="#inverse-element">Inverse Element</a></li>
+<li class="toc-entry toc-h1"><a href="#impartial-games">Impartial Games</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#nim">Nim</a></li>
+<li class="toc-entry toc-h2"><a href="#spraguegrundy-theorem">Sprague–Grundy Theorem</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#partisan-games">Partisan Games</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#hackenbush">Hackenbush</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#some-definitions">Some Definitions</a></li>
+<li class="toc-entry toc-h3"><a href="#dyadic-number">Dyadic Number</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#construction">Construction</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#the-simplicity-principle">The Simplicity Principle</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Cache Oblivious Algorithms</title>
+    <meta name="description" content="  Introduction to Cache Oblivious Algorithms          The Cache Model      Cache Oblivious Algorithm      Introduction to Cache Oblivious AlgorithmsCache obl...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Cache Oblivious Algorithms | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Cache Oblivious Algorithms" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction to Cache Oblivious Algorithms The Cache Model Cache Oblivious Algorithm Introduction to Cache Oblivious Algorithms Cache oblivious algorithms are the algorithms that performs well even when they are not aware of the caching model. The Cache Model We assume two level memory: cache and main memory. The block size is $B$. The size of the cache is $M$. The size of main memory is assume infinte. If we want to access some data that is not in the cache, we need to pull the whole block that contains the data to the cache first. And we might kick something else and we need to write it back to memory. Accesses to cache are free, but we still care about the computation time (work) of the algorithm itself. If we have an array, it might not be aligned with the blocks. So it will be some extra things at the beginning and the end that doesn’t consume a whole block but we need the extra 2 blocks. Count block memory transfers between cache and main memory. (number of block read/write) Memory Transfer $MT(N)$ is a function of $N$, but $B$, $M$ are parameters and does matter. Cache Oblivious Algorithm Algorithms don’t know $B$ and $M$ Accessing memory automatically fetch block into memory &amp; kick the block that will be used furthest in the future (idealized model) Memory is one big array and is divided into blocks of size $B$ Note: if the algorithm is cache oblivious and is efficient in the 2-level model, it will be efficient for k-level model (L1, L2, L3, … caches)" />
+<meta property="og:description" content="Introduction to Cache Oblivious Algorithms The Cache Model Cache Oblivious Algorithm Introduction to Cache Oblivious Algorithms Cache oblivious algorithms are the algorithms that performs well even when they are not aware of the caching model. The Cache Model We assume two level memory: cache and main memory. The block size is $B$. The size of the cache is $M$. The size of main memory is assume infinte. If we want to access some data that is not in the cache, we need to pull the whole block that contains the data to the cache first. And we might kick something else and we need to write it back to memory. Accesses to cache are free, but we still care about the computation time (work) of the algorithm itself. If we have an array, it might not be aligned with the blocks. So it will be some extra things at the beginning and the end that doesn’t consume a whole block but we need the extra 2 blocks. Count block memory transfers between cache and main memory. (number of block read/write) Memory Transfer $MT(N)$ is a function of $N$, but $B$, $M$ are parameters and does matter. Cache Oblivious Algorithm Algorithms don’t know $B$ and $M$ Accessing memory automatically fetch block into memory &amp; kick the block that will be used furthest in the future (idealized model) Memory is one big array and is divided into blocks of size $B$ Note: if the algorithm is cache oblivious and is efficient in the 2-level model, it will be efficient for k-level model (L1, L2, L3, … caches)" />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-11T10:41:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Cache Oblivious Algorithms" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Introduction to Cache Oblivious Algorithms The Cache Model Cache Oblivious Algorithm Introduction to Cache Oblivious Algorithms Cache oblivious algorithms are the algorithms that performs well even when they are not aware of the caching model. The Cache Model We assume two level memory: cache and main memory. The block size is $B$. The size of the cache is $M$. The size of main memory is assume infinte. If we want to access some data that is not in the cache, we need to pull the whole block that contains the data to the cache first. And we might kick something else and we need to write it back to memory. Accesses to cache are free, but we still care about the computation time (work) of the algorithm itself. If we have an array, it might not be aligned with the blocks. So it will be some extra things at the beginning and the end that doesn’t consume a whole block but we need the extra 2 blocks. Count block memory transfers between cache and main memory. (number of block read/write) Memory Transfer $MT(N)$ is a function of $N$, but $B$, $M$ are parameters and does matter. Cache Oblivious Algorithm Algorithms don’t know $B$ and $M$ Accessing memory automatically fetch block into memory &amp; kick the block that will be used furthest in the future (idealized model) Memory is one big array and is divided into blocks of size $B$ Note: if the algorithm is cache oblivious and is efficient in the 2-level model, it will be efficient for k-level model (L1, L2, L3, … caches)","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/"},"@type":"BlogPosting","headline":"Cache Oblivious Algorithms","dateModified":"2017-06-11T10:41:00+00:00","datePublished":"2017-06-11T10:41:00+00:00","url":"https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Cache Oblivious Algorithms</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-11
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Algorithm" title="Category: Algorithm" rel="category">Algorithm</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a-->
+        <a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#introduction-to-cache-oblivious-algorithms" id="markdown-toc-introduction-to-cache-oblivious-algorithms">Introduction to Cache Oblivious Algorithms</a>    <ul>
+      <li><a href="#the-cache-model" id="markdown-toc-the-cache-model">The Cache Model</a></li>
+      <li><a href="#cache-oblivious-algorithm" id="markdown-toc-cache-oblivious-algorithm">Cache Oblivious Algorithm</a></li>
+      <li><a href="#basic-algorithms" id="markdown-toc-basic-algorithms">Basic Algorithms</a></li>
+      <li><a href="#divide-and-conquer" id="markdown-toc-divide-and-conquer">Divide and Conquer</a></li>
+      <li><a href="#order-statistics-median-finding" id="markdown-toc-order-statistics-median-finding">Order Statistics (median finding)</a>        <ul>
+          <li><a href="#analysis" id="markdown-toc-analysis">Analysis</a></li>
+        </ul>
+      </li>
+      <li><a href="#matrix-multiplication" id="markdown-toc-matrix-multiplication">Matrix Multiplication</a>        <ul>
+          <li><a href="#standard-naive-way" id="markdown-toc-standard-naive-way">Standard, Naive Way</a></li>
+          <li><a href="#black-algorithm" id="markdown-toc-black-algorithm">Black Algorithm</a></li>
+        </ul>
+      </li>
+      <li><a href="#static-search-tree-binary-search" id="markdown-toc-static-search-tree-binary-search">Static Search Tree (Binary Search)</a>        <ul>
+          <li><a href="#analysis-ologbn-memory-transfers" id="markdown-toc-analysis-ologbn-memory-transfers">Analysis: $O(\log{B}N)$ memory transfers</a></li>
+        </ul>
+      </li>
+      <li><a href="#cache-aware-sorting" id="markdown-toc-cache-aware-sorting">Cache aware sorting</a></li>
+      <li><a href="#cache-oblivious-sorting" id="markdown-toc-cache-oblivious-sorting">Cache Oblivious Sorting</a>        <ul>
+          <li><a href="#k-funnel" id="markdown-toc-k-funnel">K-funnel</a></li>
+          <li><a href="#revisit-k-funnel" id="markdown-toc-revisit-k-funnel">Revisit K-funnel</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="introduction-to-cache-oblivious-algorithms">Introduction to Cache Oblivious Algorithms</h1>
+
+<p>Cache oblivious algorithms are the algorithms that performs well even when they are not aware of the caching model.</p>
+
+<h2 id="the-cache-model">The Cache Model</h2>
+
+<p>We assume two level memory: cache and main memory. The block size is $B$. The size of the cache is $M$. The size of main memory is assume infinte. If we want to access some data that is not in the cache, we need to pull the whole block that contains the data to the cache first. And we might kick something else and we need to write it back to memory.</p>
+<ol>
+  <li>Accesses to cache are free, but we still care about the computation time (work) of the algorithm itself.</li>
+  <li>If we have an array, it might not be aligned with the blocks. So it will be some extra things at the beginning and the end that doesn’t consume a whole block but we need the extra 2 blocks.</li>
+  <li>Count <strong>block memory transfers</strong> between cache and main memory. (number of block read/write) Memory Transfer $MT(N)$ is a function of $N$, but $B$, $M$ are parameters and does matter.</li>
+</ol>
+
+<h2 id="cache-oblivious-algorithm">Cache Oblivious Algorithm</h2>
+<ul>
+  <li>Algorithms don’t know $B$ and $M$</li>
+  <li>Accessing memory automatically fetch block into memory &amp; kick the block that will be used furthest in the future (idealized model)</li>
+  <li>Memory is one big array and is divided into blocks of size $B$</li>
+</ul>
+
+<p><strong>Note</strong>: if the algorithm is cache oblivious and is efficient in the 2-level model, it will be efficient for k-level model (L1, L2, L3, … caches)</p>
+
+<!--more-->
+
+<h2 id="basic-algorithms">Basic Algorithms</h2>
+
+<ul>
+  <li>Single Scanning
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Scanning(A, N)
+  for i from 0 to N
+      visit A[i]
+</code></pre></div>    </div>
+    <p>e.g. sum array.</p>
+  </li>
+</ul>
+
+<p>$MT(N)=\frac{N}{B}+2=O(\frac{N}{B}+1)$ For +2, see the second point in the cache model.</p>
+
+<ul>
+  <li>$O(1)$ parallel scans
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reverse(A,N)
+  for i from 0 to N/2
+      exchange A[i] with A[N-i+1]
+</code></pre></div>    </div>
+    <p>Assuming $\frac{M}{B}&gt;=2,\ MT(N)=O(\frac{N}{B}+1)$</p>
+  </li>
+  <li>Binary Search
+We hope to get $\log_BN=\log N/\log B$, but actually it is $\log(\frac{N}{B})=\log N-\log B$ (At first each access corresponding to one block. At the very last few search they are in the same block)</li>
+</ul>
+
+<h2 id="divide-and-conquer">Divide and Conquer</h2>
+<ul>
+  <li>Algorithm divides problem into $O(1)$ case</li>
+  <li>Analysis considers point at which the problem
+    <ul>
+      <li>fits in cache ($&lt;=M$)</li>
+      <li>fits in $O(1)$ block ($O(B)$)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="order-statistics-median-finding">Order Statistics (median finding)</h2>
+<ul>
+  <li>Conceptually partition the array into $N/5$ 5-tuples</li>
+  <li>Compute the medium of each one ($MT(N)=O(\frac{N}{B}+1)$)</li>
+  <li>Recursively compute median $x$ of these medians ($MT(N)=O(N/5)$)</li>
+  <li>Partition around $x$ ($MT(N)=O(\frac{N}{B}+1)$)</li>
+  <li>Recurse in one side ($MT(N)=O(7N/10)\approx O(3N/4)$)
+    <h3 id="analysis">Analysis</h3>
+    <p>$MT(N)=MT(N/5)+MT(3N/4)+O(\frac{N}{B}+1)$</p>
+  </li>
+</ul>
+
+<p>If we assume $MT(1)=O(1)$, see what we get ($L(N)$ is the number of leaves of recurssion tree):</p>
+
+\[L(N)=L(N/5)+L(3N/4)\\
+L(1)=1\\
+Suppose\ it\ is\ N^{\alpha}\\
+N^{\alpha}=(N/5)^{\alpha}+(3N/4)^{\alpha}\\
+1=(1/5)^{\alpha}+(3/4)^{\alpha}\\
+\alpha\approx0.8398\\
+L(N)=N^{0.8398}=\omega(\frac{N}{B})\ if\ B=N^{0.2}\]
+
+<p>Now we assume $MT(B)=O(1)$, then number of leaves is $(\frac{N}{B})^{\alpha}=O(\frac{N}{B})$</p>
+
+<h2 id="matrix-multiplication">Matrix Multiplication</h2>
+
+<h3 id="standard-naive-way">Standard, Naive Way</h3>
+
+<p>$C=AB$ Assume that $A$ is row-major, $B$ is col-major, $C$ is row-major (best possible memory layout)</p>
+
+<p>$O(\frac{N}{B})$ to compute $C_{ij}$ so total $O(N^3/B)$</p>
+
+<h3 id="black-algorithm">Black Algorithm</h3>
+
+<p>Recursively divide the matrix into 4 parts, each is $N/2\times N/2$</p>
+
+<p>We assume we <strong>store matrices recursively block</strong>. So:</p>
+
+\[MT(N)=8MT(N/2)+O(N^2/B+1)\\
+MT(B)=1\\
+MT(c\sqrt{M})=\frac{M}{B}\]
+
+<p>So we stop the recursion tree at the base case, the number of leaves is $O((N/\sqrt{M})^3)$</p>
+
+<p>So the total is</p>
+
+\[(N/\sqrt{M})^3\centerdot \frac{M}{B}=N^3/(B\sqrt{M})\]
+
+<h2 id="static-search-tree-binary-search">Static Search Tree (Binary Search)</h2>
+<p><strong>Goal</strong>: $\log_BN$</p>
+<ul>
+  <li>Store %N% elements in order in a complete binary tree on %N% nodes</li>
+  <li>Cut the tree in the middle level of edges so so that the each part has height $(\log N)/2$ and the upper part has $2^{(\log N)/2}$ nodes which is $sqrt{N}$, and there are $\sqrt{N}$ subtrees at the bottom, each of which has size $\sqrt{N}$. So there are $\sqrt{N}+1$ subtrees in total.</li>
+  <li>Recursively layout $\sqrt{N}+1$ subtrees and concatenate</li>
+</ul>
+
+<p>e.g. the index label is the order that is stored in the array.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            1
+     2             3
+  4     7     10       13
+5   6 8   9 11  12   14  15
+</code></pre></div></div>
+
+<h3 id="analysis-ologbn-memory-transfers">Analysis: $O(\log{B}N)$ memory transfers</h3>
+<ul>
+  <li>consider recursive level of detail at which the size of each subtree $&lt;=B$, so the height of the subtree $&gt;=\log B$</li>
+  <li>root-to-node path visits $&lt;=\log N/((\log B)/2)$ subtrees</li>
+  <li>each subtree is in at most $2$ blocks</li>
+  <li>So the number of memory transfers $&lt;=4\log_BN=O(\log_BN)$</li>
+  <li>There exist a dynamic type of this data structure, which can do <code class="language-plaintext highlighter-rouge">insert</code> and <code class="language-plaintext highlighter-rouge">delete</code> in $O(\log_BN)$ time, but it is super complicated</li>
+</ul>
+
+<h2 id="cache-aware-sorting">Cache aware sorting</h2>
+<ul>
+  <li>repeated insertion into B-tree, $MT(N)=O(N\log_BN)$ really bad!!! even worse than random access!!! which is $O(N)$</li>
+  <li>binary merge sort</li>
+</ul>
+
+\[MT(N)=2MT(N/2)+O(\frac{N}{B})\\
+MT(cM)=O(\frac{M}{B})\\
+MT(N)=\frac{N}{B}\centerdot\log(N/M)\]
+
+<ul>
+  <li>$\frac{M}{B}$-way merge sort
+    <ul>
+      <li>divide into $\frac{M}{B}$ subarrays</li>
+      <li>recursively sort each subarray</li>
+      <li>merge: using 1 cache block per subarray</li>
+    </ul>
+  </li>
+</ul>
+
+\[MT(N)=\frac{M}{B}\centerdot MT(N/(\frac{M}{B}))+O(\frac{N}{B})\\
+MT(cM)=O(\frac{M}{B})\\
+MT(N)=\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})\]
+
+<h2 id="cache-oblivious-sorting">Cache Oblivious Sorting</h2>
+<p>Actually need an assumption of the cache:</p>
+
+\[M=\Omega(B^{1+\epsilon})\ for\ \epsilon&gt;0\]
+
+<p>e.g. $M&gt;=B^2$</p>
+
+<p>Use $N^{\epsilon}$-way mergesrot</p>
+
+<h3 id="k-funnel">K-funnel</h3>
+<p>It merges k sorted lists of total size $&gt;=\Theta(k^3)$ using $O(k^3/B\log_{\frac{M}{B}}k^3/B+k)$ memory transfers</p>
+
+<p>So we have now <strong>Funnelsort</strong>. use $k=N^{1/3}$</p>
+<ul>
+  <li>divide array into $N^{1/3}$ equal segments</li>
+  <li>recursively sort each</li>
+  <li>merge using $N^{1/3}$-funnel</li>
+</ul>
+
+\[MT(N)=N^{1/3}MT(N^{2/3})+O(\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})+N^{1/3})\\
+MT(cM)=O(\frac{M}{B})\\
+N=\Omega(M)=\Omega(B^2)\\
+\frac{N}{B}=\Omega(\sqrt{N})=\Omega(\sqrt[3]{N})\]
+
+<p>So as long as it is not in the base case, $\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})$ dominates $N^{1/3}$</p>
+
+\[MT(N)=\frac{N}{B}\centerdot\log_{\frac{M}{B}}(\frac{N}{B})\]
+
+<h3 id="revisit-k-funnel">Revisit K-funnel</h3>
+<p><img src="https://www.gaeblog.com/assets/Cache-Oblivious-Algorithms-FunnelSort.jpg" alt="" /></p>
+
+<p>First take a look at space excluding input and output buffers</p>
+
+\[S(k)=(\sqrt{k}+1)S(\sqrt{k})+O(k^2)
+S(k)=O(K^2)\]
+
+<p>So merge means to fill up the top buffer</p>
+<ul>
+  <li>merge two children buffer as long as they both are non-empty</li>
+  <li>whenever one empties, recursively fill it</li>
+  <li>at leaves, read from input list</li>
+</ul>
+
+<p><strong>Analysis</strong>:</p>
+<ul>
+  <li>consider first recursive level of detail, J, at which evey J-funnel fits 1/4 of the cache (It means $cJ^2&lt;=M/4$)</li>
+  <li>can also fit one block per input buffer (of J-funnel)</li>
+</ul>
+
+\[J^2&lt;=\frac{1}{4}M\Rightarrow J&lt;=\frac{1}{2}\sqrt{M}\\
+B&lt;=\sqrt{m}\\
+\Rightarrow J\centerdot B&lt;=\frac{1}{2}M\]
+
+<ul>
+  <li>swapping in (reading J-funnel and one block per input buffer) ($O(\frac{J^2}{B}+J)=O(J^3/B$)</li>
+  <li>when input buffer empties, swap out and recursively fill and swap back in. Swapping back in cost $O(J^3/B)$</li>
+  <li>charge cost to elements that fill the buffer (amortize analysis)</li>
+  <li>$J^3$ such elements</li>
+  <li>number of charges of $O(1/B)$ cost to each elements is $\log K/\log J=\Theta(\log K/\log M)$</li>
+</ul>
+
+<p>So the total cost is</p>
+
+\[O(\frac{k^3}{B}\frac{\log k}{\log M}+k)\\
+=O(\frac{k^3}{B}\log_{M/B}\frac{k}{B}+k)\]
+
+<p>assuming</p>
+
+\[k=\Omega(M)=\Omega(B^2)
+k/B=\Omega(\sqrt{k})\]
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/10/Basic-Quantum-Computing/">Basic Quantum Computing</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/20/Bit-Hacks/">Bit Hacks</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/11/Cache-Oblivious-Algorithms/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#introduction-to-cache-oblivious-algorithms">Introduction to Cache Oblivious Algorithms</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#the-cache-model">The Cache Model</a></li>
+<li class="toc-entry toc-h2"><a href="#cache-oblivious-algorithm">Cache Oblivious Algorithm</a></li>
+<li class="toc-entry toc-h2"><a href="#basic-algorithms">Basic Algorithms</a></li>
+<li class="toc-entry toc-h2"><a href="#divide-and-conquer">Divide and Conquer</a></li>
+<li class="toc-entry toc-h2"><a href="#order-statistics-median-finding">Order Statistics (median finding)</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#analysis">Analysis</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#matrix-multiplication">Matrix Multiplication</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#standard-naive-way">Standard, Naive Way</a></li>
+<li class="toc-entry toc-h3"><a href="#black-algorithm">Black Algorithm</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#static-search-tree-binary-search">Static Search Tree (Binary Search)</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#analysis-ologbn-memory-transfers">Analysis: $O(\log{B}N)$ memory transfers</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#cache-aware-sorting">Cache aware sorting</a></li>
+<li class="toc-entry toc-h2"><a href="#cache-oblivious-sorting">Cache Oblivious Sorting</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#k-funnel">K-funnel</a></li>
+<li class="toc-entry toc-h3"><a href="#revisit-k-funnel">Revisit K-funnel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

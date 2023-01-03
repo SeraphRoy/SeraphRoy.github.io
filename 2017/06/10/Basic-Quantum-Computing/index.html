@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Basic Quantum Computing</title>
+    <meta name="description" content="  Basic Quantum Computing with Least Physics Possible          Classical Probability Bit      Basic Quantum Computing with Least Physics PossibleClassical Pr...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Basic Quantum Computing | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Basic Quantum Computing" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Basic Quantum Computing with Least Physics Possible Classical Probability Bit Basic Quantum Computing with Least Physics Possible Classical Probability Bit We will start by talking about classical probability bit. Here is the one bit representation $p_0$, $p_1$ are the probability of being $0$, $1$ respectively. [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right) \s.t.\ p_0+p_1=1,\ p_0,p_1\in\mathbb{R},\ 0\leq p_0,p_1\leq1] And here is the n-bits representation [\left( \begin{array}{c} p_{0\cdots00} \ p_{0\cdots01} p_{0\cdots10} \vdots p_{1\cdots11} \end{array} \right)\in\mathbb{R}^{2^n} s.t.\ \sum p_x=1,\ p_x\in[0,1]\in\mathbb{R},\ x\in{0,1}^n] So we can do some transformation to the bit: [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right) \xrightarrow{I} \left( \begin{array}{c} p_0 \ p_1 \end{array} \right)] [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right) \xrightarrow{NOT} \left( \begin{array}{c} p_1 \ p_0 \end{array} \right)] Or if we have two bits [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right), \left( \begin{array}{c} p_0 \ p_1 \end{array} \right)] and want to do an XOR with two dependent bits [\left( \begin{array}{c} p_{00} \ p_{01} \ p_{10} \ p_{11} \end{array} \right) \xrightarrow{XOR} \left( \begin{array}{c} p_0 \ 0 \ 0 \ p_1 \end{array} \right)] But it is not possible (physically) to do something like this, which kind of does XOR with two independent bits: [\left( \begin{array}{c} p_{00} \ p_{01} \ p_{10} \ p_{11} \end{array} \right) \xrightarrow{XOR’} \left( \begin{array}{c} p_0\centerdot p_0 \ p_0\centerdot p_1 \ p_1\centerdot p_0 \ p_1\centerdot p_1 \end{array} \right)] In other words, physically, in our universe, we can only do $l_1$ norm linear tranformation." />
+<meta property="og:description" content="Basic Quantum Computing with Least Physics Possible Classical Probability Bit Basic Quantum Computing with Least Physics Possible Classical Probability Bit We will start by talking about classical probability bit. Here is the one bit representation $p_0$, $p_1$ are the probability of being $0$, $1$ respectively. [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right) \s.t.\ p_0+p_1=1,\ p_0,p_1\in\mathbb{R},\ 0\leq p_0,p_1\leq1] And here is the n-bits representation [\left( \begin{array}{c} p_{0\cdots00} \ p_{0\cdots01} p_{0\cdots10} \vdots p_{1\cdots11} \end{array} \right)\in\mathbb{R}^{2^n} s.t.\ \sum p_x=1,\ p_x\in[0,1]\in\mathbb{R},\ x\in{0,1}^n] So we can do some transformation to the bit: [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right) \xrightarrow{I} \left( \begin{array}{c} p_0 \ p_1 \end{array} \right)] [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right) \xrightarrow{NOT} \left( \begin{array}{c} p_1 \ p_0 \end{array} \right)] Or if we have two bits [\left( \begin{array}{c} p_0 \ p_1 \end{array} \right), \left( \begin{array}{c} p_0 \ p_1 \end{array} \right)] and want to do an XOR with two dependent bits [\left( \begin{array}{c} p_{00} \ p_{01} \ p_{10} \ p_{11} \end{array} \right) \xrightarrow{XOR} \left( \begin{array}{c} p_0 \ 0 \ 0 \ p_1 \end{array} \right)] But it is not possible (physically) to do something like this, which kind of does XOR with two independent bits: [\left( \begin{array}{c} p_{00} \ p_{01} \ p_{10} \ p_{11} \end{array} \right) \xrightarrow{XOR’} \left( \begin{array}{c} p_0\centerdot p_0 \ p_0\centerdot p_1 \ p_1\centerdot p_0 \ p_1\centerdot p_1 \end{array} \right)] In other words, physically, in our universe, we can only do $l_1$ norm linear tranformation." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-10T10:05:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Basic Quantum Computing" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Basic Quantum Computing with Least Physics Possible Classical Probability Bit Basic Quantum Computing with Least Physics Possible Classical Probability Bit We will start by talking about classical probability bit. Here is the one bit representation $p_0$, $p_1$ are the probability of being $0$, $1$ respectively. [\\left( \\begin{array}{c} p_0 \\ p_1 \\end{array} \\right) \\s.t.\\ p_0+p_1=1,\\ p_0,p_1\\in\\mathbb{R},\\ 0\\leq p_0,p_1\\leq1] And here is the n-bits representation [\\left( \\begin{array}{c} p_{0\\cdots00} \\ p_{0\\cdots01} p_{0\\cdots10} \\vdots p_{1\\cdots11} \\end{array} \\right)\\in\\mathbb{R}^{2^n} s.t.\\ \\sum p_x=1,\\ p_x\\in[0,1]\\in\\mathbb{R},\\ x\\in{0,1}^n] So we can do some transformation to the bit: [\\left( \\begin{array}{c} p_0 \\ p_1 \\end{array} \\right) \\xrightarrow{I} \\left( \\begin{array}{c} p_0 \\ p_1 \\end{array} \\right)] [\\left( \\begin{array}{c} p_0 \\ p_1 \\end{array} \\right) \\xrightarrow{NOT} \\left( \\begin{array}{c} p_1 \\ p_0 \\end{array} \\right)] Or if we have two bits [\\left( \\begin{array}{c} p_0 \\ p_1 \\end{array} \\right), \\left( \\begin{array}{c} p_0 \\ p_1 \\end{array} \\right)] and want to do an XOR with two dependent bits [\\left( \\begin{array}{c} p_{00} \\ p_{01} \\ p_{10} \\ p_{11} \\end{array} \\right) \\xrightarrow{XOR} \\left( \\begin{array}{c} p_0 \\ 0 \\ 0 \\ p_1 \\end{array} \\right)] But it is not possible (physically) to do something like this, which kind of does XOR with two independent bits: [\\left( \\begin{array}{c} p_{00} \\ p_{01} \\ p_{10} \\ p_{11} \\end{array} \\right) \\xrightarrow{XOR’} \\left( \\begin{array}{c} p_0\\centerdot p_0 \\ p_0\\centerdot p_1 \\ p_1\\centerdot p_0 \\ p_1\\centerdot p_1 \\end{array} \\right)] In other words, physically, in our universe, we can only do $l_1$ norm linear tranformation.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/"},"@type":"BlogPosting","headline":"Basic Quantum Computing","dateModified":"2017-06-10T10:05:00+00:00","datePublished":"2017-06-10T10:05:00+00:00","url":"https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Basic Quantum Computing</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-10
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Algorithm" title="Category: Algorithm" rel="category">Algorithm</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a-->
+        <a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a>&nbsp;
+    
+        <!--a href="/tag/#Quantum" title="Tag: Quantum" rel="tag">Quantum</a-->
+        <a href="/tag/#Quantum" title="Tag: Quantum" rel="tag">Quantum</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#basic-quantum-computing-with-least-physics-possible" id="markdown-toc-basic-quantum-computing-with-least-physics-possible">Basic Quantum Computing with Least Physics Possible</a>    <ul>
+      <li><a href="#classical-probability-bit" id="markdown-toc-classical-probability-bit">Classical Probability Bit</a></li>
+      <li><a href="#quantum-bit-qubit" id="markdown-toc-quantum-bit-qubit">Quantum Bit (qubit)</a></li>
+      <li><a href="#some-notations" id="markdown-toc-some-notations">Some Notations</a></li>
+      <li><a href="#quantum-transformations" id="markdown-toc-quantum-transformations">Quantum Transformations</a></li>
+      <li><a href="#basic-quantum-gates-between-23-qubits" id="markdown-toc-basic-quantum-gates-between-23-qubits">Basic Quantum Gates (Between 2/3 qubits)</a></li>
+      <li><a href="#one-small-quantum-algorithm-example" id="markdown-toc-one-small-quantum-algorithm-example">One Small Quantum Algorithm Example</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="basic-quantum-computing-with-least-physics-possible">Basic Quantum Computing with Least Physics Possible</h1>
+
+<h2 id="classical-probability-bit">Classical Probability Bit</h2>
+
+<p>We will start by talking about classical probability bit. Here is the one bit representation $p_0$, $p_1$ are the probability of being $0$, $1$ respectively.</p>
+
+\[\left( \begin{array}{c} p_0 \\ p_1 \end{array} \right)
+\\s.t.\ p_0+p_1=1,\ p_0,p_1\in\mathbb{R},\ 0\leq p_0,p_1\leq1\]
+
+<p>And here is the n-bits representation</p>
+
+\[\left( \begin{array}{c} 
+        p_{0\cdots00} \\ 
+        p_{0\cdots01} \\
+        p_{0\cdots10} \\
+        \vdots \\
+        p_{1\cdots11} \end{array} \right)\in\mathbb{R}^{2^n}\\
+        s.t.\ \sum p_x=1,\ p_x\in[0,1]\in\mathbb{R},\ x\in\{0,1\}^n\]
+
+<p>So we can do some transformation to the bit:</p>
+
+\[\left( \begin{array}{c} p_0 \\ p_1 \end{array} \right)
+\xrightarrow{I}
+\left( \begin{array}{c} p_0 \\ p_1 \end{array} \right)\]
+
+\[\left( \begin{array}{c} p_0 \\ p_1 \end{array} \right)
+\xrightarrow{NOT}
+\left( \begin{array}{c} p_1 \\ p_0 \end{array} \right)\]
+
+<p>Or if we have two bits</p>
+
+\[\left( \begin{array}{c} p_0 \\ p_1 \end{array} \right),
+\left( \begin{array}{c} p_0 \\ p_1 \end{array} \right)\]
+
+<p>and want to do an XOR with two dependent bits</p>
+
+\[\left( \begin{array}{c} p_{00} \\ p_{01} \\ p_{10} \\ p_{11} \end{array} \right)
+\xrightarrow{XOR}
+\left( \begin{array}{c} p_0 \\ 0 \\ 0 \\ p_1 \end{array} \right)\]
+
+<p>But it is not possible (physically) to do something like this, which kind of does XOR with two independent bits:</p>
+
+\[\left( \begin{array}{c} p_{00} \\ p_{01} \\ p_{10} \\ p_{11} \end{array} \right)
+\xrightarrow{XOR'}
+\left( \begin{array}{c} p_0\centerdot p_0 \\ p_0\centerdot p_1 \\ 
+p_1\centerdot p_0 \\ p_1\centerdot p_1 \end{array} \right)\]
+
+<p>In other words, physically, in our universe, <strong>we can only do $l_1$ norm linear tranformation</strong>.</p>
+
+<!--more-->
+
+<h2 id="quantum-bit-qubit">Quantum Bit (qubit)</h2>
+<p>For qubit, we are able to do $l_2$ norm. A single qubit is difine as follows:</p>
+
+\[\left( \begin{array}{c} \alpha \\ \beta \end{array} \right)\in\mathbb{C}^2\\
+s.t.\ \lvert\alpha\rvert^2+\lvert\beta\rvert^2=1,\ \lvert\alpha\rvert:=\sqrt{\alpha\centerdot\overline{\alpha}}\\
+Prob[m=0]=\lvert\alpha\rvert^2=\left( \begin{array}{c} 1 \\ 0 \end{array} \right)\\
+Prob[m=1]=\lvert\beta\rvert^2=\left( \begin{array}{c} 0 \\ 1 \end{array} \right)\]
+
+<p>Certainly we can do transformation to one qubit. In this case, the transformation we have is $T\in\mathbb{C}^{2\times2}$. Before talking about transformations, we first introduce k-qubits as follows</p>
+
+\[\left( \begin{array}{c} 
+        \alpha_{0\cdots00} \\ 
+        \alpha_{0\cdots01} \\
+        \alpha_{0\cdots10} \\
+        \vdots \\
+        \alpha_{1\cdots11} \end{array} \right)\in\mathbb{C}^{2^k}\\
+        s.t.\ \sum_{x\in\{0,1\}^k} \lvert\alpha_x\rvert^2=1\]
+
+<p>and our transformation becomes $T\in\mathbb{C}^{2^k\times2^k}$</p>
+
+<h2 id="some-notations">Some Notations</h2>
+
+\[v=
+\left( \begin{array}{c} 
+        \alpha_1 \\ 
+        \alpha_2 \\
+        \vdots \\
+        \alpha_d \end{array} \right)\in\mathbb{C}^{d}\\
+v^{\dagger}=(\bar{\alpha_1},\cdots,\bar{\alpha_d})\\
+&lt;v,w&gt;=v^{\dagger}\centerdot w=\overline{&lt;w,v&gt;}=&lt;v|w&gt;\\
+v\perp w\Leftrightarrow v^{\dagger}w=0\\
+\Vert v\Vert=\sqrt{\sum_{i=1}^{d}\alpha_i \bar{\alpha_i}}=v^{\dagger}v\\
+T=
+\left( \begin{array}{c} 
+        T_{11} &amp; \cdots &amp; T_{1d} \\ 
+        \vdots &amp; \ddots &amp; \vdots \\
+        T_{d1} &amp; \cdots &amp; T_{dd} \end{array} 
+\right)\\
+\bar{T}=
+\left( \begin{array}{c} 
+        \overline{T_{11}} &amp; \cdots &amp; \overline{T_{d1}} \\ 
+        \vdots &amp; \ddots &amp; \vdots \\
+        \overline{T_{1d}} &amp; \cdots &amp; \overline{T_{dd}} \end{array} 
+\right)\\
+\left( \begin{array}{c} 
+        \alpha_0 \\ 
+        \alpha_1 
+        \end{array} 
+\right)
+\otimes
+\left( \begin{array}{c} 
+        \alpha_0 \\ 
+        \alpha_1 \\
+        \end{array} 
+\right)=
+\left( \begin{array}{c} 
+        \alpha_0\beta_0 \\ 
+        \alpha_0\beta_1 \\
+        \alpha_1\beta_0 \\ 
+        \alpha_1\beta_1 \\
+        \end{array} 
+\right)\\
+\mathbb{C}^k\otimes\mathbb{C}^l=\mathbb{C}^{kl}\\
+if\ |\tilde{\Phi}&gt;=U|\Phi&gt;,|\tilde{\Psi}&gt;=U|\Psi&gt;,then\ &lt;\Phi|\Psi&gt;=&lt;\tilde{\Phi}|\tilde{\Psi}&gt;and\ &lt;\tilde{\Phi}|=&lt;\Phi|U^{\dagger}\\
+|0&gt;:=
+\left( \begin{array}{c} 
+        1 \\ 
+        0  \\
+    \end{array} 
+\right)\\
+|1&gt;:=
+\left( \begin{array}{c} 
+        0 \\ 
+        1  \\
+    \end{array} 
+\right)\\
+|+&gt;:=
+\left( \begin{array}{c} 
+        1/\sqrt{2} \\ 
+        1/\sqrt{2}  \\
+    \end{array} 
+\right)=1/\sqrt{2}(|0&gt;+|1&gt;)\\
+|-&gt;:=
+\left( \begin{array}{c} 
+        1/\sqrt{2} \\ 
+        -1/\sqrt{2}  \\
+    \end{array} 
+\right)=1/\sqrt{2}(|0&gt;-|1&gt;)\\
+H:=1/\sqrt{2}
+\left( \begin{array}{c} 
+        1 &amp; 1 \\ 
+        1 &amp; -1  \\
+    \end{array} 
+\right)\\
+H|0&gt;=|+&gt;\\
+H|1&gt;=|-&gt;\\
+H|+&gt;=|0&gt;\\
+H|-&gt;=|1&gt;\\
+|X,Y&gt;:=|X&gt;\otimes|Y&gt;\\
+if\ f:\{0,1\}^k\rightarrow\{0,1\},then\ |X,Z&gt;\xrightarrow{U_f}|X,Z+f(X)&gt;\]
+
+<h2 id="quantum-transformations">Quantum Transformations</h2>
+<p>$T$ is a quantum transformation iff</p>
+<ul>
+  <li>$T$ is linear: $T\in\mathbb{C}^{d\times d}$</li>
+  <li>$T$ is norm preserving $\Leftrightarrow\forall v\in\mathbb{C}^d,\Vert v\Vert^2=\Vert Tv\Vert^2\Rightarrow T\centerdot T^{\dagger}=I$</li>
+</ul>
+
+<h2 id="basic-quantum-gates-between-23-qubits">Basic Quantum Gates (Between 2/3 qubits)</h2>
+
+\[SWAP:=
+\left( \begin{array}{c} 
+        1 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 1 &amp; 0\\ 
+        0 &amp; 1 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 0 &amp; 1
+    \end{array}
+\right)\\
+i.e.\ 
+(X,Y)\xrightarrow{SWAP}(Y,X)\\
+CNOT:=
+\left( \begin{array}{c} 
+        1 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 1 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 0 &amp; 1\\ 
+        0 &amp; 0 &amp; 1 &amp; 0 
+    \end{array}
+\right)\\
+
+i.e.\ 
+(X,0/1)\xrightarrow{CNOT}
+\left\{ \begin{array}{rcl}
+(X,0/1) &amp; \mbox{if} &amp; X=0 \\ 
+(X,1/0)  &amp; \mbox{if} &amp; X=1 \\
+\end{array}\right.\\
+
+CCNOT:=
+\left( \begin{array}{c} 
+        1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\ 
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\ 
+    \end{array}
+\right)\\
+i.e.\ 
+(X,Y,Z)\xrightarrow{CCNOT}(X,Y,Z\oplus X\wedge Y)\\
+(X,Y,0)\xrightarrow{CCNOT}(X,Y,X\wedge Y)\\\]
+
+<p><strong>Note</strong>: all transformations are inversible. Specifically, for the above 3 trans., the inverse of them are themselves. Namely, apply it twice and we will be back to the original position.</p>
+
+<p>To implement some classical function $f$, we need the input bits as well as some extra bits for input to have extra space to work with.</p>
+
+<h2 id="one-small-quantum-algorithm-example">One Small Quantum Algorithm Example</h2>
+
+<p>Here we will talk about a small example of quantum algorithms, just to get a feel of how quantum gates works and why it is sometimes more efficient than classical algorithms.</p>
+
+<p><strong>Deutsch Problem</strong></p>
+
+<p>Given \(f\:\{0,1\}\rightarrow\{0,1\}\), we ask if \(f(0)=f(1)\).
+Classically we have to evaluate twice: both \(f(0)\) and \(f(1)\).
+Quantumly we can solve it with one transformation and evaluate it.</p>
+
+<p>$input:\vert0,1&gt;$</p>
+<ol>
+  <li>$\vert0,1&gt;\xrightarrow{H}\vert+,-&gt;$</li>
+  <li>$\vert+,-&gt;\xrightarrow{U_f}???$</li>
+</ol>
+
+<p>So</p>
+
+\[|b,-&gt;\xrightarrow{U_f}\cdots\rightarrow|(-1)^{f(b)}b,-&gt;\\
+And\\
+|+,-&gt;\xrightarrow{U_f}
+1/\sqrt{2}((-1)^{f(0)}\centerdot|0&gt;+(-1)^{f(1)}\centerdot|1&gt;)\otimes|-&gt;\rightarrow\\
+\left\{ \begin{array}{rcl}
+\pm|+&gt; &amp; \mbox{if} &amp; f(0)=f(1) \\ 
+\pm|-&gt;  &amp; \mbox{if} &amp; f(0)\neq f(1) \\
+\end{array}\right.\]
+
+<p>So if we measure the result, we will see $”0”\ iff\ f(0)=f(1)$, and $”1”\ iff\ f(0)\neq f(1)$</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/09/%E8%B5%AB%E7%82%8E%E5%89%8D%E5%9B%9B%E7%AB%A0%E6%84%9F%E6%83%B3/">赫炎前四章感想</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/11/Cache-Oblivious-Algorithms/">Cache Oblivious Algorithms</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/10/Basic-Quantum-Computing/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#basic-quantum-computing-with-least-physics-possible">Basic Quantum Computing with Least Physics Possible</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#classical-probability-bit">Classical Probability Bit</a></li>
+<li class="toc-entry toc-h2"><a href="#quantum-bit-qubit">Quantum Bit (qubit)</a></li>
+<li class="toc-entry toc-h2"><a href="#some-notations">Some Notations</a></li>
+<li class="toc-entry toc-h2"><a href="#quantum-transformations">Quantum Transformations</a></li>
+<li class="toc-entry toc-h2"><a href="#basic-quantum-gates-between-23-qubits">Basic Quantum Gates (Between 2/3 qubits)</a></li>
+<li class="toc-entry toc-h2"><a href="#one-small-quantum-algorithm-example">One Small Quantum Algorithm Example</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

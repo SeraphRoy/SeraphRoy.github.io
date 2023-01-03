@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Basic Computational Type Theory</title>
+    <meta name="description" content="  Family of TypesFamily of TypesFamily of types is a generalization of the concept of a predicate/relation.Formally, given a type $A:U$ in a universe of type...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Basic Computational Type Theory | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Basic Computational Type Theory" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Family of Types Family of Types Family of types is a generalization of the concept of a predicate/relation. Formally, given a type $A:U$ in a universe of types $U$, one may havea family of types $B:A\rightarrow U$, which assigns to each term $a:A$ a type $B(a):U$. We say that the type $B(a)$ varies with $a$. e.g. the following proposition [x:\mathbb{N}\vdash even(x)] is a predicate / propositional function / a family of types (indexed by \(\mathbb{N}\)) / fibration. We can rewrite it as [{even(x)\ prop/type}_{x:\mathbb{N}}] The idea is that we are exhibiting a family of types/proofs in that if you give me any particular choice of number, it’s going to give me back a proposition, which may or maynot be inhabitied, but they are all types. For example, \(even(3)\) will be uninhabited, and \(even(2)\) will be inhabitited." />
+<meta property="og:description" content="Family of Types Family of Types Family of types is a generalization of the concept of a predicate/relation. Formally, given a type $A:U$ in a universe of types $U$, one may havea family of types $B:A\rightarrow U$, which assigns to each term $a:A$ a type $B(a):U$. We say that the type $B(a)$ varies with $a$. e.g. the following proposition [x:\mathbb{N}\vdash even(x)] is a predicate / propositional function / a family of types (indexed by \(\mathbb{N}\)) / fibration. We can rewrite it as [{even(x)\ prop/type}_{x:\mathbb{N}}] The idea is that we are exhibiting a family of types/proofs in that if you give me any particular choice of number, it’s going to give me back a proposition, which may or maynot be inhabitied, but they are all types. For example, \(even(3)\) will be uninhabited, and \(even(2)\) will be inhabitited." />
+<link rel="canonical" href="https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/" />
+<meta property="og:url" content="https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-02-20T20:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Basic Computational Type Theory" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Family of Types Family of Types Family of types is a generalization of the concept of a predicate/relation. Formally, given a type $A:U$ in a universe of types $U$, one may havea family of types $B:A\\rightarrow U$, which assigns to each term $a:A$ a type $B(a):U$. We say that the type $B(a)$ varies with $a$. e.g. the following proposition [x:\\mathbb{N}\\vdash even(x)] is a predicate / propositional function / a family of types (indexed by \\(\\mathbb{N}\\)) / fibration. We can rewrite it as [{even(x)\\ prop/type}_{x:\\mathbb{N}}] The idea is that we are exhibiting a family of types/proofs in that if you give me any particular choice of number, it’s going to give me back a proposition, which may or maynot be inhabitied, but they are all types. For example, \\(even(3)\\) will be uninhabited, and \\(even(2)\\) will be inhabitited.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/"},"@type":"BlogPosting","headline":"Basic Computational Type Theory","dateModified":"2018-02-20T20:00:00+00:00","datePublished":"2018-02-20T20:00:00+00:00","url":"https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Basic Computational Type Theory</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-02-20
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>&nbsp;
+    
+        <a href="/category/#Type Theory" title="Category: Type Theory" rel="category">Type Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>&nbsp;
+    
+        <!--a href="/tag/#Type+Theory" title="Tag: Type Theory" rel="tag">Type Theory</a-->
+        <a href="/tag/#Type Theory" title="Tag: Type Theory" rel="tag">Type Theory</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#family-of-types" id="markdown-toc-family-of-types">Family of Types</a>    <ul>
+      <li><a href="#some-notations" id="markdown-toc-some-notations">Some Notations</a></li>
+      <li><a href="#functionality--respect-for-equality" id="markdown-toc-functionality--respect-for-equality">Functionality / Respect for Equality</a></li>
+      <li><a href="#pi-and-sigma-types" id="markdown-toc-pi-and-sigma-types">$\Pi$ and $\Sigma$ Types</a></li>
+    </ul>
+  </li>
+  <li><a href="#axiom-theorm-of-choice" id="markdown-toc-axiom-theorm-of-choice">“Axiom” (Theorm) of Choice</a></li>
+  <li><a href="#natural-numbers-mathbbn" id="markdown-toc-natural-numbers-mathbbn">Natural Numbers \(\mathbb{N}\)</a></li>
+  <li><a href="#identity-type" id="markdown-toc-identity-type">Identity Type</a>    <ul>
+      <li><a href="#therommartin-lof" id="markdown-toc-therommartin-lof">Therom[Martin-Lof]</a></li>
+    </ul>
+  </li>
+  <li><a href="#function-extensionality--principle-of-extensionality" id="markdown-toc-function-extensionality--principle-of-extensionality">Function Extensionality / Principle of Extensionality</a>    <ul>
+      <li><a href="#extensional-type-theory-ett--homotopy-set-theory" id="markdown-toc-extensional-type-theory-ett--homotopy-set-theory">Extensional Type Theory (ETT) / (Homotopy) Set Theory</a></li>
+      <li><a href="#observational-type-theory" id="markdown-toc-observational-type-theory">Observational Type Theory</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="family-of-types">Family of Types</h1>
+
+<p>Family of types is a generalization of the concept of a predicate/relation.</p>
+
+<p>Formally, given a type $A:U$ in a universe of types $U$, one may havea <strong>family of types</strong>
+$B:A\rightarrow U$, which assigns to each term $a:A$ a type $B(a):U$. We say that the
+type $B(a)$ varies with $a$.</p>
+
+<p>e.g.</p>
+
+<p>the following proposition</p>
+
+\[x:\mathbb{N}\vdash even(x)\]
+
+<p>is a predicate / propositional function / a family of types (indexed by \(\mathbb{N}\)) / fibration.
+We can rewrite it as</p>
+
+\[\{even(x)\ prop/type\}_{x:\mathbb{N}}\]
+
+<p>The idea is that we are exhibiting a family of types/proofs in that if you give me any
+particular choice of number, it’s going to give me back a proposition, which may or maynot
+be inhabitied, but they are all types.</p>
+
+<p>For example, \(even(3)\) will be uninhabited, and \(even(2)\) will be inhabitited.</p>
+
+<!--more-->
+
+<h2 id="some-notations">Some Notations</h2>
+
+\[\Gamma\ ctx\]
+
+<p>means $\Gamma$ being a context.</p>
+
+\[\Gamma\equiv\Delta\]
+
+<p>means definitionally equivalent context.</p>
+
+\[\Gamma\vdash A\ type\]
+
+<p>means we have a family of types named $A$ indexed by elements of $\Gamma$</p>
+
+\[x:A\vdash B_x\ type\]
+
+<p>means we have a family of types named $B$ indexed by $x$, which are elements of type $A$
+(sometimes subscript $x$ might be omitted)</p>
+
+\[\Gamma\vdash A\equiv B\ type\]
+
+<p>means definitionally equivalent families of types.</p>
+
+\[\Gamma\vdash M:A\]
+
+<p>means we have an element of the type</p>
+
+\[\Gamma\vdash M\equiv N:A\]
+
+<p>means definitionally equivalent elements of that type</p>
+
+<h2 id="functionality--respect-for-equality">Functionality / Respect for Equality</h2>
+
+<p>Here is the basic idea:</p>
+
+\[x:A\vdash B_x\ type\]
+
+\[\frac{M:A}
+{[M/x]B_x\ type}\]
+
+<p>Some important points:</p>
+
+\[\frac{\Gamma\vdash M:A,\Gamma\vdash A\equiv B\ type}
+{\Gamma\vdash M:B}\]
+
+<p>Functionality condition says more:</p>
+
+\[\frac{x:A\vdash B\ type,M\equiv N:A}
+{[M/x]B\equiv[N/x]B\ type}\]
+
+<p>In other words, if I give you definitionally equal instances, they they are going to be
+definitionally equal types.</p>
+
+<h2 id="pi-and-sigma-types">$\Pi$ and $\Sigma$ Types</h2>
+
+<p>$\Pi$ and $\Sigma$ types are both families of types.</p>
+
+<p>$\Pi$ types are a list of types, where each type is a function mapping from one type to another type.</p>
+
+<p>Formation of $\Pi$ ($\Pi-F$):</p>
+
+\[\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash B\ type}
+{\Gamma\vdash\Pi_xA.B\ type}\]
+
+<p>Introduction rule ($\Pi-I$):</p>
+
+\[\frac{\Gamma x:A\vdash M_x:B_x}
+{\Gamma\vdash (\lambda_{x:A}.M_x):\Pi_xA.B}\]
+
+<p>Elimination rule ($\Pi-E$):</p>
+
+\[\frac{\Gamma\vdash M:\Pi_xA.B\ \ \ \Gamma\vdash N:A}
+{\Gamma\vdash MN:[N/x]B}\]
+
+<p>$\Pi$ Computation / Equivalence rule ($\Pi-C$):</p>
+
+\[\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash M_x:B\ \ \ \Gamma\vdash N:A}
+{\Gamma\vdash(\lambda_{x:A}.M_x)N\equiv[N/x]M:[N/x]B}\]
+
+<p>$\Sigma$ types are a list of indexed pair, where the first term is any type,
+and the second term is a function of the first term.</p>
+
+<p>Formation of $\Sigma$ ($\Sigma-F$):</p>
+
+\[\frac{\Gamma\vdash A\ type\ \ \ \Gamma x:A\vdash B_x\ type}
+{\Gamma\vdash\Sigma_xA.B\ type}\]
+
+<p>Introduction rule ($\Sigma-I$):</p>
+
+\[\frac{\Gamma\vdash M:A\ \ \ \Gamma\vdash N:[M/x]B}
+{\Gamma\vdash&lt;M,N&gt;:\Sigma_xA.B}\]
+
+<p>Elimination rule ($\Sigma-E$):</p>
+
+\[\frac{\Gamma\vdash M:\Sigma_xA.B}
+{\Gamma\vdash\Pi_1(M):A}\]
+
+\[\frac{\Gamma\vdash M:\Sigma_xA.B}
+{\Gamma\vdash\Pi_2(M):[\Pi_1(M)/x]B}\]
+
+<p>Equivalence rule:</p>
+
+\[\Pi_1&lt;M,N&gt;\equiv M\]
+
+\[\Pi_2&lt;M,N&gt;\equiv N\]
+
+<!--more-->
+
+<h1 id="axiom-theorm-of-choice">“Axiom” (Theorm) of Choice</h1>
+
+<p>Every total binary relation contains a funtion, where a total relation means:</p>
+
+\[\forall x:A,\exists y:B,s.t.\ R(x,y)\]
+
+<p>So the axiom of choice in set theory, where $f$ is the choice function:</p>
+
+\[(\forall x:A,\exists y:B,R(x,y))\supset\exists f:A\rightarrow B\forall x:A,R(x,fx)\]
+
+<p>In type theory, it is actually a therom:</p>
+
+\[(\Pi_xA.(\Sigma_yB.R(x,y)))\longrightarrow(\Sigma_fA\rightarrow B.(\Pi_xA.R(x,fx)))\]
+
+<p>We can write the proof:</p>
+
+\[\lambda(t:(\Pi_xA.(\Sigma_yB.R(x,y)))).&lt;\lambda(x:A).\Pi_1(tx),\lambda(x:A).\Pi_2(tx)&gt;\]
+
+<p>Explanation: first it’s clear that what we want to proof is a map from left to right.
+Let’s explain what’s the types left and right and what should be the instance of those types.</p>
+
+<p>Left: the outer most is a $\Pi$ type of $A$ and something else, and we have $t$ the instance of left type.
+So $t$ must be a function mapping from $A$ to something. So we go one level deeper, it’s a $\Sigma$ type.
+An instance of it must be a tuple, where the first term is type $B$, the second term
+is a mapping from $B$ to $R$. So $t$ is a mapping from $A$ to a tuple.</p>
+
+<p>Right: the outer most is a $\Sigma$ type, so an instance of it is a tuple.
+The first term is a mapping from $A$ to $B$, the second term is an instance $\Pi$ type.
+So it should be a function mapping from $A$ to $R$.</p>
+
+<p>Therefore, our outer most $\lambda$ should return a tuple, and each term of it should
+be a function mapping from $A$ to something. If we apply $t$ to $x$, we get a tuple, or
+an instance of $\Sigma$ type. We can now apply elimination rules to it. $\Pi_1$ would
+give us type $B$, and $\Pi_1$ would give us $[\Pi_1(tx)/y]R(x,y)$, which is what we want.</p>
+
+<h1 id="natural-numbers-mathbbn">Natural Numbers \(\mathbb{N}\)</h1>
+
+<p>Introduction rules:</p>
+
+<p>(\(\mathbb{N}-I_0\)):</p>
+
+\[\frac{}
+{\Gamma\vdash 0:\mathbb{N}}\]
+
+<p>(\(\mathbb{N}-I_s\)):</p>
+
+\[\frac{\Gamma\vdash M:\mathbb{N}}
+{\Gamma\vdash s(M):\mathbb{N}}\]
+
+<p>Elimination rules:</p>
+
+<ul>
+  <li>Computational/non-dependent “Godel’s T”</li>
+</ul>
+
+\[\frac{\Gamma\vdash M:\mathbb{N},\Gamma\vdash C\ type,\Gamma\vdash N_0:C,\Gamma x:C\vdash N_s:C}
+{\Gamma\vdash rec(M;N_0;x.N_s):C}\]
+
+<p>where $rec$ has the following definition:</p>
+
+\[rec(0;N_0;x.N_s)\equiv N_0\\
+rec(s(M);N_0;x.N_s)\equiv[rec(M;N_0;x.N_s)/x]N_s\]
+
+<ul>
+  <li>Proof by induction / dependent</li>
+</ul>
+
+\[\frac{\Gamma\vdash M:\mathbb{N},\Gamma x:\mathbb{N}\vdash C\ type,\Gamma\vdash N_0:[0/x]C,\Gamma x:\mathbb{N}\ y:C\vdash N_s:[s(x)/x]C}
+{\Gamma\vdash rec(M;N_0;x,y.N_s):[M/x]C}\]
+
+<p>or</p>
+
+\[\frac{\Gamma x:\mathbb{N}\vdash C\ type,\Gamma\vdash N_0:[0/x]C,\Gamma x:\mathbb{N}\ y:C\vdash N_s:[s(x)/x]C}
+{\Gamma\ u:\mathbb{N}\vdash rec(u;N_0;x,y.N_s):[u/x]C}\]
+
+<p>where $rec$ has the following definition:</p>
+
+\[rec(0;N_0;x,y.N_s)\equiv N_0\\
+rec(s(M);N_0;x,y.N_s)\equiv[M,rec(M;N_0;x,y.N_s)/x,y]N_s\]
+
+<h1 id="identity-type">Identity Type</h1>
+
+<p>Identity formation ($Id_A-F$):</p>
+
+\[\frac{\Gamma\vdash A\ type,\Gamma\vdash M:A,\Gamma\vdash N:A}
+{\Gamma\vdash Id_A(M,N)\ type}\]
+
+<p>It is a type of proofs that $M$ and $N$ are equal(?) elements of type $A$.</p>
+
+<p>($Id_A-I$):</p>
+
+\[\frac{\Gamma\vdash M:A}
+{\Gamma\vdash refl_A(M):Id_A(M,M)}\]
+
+<p>It is the least reflexive relation, meaning that that’s the only rule we have for identiy,
+$refl$ is the only thing we can have eventually.</p>
+
+<p>Elimination rule:</p>
+
+\[\frac{\Gamma\vdash P:Id_A(M,N),\Gamma x:A\ y:A\ z:Id_A(x,y)\vdash C_{x,y,z}\ type,\Gamma x:A\vdash Q:[x,x,refl(x)/x,y,z]C}
+{\Gamma\vdash J_{x,y,z.C}(P;x.Q):[M,N,P/x,y,z]C}\]
+
+<p>Side Note: \(\Gamma x:A,y:A,z:Id_A(x,y)\vdash C_{x,y,z}\ type\) and any others that
+“construct” the “$C\ type$” like things is also called <strong>motive</strong>.</p>
+
+<p>Computation rule:</p>
+
+\[J(refl(M);x.Q)\equiv[M/x]Q\]
+
+<ul>
+  <li>Equality is Symmetric</li>
+</ul>
+
+<p>define $sym$ such that ($sym(x)$ can also be written as $x^{-1}$):</p>
+
+\[x:Id_A(M,N)\vdash sym(x):Id_A(N,M)\]
+
+<p>Proof:</p>
+
+<p>We use the motive: \(u,v,\_,Id_A(v,u)\) for $J$, corresponding to $x,y,z,C$ in the above elimination rule motive:</p>
+
+\[y:A\vdash refl_A(y):Id_A(y,y)\\
+sym(x):=J(x;y.refl_A(y)):[M,N/u,v]Id_A(v,u)=Id_A(N,M)\]
+
+<ul>
+  <li>Equality is Transitive</li>
+</ul>
+
+<p>find \(trans(x,y)\) such that \(x:Id_A(M,N),y:Id_A(N,P)\vdash trans(x,y):Id_A(M,P)\)
+where $trans(x,y)$ is just like composition $y\cdot x$.</p>
+
+<p>Proof:</p>
+
+<p>We use the motive: \(u,v,\_,Id_A(v,P)\rightarrow Id_A(u,P)\) for $J$,
+corresponding to $x,y,z,C$ in the above elimination rule motive:</p>
+
+\[z:A\vdash Q:Id_A(v,P)\rightarrow Id_A(u,P)\\
+J(x;Q):[M,N/u,v]Id_A(v,P)\rightarrow Id_A(u,P)=Id_A(N,P)\rightarrow Id_A(M,P)\\
+then\\
+J(x;Q)(y):Id_A(M,P)\]
+
+<ul>
+  <li>Substitutivity/Functionality/Transport</li>
+</ul>
+
+\[\frac{\Gamma x:A\vdash B\ type,\Gamma\vdash P:Id_A(M,N),\Gamma\vdash Q:[M/x]B}
+{\Gamma\vdash subst(P,Q):[N/x]B}\]
+
+<p>Proof:</p>
+
+<p>We use the motive: \(u,v,\_,[u/x]B\rightarrow[v/x]B\) for $J$,
+corresponding to $x,y,z,C$ in the above elimination rule motive:</p>
+
+<ul>
+  <li>Respect</li>
+</ul>
+
+\[\frac{\Gamma x:A\vdash Q:B,\Gamma\vdash P:Id_A(M,N)}
+{\Gamma\vdash resp(Q;P):Id_B([M/x]Q,[N/x]Q)}\]
+
+<h2 id="therommartin-lof">Therom[Martin-Lof]</h2>
+
+<p>If $P:Id_A(M,N)$ (closed), then $M\equiv N:A$ (definitionally). Which means $Id_A$
+internalizes definitional equality.</p>
+
+<p>Fact(1): There is a $P$ such that \(x:\mathbb{N},y:\mathbb{N}\vdash P:Id_{\mathbb{N}}(x+y,y+x)\)</p>
+
+<p>But! The type \(Id_{\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}}(\lambda_x\lambda_y.x+y,\lambda_x\lambda_y.y+x)\)
+has no proof (not inhabited).</p>
+
+<h1 id="function-extensionality--principle-of-extensionality">Function Extensionality / Principle of Extensionality</h1>
+
+\[\frac{x:A\vdash P_x:Id_{B_x}(Mx,Nx)}
+{\vdash ext(P):Id_{\Pi_xA.B}(M,N)}\]
+
+<p>It is not derivable in <strong>Intentional Type Theory</strong> (ITT). But it is inter-derivable from:</p>
+
+<p>$\eta$:</p>
+
+\[\frac{\Gamma\vdash M:\Pi_xA.B}
+{\Gamma\vdash\eta:Id_{\Pi_xA.B}(M,\lambda_x.A:M_x)}\]
+
+<p>$\xi$ (weak extensionality):</p>
+
+\[\frac{\Gamma x:A\vdash P:Id_B(M,N)}
+{\Gamma\vdash\xi(P):Id_{\Pi_xA.B}(\lambda_x.M,\lambda_x.N)}\]
+
+<p>So it is not derivable in the type theory we developed before, so what do we do about it?
+There are a few options. One is to justify that there is another form of type theory,
+so that we can derive the above rule from the new form of type theory.</p>
+
+<p>One is called <strong>Extensional Type Theory</strong> (ETT) or <strong>(Homotopy) Set Theory</strong>.</p>
+
+<h2 id="extensional-type-theory-ett--homotopy-set-theory">Extensional Type Theory (ETT) / (Homotopy) Set Theory</h2>
+
+<p>We replace $Id-E$ with the following rules:</p>
+
+<p>reflection:</p>
+
+\[\frac{\Gamma\vdash P:Id_A(M,N)}
+{\Gamma\vdash M=N:A}\]
+
+<p>Note: it is judgemental equlity, not definitional equality.</p>
+
+<p>uniqueness of identity proofs (UIP) / <strong>Discreteness</strong>:</p>
+
+\[\frac{\Gamma\vdash P:Id_A(M,N)}
+{\Gamma\vdash P=refl(M):Id_A(M,N)}\]
+
+<p>In ETT, Fact(1) means that: $x,y:\mathbb{N}\vdash x+y=y+x:\mathbb{N}$, and so it follows as a corollary that:
+$\lambda_x\lambda_y.x+y=\lambda_x\lambda_y.y+x:\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}$,
+then we will have a proof $refl:Id_{\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{N}}(…,…)$</p>
+
+<p>In ETT, if we think of type $A$ as a space, it is <em>discrete</em> in the sense that the
+only paths of elements of $A$ are the paths between elements and themselves. There is
+no path between two different points. We say that as a <em>Homotopically discrete</em> space, which
+is called a <em>set</em>, which is totally different from mathematic’s set theory.</p>
+
+<p>Besides ETT, we can justify another form of type theory, called <strong>Observational Type Theory</strong> (OTT).</p>
+
+<h2 id="observational-type-theory">Observational Type Theory</h2>
+
+<p>It is another attempt at dealing with the idea that types are homotopically discrete.</p>
+
+<p>Define: \(Id_A\) by induction on the structure of $A$:</p>
+
+\[Id_{\Pi_xA.B}(M,N):=\Pi_{x:A}Id_B(Mx,Nx)\\
+refl_{\Pi_xA.B}(M):=\lambda_{x:A}.refl_B(Mx)\]
+
+<p>So that the function extensionality can be proof here in OTT</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/20/Recursive-Types/">Recursive Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/18/Recursive-Programs/">Recursive Programs
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/02/19/Type-Theory-Foundations/">Type Theory Foundations</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/02/24/Equational-Reasoning/">Equational Reasoning</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2018/02/20/Basic-Computational-Type-Theory/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#family-of-types">Family of Types</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#some-notations">Some Notations</a></li>
+<li class="toc-entry toc-h2"><a href="#functionality--respect-for-equality">Functionality / Respect for Equality</a></li>
+<li class="toc-entry toc-h2"><a href="#pi-and-sigma-types">$\Pi$ and $\Sigma$ Types</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#axiom-theorm-of-choice">“Axiom” (Theorm) of Choice</a></li>
+<li class="toc-entry toc-h1"><a href="#natural-numbers-mathbbn">Natural Numbers \(\mathbb{N}\)</a></li>
+<li class="toc-entry toc-h1"><a href="#identity-type">Identity Type</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#therommartin-lof">Therom[Martin-Lof]</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#function-extensionality--principle-of-extensionality">Function Extensionality / Principle of Extensionality</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#extensional-type-theory-ett--homotopy-set-theory">Extensional Type Theory (ETT) / (Homotopy) Set Theory</a></li>
+<li class="toc-entry toc-h2"><a href="#observational-type-theory">Observational Type Theory</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

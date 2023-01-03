@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Streaming Systems</title>
+    <meta name="description" content="  Layout of the bookI recently read through the book Streaming Systems so think it would be a goodidea to write up a summary/thoughts about it. The book is r...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/07/24/Streaming-Systems/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Streaming Systems | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Streaming Systems" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Layout of the book I recently read through the book Streaming Systems so think it would be a good idea to write up a summary/thoughts about it. The book is recommended by 评:Streaming System(简直炸裂,强势安利) on zhihu. Layout of the book The book consists of 10 chapters. The book starts of by stating that traditionally batching systems, streaming systems, databases are three distinct concepts. Batching systems are systems that process finite amount of data (bounded data) producing accurate (strong consistent) (exactly-once) results which typically have higher throughput and higher latency. Streaming systems deal with unbounded data and are typically not as accurate (consistent) as batching systems, which could be implemented by repeated batching. Databases are just persistent data storage that one can do CRUD operations and queries on. The first half of the book summarizes various techniques that modern streaming systems use to achieve certain goals like dealing with out-of-order updates based on event time and end-to-end exactly-once processing. The argument the author wants to make for the first half of the book is that, given the recent improvements of various streaming systems, strong consistency can be achieve in streaming systems (examples are MillWheel, Spark Streaming, and Flink). As a result, streaming systems can have parity with batch. In the second half of the book, the author presents a view or way of thinking, where streaming systems and databases are just two sides of a coin, where they are just processors of two different forms of data, called “Theory of Stream and Table Relativity”, and show that how those different techniques used in streaming systems like trigger, watermark, and windowing play a role in the new unified world. The author also talks about how to extend the current SQL syntax to support the new unified theory (which unfortunately I personally am not interested in so I just skimmed through that part). I think the core of this book, or I personally find the most value out of this book, is the point of view that tables (databases) and streams are basically talking about the same thing. This is a conclusion the author draws after many years of working in distributed systems and examining different techniques used by modern streaming systems, this post will talk in the reverse order of the book, such that the theory will first be presented and explained, and after that various techniques will be presented to see how they fit into the big picture. I won’t be going into details of how those techniques work though." />
+<meta property="og:description" content="Layout of the book I recently read through the book Streaming Systems so think it would be a good idea to write up a summary/thoughts about it. The book is recommended by 评:Streaming System(简直炸裂,强势安利) on zhihu. Layout of the book The book consists of 10 chapters. The book starts of by stating that traditionally batching systems, streaming systems, databases are three distinct concepts. Batching systems are systems that process finite amount of data (bounded data) producing accurate (strong consistent) (exactly-once) results which typically have higher throughput and higher latency. Streaming systems deal with unbounded data and are typically not as accurate (consistent) as batching systems, which could be implemented by repeated batching. Databases are just persistent data storage that one can do CRUD operations and queries on. The first half of the book summarizes various techniques that modern streaming systems use to achieve certain goals like dealing with out-of-order updates based on event time and end-to-end exactly-once processing. The argument the author wants to make for the first half of the book is that, given the recent improvements of various streaming systems, strong consistency can be achieve in streaming systems (examples are MillWheel, Spark Streaming, and Flink). As a result, streaming systems can have parity with batch. In the second half of the book, the author presents a view or way of thinking, where streaming systems and databases are just two sides of a coin, where they are just processors of two different forms of data, called “Theory of Stream and Table Relativity”, and show that how those different techniques used in streaming systems like trigger, watermark, and windowing play a role in the new unified world. The author also talks about how to extend the current SQL syntax to support the new unified theory (which unfortunately I personally am not interested in so I just skimmed through that part). I think the core of this book, or I personally find the most value out of this book, is the point of view that tables (databases) and streams are basically talking about the same thing. This is a conclusion the author draws after many years of working in distributed systems and examining different techniques used by modern streaming systems, this post will talk in the reverse order of the book, such that the theory will first be presented and explained, and after that various techniques will be presented to see how they fit into the big picture. I won’t be going into details of how those techniques work though." />
+<link rel="canonical" href="https://www.gaeblog.com/2019/07/24/Streaming-Systems/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/07/24/Streaming-Systems/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-07-24T10:25:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Streaming Systems" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Layout of the book I recently read through the book Streaming Systems so think it would be a good idea to write up a summary/thoughts about it. The book is recommended by 评:Streaming System(简直炸裂,强势安利) on zhihu. Layout of the book The book consists of 10 chapters. The book starts of by stating that traditionally batching systems, streaming systems, databases are three distinct concepts. Batching systems are systems that process finite amount of data (bounded data) producing accurate (strong consistent) (exactly-once) results which typically have higher throughput and higher latency. Streaming systems deal with unbounded data and are typically not as accurate (consistent) as batching systems, which could be implemented by repeated batching. Databases are just persistent data storage that one can do CRUD operations and queries on. The first half of the book summarizes various techniques that modern streaming systems use to achieve certain goals like dealing with out-of-order updates based on event time and end-to-end exactly-once processing. The argument the author wants to make for the first half of the book is that, given the recent improvements of various streaming systems, strong consistency can be achieve in streaming systems (examples are MillWheel, Spark Streaming, and Flink). As a result, streaming systems can have parity with batch. In the second half of the book, the author presents a view or way of thinking, where streaming systems and databases are just two sides of a coin, where they are just processors of two different forms of data, called “Theory of Stream and Table Relativity”, and show that how those different techniques used in streaming systems like trigger, watermark, and windowing play a role in the new unified world. The author also talks about how to extend the current SQL syntax to support the new unified theory (which unfortunately I personally am not interested in so I just skimmed through that part). I think the core of this book, or I personally find the most value out of this book, is the point of view that tables (databases) and streams are basically talking about the same thing. This is a conclusion the author draws after many years of working in distributed systems and examining different techniques used by modern streaming systems, this post will talk in the reverse order of the book, such that the theory will first be presented and explained, and after that various techniques will be presented to see how they fit into the big picture. I won’t be going into details of how those techniques work though.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/07/24/Streaming-Systems/"},"@type":"BlogPosting","headline":"Streaming Systems","dateModified":"2019-07-24T10:25:00+00:00","datePublished":"2019-07-24T10:25:00+00:00","url":"https://www.gaeblog.com/2019/07/24/Streaming-Systems/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Streaming Systems</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-07-24
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Distributed System" title="Category: Distributed System" rel="category">Distributed System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Books" title="Tag: Books" rel="tag">Books</a-->
+        <a href="/tag/#Books" title="Tag: Books" rel="tag">Books</a>&nbsp;
+    
+        <!--a href="/tag/#Distributed+System" title="Tag: Distributed System" rel="tag">Distributed System</a-->
+        <a href="/tag/#Distributed System" title="Tag: Distributed System" rel="tag">Distributed System</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#layout-of-the-book" id="markdown-toc-layout-of-the-book">Layout of the book</a></li>
+  <li><a href="#theory-of-stream-and-table-relativity" id="markdown-toc-theory-of-stream-and-table-relativity">Theory of Stream and Table Relativity</a>    <ul>
+      <li><a href="#stream--stream-nongrouping-element-wise-operations" id="markdown-toc-stream--stream-nongrouping-element-wise-operations">stream → stream: Nongrouping (element-wise) operations</a></li>
+      <li><a href="#stream--table-grouping-operations" id="markdown-toc-stream--table-grouping-operations">stream → table: Grouping operations</a></li>
+      <li><a href="#table--stream-ungrouping-triggering-operations" id="markdown-toc-table--stream-ungrouping-triggering-operations">table → stream: Ungrouping (triggering) operations</a></li>
+      <li><a href="#table--table-none" id="markdown-toc-table--table-none">table → table: (none)</a></li>
+    </ul>
+  </li>
+  <li><a href="#thoughts" id="markdown-toc-thoughts">Thoughts</a></li>
+</ul>
+
+<p>I recently read through the book <em>Streaming Systems</em> so think it would be a good
+idea to write up a summary/thoughts about it. The book is recommended by
+<a href="https://zhuanlan.zhihu.com/p/43301661">评:Streaming System(简直炸裂,强势安利)</a> on
+zhihu.</p>
+
+<h2 id="layout-of-the-book">Layout of the book</h2>
+
+<p>The book consists of 10 chapters. The book starts of by stating that traditionally
+batching systems, streaming systems, databases are three distinct concepts.
+Batching systems are systems that process finite amount of data (bounded data)
+producing accurate (strong consistent) (exactly-once) results which typically have
+higher throughput and higher latency. Streaming systems deal with unbounded data
+and are typically not as accurate (consistent) as batching systems, which could be
+implemented by repeated batching. Databases are just persistent data storage that
+one can do CRUD operations and queries on. The first half of the book summarizes various
+techniques that modern streaming systems use to achieve certain goals like dealing
+with out-of-order updates based on event time and end-to-end exactly-once processing.
+The argument the author wants to make for the first half of the book is that,
+given the recent improvements of various streaming systems, strong consistency can be
+achieve in streaming systems (examples are MillWheel, Spark Streaming, and Flink).
+As a result, streaming systems can have parity with batch.</p>
+
+<p>In the second half of the book, the author presents a view or way of thinking, where
+streaming systems and databases are just two sides of a coin, where they are just
+processors of two different forms of data, called <em>“Theory of Stream and Table Relativity”</em>,
+and show that how those different techniques used in streaming systems like trigger,
+watermark, and windowing play a role in the new unified world. The author also talks
+about how to extend the current SQL syntax to support the new unified theory (which
+unfortunately I personally am not interested in so I just skimmed through that part).</p>
+
+<p>I think the core of this book, or I personally find the most value out of this book,
+is the point of view that tables (databases) and streams are basically talking about
+the same thing. This is a conclusion the author draws after many years of working in
+distributed systems and examining different techniques used by modern streaming
+systems, this post will talk in the reverse order of the book, such that the theory
+will first be presented and explained, and after that various techniques will be
+presented to see how they fit into the big picture. I won’t be going into details
+of how those techniques work though.</p>
+
+<!--more-->
+
+<h2 id="theory-of-stream-and-table-relativity">Theory of Stream and Table Relativity</h2>
+
+<p>Suppose there isn’t any streams or tables, there is just data, and processors of data.
+A processor is just a function that takes a dataset, do some calculation to it, and
+output a dataset. For some operations, we need to take a look at every single data
+in the dataset (like sum, average, and count), while for other a partial view of the
+dataset or even a view of a single data is enough (like filter, and +1). We can then
+think of streams are just “flowing” data over time, while a table is just a view of
+the data at one specific point of time, i.e. static data. So data is either static
+or dynamic, and we need transformations/operations of the two. The specific techniques
+described below is available in the book and there is also a nice example of how
+MapReduce fits into the theory. This post is just a summary mainly comes from Chapter 6
+of the book.</p>
+
+<h3 id="stream--stream-nongrouping-element-wise-operations">stream → stream: Nongrouping (element-wise) operations</h3>
+
+<p>Applying nongrouping operations to a stream alters the data in the stream while
+leaving them in motion, yielding a new stream with possibly different cardinality.</p>
+
+<h3 id="stream--table-grouping-operations">stream → table: Grouping operations</h3>
+
+<p>Grouping data within a stream brings those data to rest, yielding a table that evolves over time.</p>
+
+<ul>
+  <li>
+    <p>Windowing incorporates the dimension of event time into such groupings.</p>
+  </li>
+  <li>
+    <p>Merging windows dynamically combine over time, allowing them to reshape themselves in
+response to the data observed and dictating that key remain the unit of
+atomicity/parallelization, with window being a child component of grouping within that key.</p>
+  </li>
+</ul>
+
+<h3 id="table--stream-ungrouping-triggering-operations">table → stream: Ungrouping (triggering) operations</h3>
+
+<p>Triggering data within a table ungroups them into motion, yielding a stream that
+captures a view of the table’s evolution over time.</p>
+
+<ul>
+  <li>
+    <p>Watermarks provide a notion of input completeness relative to event time, which is
+a useful reference point when triggering event-timestamped data, particularly data
+grouped into event-time windows from unbounded streams.</p>
+  </li>
+  <li>
+    <p>The accumulation mode for the trigger determines the nature of the stream,
+dictating whether it contains deltas or values, and whether retractions for previous
+deltas/values are provided.</p>
+  </li>
+</ul>
+
+<h3 id="table--table-none">table → table: (none)</h3>
+
+<p>There are no operations that consume a table and yield a table, because it’s not
+possible for data to go from rest and back to rest without being put into motion.
+As a result, all modifications to a table are via conversion to a stream and back again.</p>
+
+<h2 id="thoughts">Thoughts</h2>
+
+<p>TBH I don’t really have the same strong feeling as the author of the recommendation
+in <a href="https://zhuanlan.zhihu.com/p/43301661">评:Streaming System(简直炸裂,强势安利)</a>.
+I think the main reason is that I don’t have much experience working on those
+“traditional” systems as the author does and to me this new kind of way to think about
+modern distributed system doesn’t “change” the way I think about these systems - it’s
+“just” a way to think about them. It doesn’t mean that the book and the view it presents
+isn’t great; it is wonderful in a way that it provides a way to view things in a higher
+dimension and when we take a close look a specific problem, we’ll have a good understanding
+of how it plays a role in the bigger picture, which is think is the most value of this book.
+In short, it’s a wonderful book that presents a complete new way of thinking about
+distributed systems based on years of experience of dealing with big data in Google.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/08/15/Data-Encoding-and-Transmission/">Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/08/15/Data-Models-Querys-and-Storage/">Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2019/08/15/Data-Models-Querys-and-Storage/">Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/07/24/Streaming-Systems/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/07/24/Streaming-Systems/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#layout-of-the-book">Layout of the book</a></li>
+<li class="toc-entry toc-h2"><a href="#theory-of-stream-and-table-relativity">Theory of Stream and Table Relativity</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#stream--stream-nongrouping-element-wise-operations">stream → stream: Nongrouping (element-wise) operations</a></li>
+<li class="toc-entry toc-h3"><a href="#stream--table-grouping-operations">stream → table: Grouping operations</a></li>
+<li class="toc-entry toc-h3"><a href="#table--stream-ungrouping-triggering-operations">table → stream: Ungrouping (triggering) operations</a></li>
+<li class="toc-entry toc-h3"><a href="#table--table-none">table → table: (none)</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#thoughts">Thoughts</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

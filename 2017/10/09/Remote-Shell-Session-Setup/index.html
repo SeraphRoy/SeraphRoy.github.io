@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Remote Shell Session Setup: iTerm2+tmux+mosh</title>
+    <meta name="description" content="  Requirements and CommentsRequirements and CommentsInspired by My Remote Shell Session SetupMy work requires connecting to a few different hosts via ssh. Si...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Remote Shell Session Setup: iTerm2+tmux+mosh | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Remote Shell Session Setup: iTerm2+tmux+mosh" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Requirements and Comments Requirements and Comments Inspired by My Remote Shell Session Setup My work requires connecting to a few different hosts via ssh. Similar to My Remote Shell Session Setup while still a little different, my personal requirements are as follows: I want one tab of the terminal I’m using to be connected to one remote host I want the shell to survive unaffected with no context loss the following events connection failure route change (like, toggling the VPN or changing Wi-fi) laptop sleep (like, me closing the lid) local terminal restart or laptop reboot I want to be able to copy-paste I want colors I want to launch it with a single command Some requirements are just copy pasted. Specifically for requirement #1，I used to manage various tabs by using screen/tmux alone. The problem with that approach is when you want to switch to next tab/session, you have to press the escape key (usually ctrl-b or something else) plus another key, which is 3 keys in total. 3 keys are too many for me; I want 2 keys only, so using the tab of the terminal itself might be a good idea. Also, because I need to get access to different hosts, I actually need multiple tmux windows, which is quite inconvenient." />
+<meta property="og:description" content="Requirements and Comments Requirements and Comments Inspired by My Remote Shell Session Setup My work requires connecting to a few different hosts via ssh. Similar to My Remote Shell Session Setup while still a little different, my personal requirements are as follows: I want one tab of the terminal I’m using to be connected to one remote host I want the shell to survive unaffected with no context loss the following events connection failure route change (like, toggling the VPN or changing Wi-fi) laptop sleep (like, me closing the lid) local terminal restart or laptop reboot I want to be able to copy-paste I want colors I want to launch it with a single command Some requirements are just copy pasted. Specifically for requirement #1，I used to manage various tabs by using screen/tmux alone. The problem with that approach is when you want to switch to next tab/session, you have to press the escape key (usually ctrl-b or something else) plus another key, which is 3 keys in total. 3 keys are too many for me; I want 2 keys only, so using the tab of the terminal itself might be a good idea. Also, because I need to get access to different hosts, I actually need multiple tmux windows, which is quite inconvenient." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-10-09T15:45:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Remote Shell Session Setup: iTerm2+tmux+mosh" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Requirements and Comments Requirements and Comments Inspired by My Remote Shell Session Setup My work requires connecting to a few different hosts via ssh. Similar to My Remote Shell Session Setup while still a little different, my personal requirements are as follows: I want one tab of the terminal I’m using to be connected to one remote host I want the shell to survive unaffected with no context loss the following events connection failure route change (like, toggling the VPN or changing Wi-fi) laptop sleep (like, me closing the lid) local terminal restart or laptop reboot I want to be able to copy-paste I want colors I want to launch it with a single command Some requirements are just copy pasted. Specifically for requirement #1，I used to manage various tabs by using screen/tmux alone. The problem with that approach is when you want to switch to next tab/session, you have to press the escape key (usually ctrl-b or something else) plus another key, which is 3 keys in total. 3 keys are too many for me; I want 2 keys only, so using the tab of the terminal itself might be a good idea. Also, because I need to get access to different hosts, I actually need multiple tmux windows, which is quite inconvenient.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/"},"@type":"BlogPosting","headline":"Remote Shell Session Setup: iTerm2+tmux+mosh","dateModified":"2017-10-09T15:45:00+00:00","datePublished":"2017-10-09T15:45:00+00:00","url":"https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Remote Shell Session Setup: iTerm2+tmux+mosh</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-10-09
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Random" title="Category: Random" rel="category">Random</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Mosh" title="Tag: Mosh" rel="tag">Mosh</a-->
+        <a href="/tag/#Mosh" title="Tag: Mosh" rel="tag">Mosh</a>&nbsp;
+    
+        <!--a href="/tag/#iTerm" title="Tag: iTerm" rel="tag">iTerm</a-->
+        <a href="/tag/#iTerm" title="Tag: iTerm" rel="tag">iTerm</a>&nbsp;
+    
+        <!--a href="/tag/#tmux" title="Tag: tmux" rel="tag">tmux</a-->
+        <a href="/tag/#tmux" title="Tag: tmux" rel="tag">tmux</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#requirements-and-comments" id="markdown-toc-requirements-and-comments">Requirements and Comments</a></li>
+  <li><a href="#my-solution" id="markdown-toc-my-solution">My Solution</a>    <ul>
+      <li><a href="#mosh" id="markdown-toc-mosh">Mosh</a></li>
+      <li><a href="#tmux" id="markdown-toc-tmux">tmux</a></li>
+      <li><a href="#iterm2" id="markdown-toc-iterm2">iTerm2</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="requirements-and-comments">Requirements and Comments</h2>
+
+<p>Inspired by <a href="https://blog.filippo.io/my-remote-shell-session-setup/">My Remote Shell Session Setup</a></p>
+
+<p>My work requires connecting to <em>a few</em> different hosts via ssh. Similar to <a href="https://blog.filippo.io/my-remote-shell-session-setup/">My Remote Shell Session Setup</a> while still a little different, my personal requirements are as follows:</p>
+
+<ol>
+  <li>I want one tab of the terminal I’m using to be connected to one remote host</li>
+  <li>I want the shell to survive unaffected with no context loss the following events
+    <ul>
+      <li>connection failure</li>
+      <li>route change (like, toggling the VPN or changing Wi-fi)</li>
+      <li>laptop sleep (like, me closing the lid)</li>
+      <li>local terminal restart or laptop reboot</li>
+    </ul>
+  </li>
+  <li>I want to be able to copy-paste</li>
+  <li>I want colors</li>
+  <li>I want to launch it with a single command</li>
+</ol>
+
+<p>Some requirements are just copy pasted. Specifically for requirement #1，I used to manage various tabs by using screen/tmux alone. The problem with that approach is when you want to switch to next tab/session, you have to press the escape key (usually ctrl-b or something else) plus another key, which is 3 keys in total. 3 keys are too many for me; I want 2 keys only, so using the tab of the terminal itself might be a good idea. Also, because I need to get access to different hosts, I actually need multiple tmux windows, which is quite inconvenient.</p>
+
+<!--more-->
+
+<h2 id="my-solution">My Solution</h2>
+
+<p>Similar to <a href="https://blog.filippo.io/my-remote-shell-session-setup/">My Remote Shell Session Setup</a>, I also use iterm2+mosh+tmux, with some different settings. I use Mac and <code class="language-plaintext highlighter-rouge">brew</code>, but similar commands should be available for linux as well. If you are using Windows, the best solution is to buy a Mac.</p>
+
+<h3 id="mosh">Mosh</h3>
+
+<p><code class="language-plaintext highlighter-rouge">brew install mosh</code> and replace your usual <code class="language-plaintext highlighter-rouge">ssh</code> command with <code class="language-plaintext highlighter-rouge">mosh</code> and it would just works.</p>
+
+<h3 id="tmux">tmux</h3>
+
+<p><code class="language-plaintext highlighter-rouge">brew install tmux</code>. The main reason why I need tmux is that mosh doesn’t quite support scrollback well. In <a href="https://blog.filippo.io/my-remote-shell-session-setup/">My Remote Shell Session Setup</a>, the author suggests one solution but scrolling is way less fluid than native, and most importantly, it requires building mosh from source on the server side and you need <code class="language-plaintext highlighter-rouge">sudo apt-get</code> to do that. Usually we don’t have root access to the server, so I give up the scrollback feature. If you have root access, that’s great and follow his steps to get scrollback working. If not, use tmux/screen for scrollback.</p>
+
+<h3 id="iterm2">iTerm2</h3>
+
+<p>Go to <code class="language-plaintext highlighter-rouge">Preference-&gt;Profiles</code> and click the plus sign at the bottom to create a new profile. I create one profile per remote host I want to connect to. You can specify a name for your profile, and a shortcut key for opening that profile. Then type the mosh command you use to connect to the server in the “Send text at start” field. Here is my example:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Remote-Shell-Session-Setup-1.png" alt="" /></p>
+
+<p>where <code class="language-plaintext highlighter-rouge">sshcvp</code> is the alias of <code class="language-plaintext highlighter-rouge">mosh --ssh='ssh -p 10140' r123s19 -- sh -c "tmux ls | grep -vq attached &amp;&amp; tmux a || tmux new"</code>. Why the heck is that so long? Becasue <code class="language-plaintext highlighter-rouge">"tmux ls | grep -vq attached &amp;&amp; tmux a || tmux new"</code> is just the tmux way of saying <code class="language-plaintext highlighter-rouge">screen -R</code>, which attaches to an unattached session if one exists or creates a new session if all sessions are attached or there is no session at all. I don’t like screen becasue it is not aesthetically appealing so I choose tmux. Why use <code class="language-plaintext highlighter-rouge">sh -c</code> but not directly run the following command? Because <code class="language-plaintext highlighter-rouge">mosh</code> doesn’t like <code class="language-plaintext highlighter-rouge">grep</code> and we can’t run <code class="language-plaintext highlighter-rouge">grep</code> directly. Adding <code class="language-plaintext highlighter-rouge">sh -c</code> is the workaround. <a href="https://github.com/mobile-shell/mosh/issues/931">Issue with mosh when running with grep</a>.</p>
+
+<p>Then you can just open a bunch of different profiles, each per tab, which are connected to different hosts. You can open more tabs than you usually need, just to be safe. Then click <code class="language-plaintext highlighter-rouge">Window-&gt;Save Window Arrangement</code>, which will save your arrangement for all of your tabs, and can be restored easily. To test that, press Cmd-q to close iTerm2. Then open iTerm2 again, go to <code class="language-plaintext highlighter-rouge">Window-&gt;Restore Window Arrangement</code> and select your saved arrangement and resotre it. You can see that all your tabs including your connections to those various hosts come back.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/09/10/Matrix-Game-Theory/">Matrix Game Theory</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/11/18/Garbage-Collection/">Garbage Collection</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/10/09/Remote-Shell-Session-Setup/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#requirements-and-comments">Requirements and Comments</a></li>
+<li class="toc-entry toc-h2"><a href="#my-solution">My Solution</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#mosh">Mosh</a></li>
+<li class="toc-entry toc-h3"><a href="#tmux">tmux</a></li>
+<li class="toc-entry toc-h3"><a href="#iterm2">iTerm2</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

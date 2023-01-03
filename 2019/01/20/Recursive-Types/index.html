@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Recursive Types</title>
+    <meta name="description" content="  Recap for Product/Sum Types          Product Types                  Introductions          Eliminations                    Sum Types                  Intro...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/01/20/Recursive-Types/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Recursive Types | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Recursive Types" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Recap for Product/Sum Types Product Types Introductions Eliminations Sum Types Introduction Eliminations Unit Recap for Product/Sum Types Brief recap for product and sum to have a consensus on notations. Product Types [\tau_1\times\tau_2] Introductions [\frac{\Gamma\vdash e_1:\tau_2,\Gamma\vdash e_2:\tau_2}{\Gamma\vdash &lt;e_1,e_2&gt;:\tau_1\times\tau_2}] Eliminations [\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash fst(e):\tau_1}] [\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash snd(e):\tau_2}] Sum Types [\tau_1+\tau_2] Introduction [\frac{\Gamma\vdash e_1:\tau_1}{\Gamma\vdash inl_{\tau_1,\tau_2}(e_1):\tau_1+\tau_2}] [\frac{\Gamma\vdash e_2:\tau_2}{\Gamma\vdash inr_{\tau_1,\tau_2}(e_2):\tau_1+\tau_2}] Eliminations [\frac{\Gamma\vdash e:\tau_1+\tau_2;\Gamma,x_1:\tau_2\vdash e_1:\sigma;\Gamma,x_2:\tau_2\vdash e_2:\sigma}{\Gamma\vdash case(e)of{inl(x_1)\hookrightarrow e_1,inr(x_2)\hookrightarrow e_2}:\sigma}] Unit [\frac{}{\Gamma\vdash &lt;&gt;:unit}]" />
+<meta property="og:description" content="Recap for Product/Sum Types Product Types Introductions Eliminations Sum Types Introduction Eliminations Unit Recap for Product/Sum Types Brief recap for product and sum to have a consensus on notations. Product Types [\tau_1\times\tau_2] Introductions [\frac{\Gamma\vdash e_1:\tau_2,\Gamma\vdash e_2:\tau_2}{\Gamma\vdash &lt;e_1,e_2&gt;:\tau_1\times\tau_2}] Eliminations [\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash fst(e):\tau_1}] [\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash snd(e):\tau_2}] Sum Types [\tau_1+\tau_2] Introduction [\frac{\Gamma\vdash e_1:\tau_1}{\Gamma\vdash inl_{\tau_1,\tau_2}(e_1):\tau_1+\tau_2}] [\frac{\Gamma\vdash e_2:\tau_2}{\Gamma\vdash inr_{\tau_1,\tau_2}(e_2):\tau_1+\tau_2}] Eliminations [\frac{\Gamma\vdash e:\tau_1+\tau_2;\Gamma,x_1:\tau_2\vdash e_1:\sigma;\Gamma,x_2:\tau_2\vdash e_2:\sigma}{\Gamma\vdash case(e)of{inl(x_1)\hookrightarrow e_1,inr(x_2)\hookrightarrow e_2}:\sigma}] Unit [\frac{}{\Gamma\vdash &lt;&gt;:unit}]" />
+<link rel="canonical" href="https://www.gaeblog.com/2019/01/20/Recursive-Types/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/01/20/Recursive-Types/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-01-20T20:25:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Recursive Types" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Recap for Product/Sum Types Product Types Introductions Eliminations Sum Types Introduction Eliminations Unit Recap for Product/Sum Types Brief recap for product and sum to have a consensus on notations. Product Types [\\tau_1\\times\\tau_2] Introductions [\\frac{\\Gamma\\vdash e_1:\\tau_2,\\Gamma\\vdash e_2:\\tau_2}{\\Gamma\\vdash &lt;e_1,e_2&gt;:\\tau_1\\times\\tau_2}] Eliminations [\\frac{\\Gamma\\vdash e:\\tau_1\\times\\tau_2}{\\Gamma\\vdash fst(e):\\tau_1}] [\\frac{\\Gamma\\vdash e:\\tau_1\\times\\tau_2}{\\Gamma\\vdash snd(e):\\tau_2}] Sum Types [\\tau_1+\\tau_2] Introduction [\\frac{\\Gamma\\vdash e_1:\\tau_1}{\\Gamma\\vdash inl_{\\tau_1,\\tau_2}(e_1):\\tau_1+\\tau_2}] [\\frac{\\Gamma\\vdash e_2:\\tau_2}{\\Gamma\\vdash inr_{\\tau_1,\\tau_2}(e_2):\\tau_1+\\tau_2}] Eliminations [\\frac{\\Gamma\\vdash e:\\tau_1+\\tau_2;\\Gamma,x_1:\\tau_2\\vdash e_1:\\sigma;\\Gamma,x_2:\\tau_2\\vdash e_2:\\sigma}{\\Gamma\\vdash case(e)of{inl(x_1)\\hookrightarrow e_1,inr(x_2)\\hookrightarrow e_2}:\\sigma}] Unit [\\frac{}{\\Gamma\\vdash &lt;&gt;:unit}]","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/01/20/Recursive-Types/"},"@type":"BlogPosting","headline":"Recursive Types","dateModified":"2019-01-20T20:25:00+00:00","datePublished":"2019-01-20T20:25:00+00:00","url":"https://www.gaeblog.com/2019/01/20/Recursive-Types/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Recursive Types</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-01-20
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>&nbsp;
+    
+        <a href="/category/#Type Theory" title="Category: Type Theory" rel="category">Type Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>&nbsp;
+    
+        <!--a href="/tag/#Type+Theory" title="Tag: Type Theory" rel="tag">Type Theory</a-->
+        <a href="/tag/#Type Theory" title="Tag: Type Theory" rel="tag">Type Theory</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#recap-for-productsum-types" id="markdown-toc-recap-for-productsum-types">Recap for Product/Sum Types</a>    <ul>
+      <li><a href="#product-types" id="markdown-toc-product-types">Product Types</a>        <ul>
+          <li><a href="#introductions" id="markdown-toc-introductions">Introductions</a></li>
+          <li><a href="#eliminations" id="markdown-toc-eliminations">Eliminations</a></li>
+        </ul>
+      </li>
+      <li><a href="#sum-types" id="markdown-toc-sum-types">Sum Types</a>        <ul>
+          <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+          <li><a href="#eliminations-1" id="markdown-toc-eliminations-1">Eliminations</a></li>
+        </ul>
+      </li>
+      <li><a href="#unit" id="markdown-toc-unit">Unit</a></li>
+    </ul>
+  </li>
+  <li><a href="#recursive-types-in-a-partial-language" id="markdown-toc-recursive-types-in-a-partial-language">Recursive Types in a Partial Language</a>    <ul>
+      <li><a href="#examples" id="markdown-toc-examples">Examples</a>        <ul>
+          <li><a href="#natural-numbers" id="markdown-toc-natural-numbers">Natural Numbers</a></li>
+          <li><a href="#lists" id="markdown-toc-lists">Lists</a></li>
+        </ul>
+      </li>
+      <li><a href="#construction" id="markdown-toc-construction">Construction</a></li>
+      <li><a href="#introductions-1" id="markdown-toc-introductions-1">Introductions</a></li>
+      <li><a href="#eliminations-2" id="markdown-toc-eliminations-2">Eliminations</a></li>
+      <li><a href="#dynamics" id="markdown-toc-dynamics">Dynamics</a></li>
+      <li><a href="#examples-using-recursive-types" id="markdown-toc-examples-using-recursive-types">Examples using Recursive Types</a></li>
+    </ul>
+  </li>
+  <li><a href="#bridging-recursive-types-and-programs" id="markdown-toc-bridging-recursive-types-and-programs">Bridging Recursive Types and Programs</a>    <ul>
+      <li><a href="#self-types" id="markdown-toc-self-types">Self Types</a>        <ul>
+          <li><a href="#introductions-2" id="markdown-toc-introductions-2">Introductions</a></li>
+          <li><a href="#eliminations-3" id="markdown-toc-eliminations-3">Eliminations</a></li>
+          <li><a href="#dynamics-1" id="markdown-toc-dynamics-1">Dynamics</a></li>
+        </ul>
+      </li>
+      <li><a href="#construct-recursive-programs" id="markdown-toc-construct-recursive-programs">Construct Recursive Programs</a>        <ul>
+          <li><a href="#from-recursive-computation-to-self-types" id="markdown-toc-from-recursive-computation-to-self-types">From Recursive Computation to Self Types</a></li>
+          <li><a href="#from-self-types-to-recursive-types" id="markdown-toc-from-self-types-to-recursive-types">From Self Types to Recursive Types</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="recap-for-productsum-types">Recap for Product/Sum Types</h1>
+
+<p>Brief recap for product and sum to have a consensus on notations.</p>
+
+<h2 id="product-types">Product Types</h2>
+
+\[\tau_1\times\tau_2\]
+
+<h3 id="introductions">Introductions</h3>
+
+\[\frac{\Gamma\vdash e_1:\tau_2,\Gamma\vdash e_2:\tau_2}{\Gamma\vdash &lt;e_1,e_2&gt;:\tau_1\times\tau_2}\]
+
+<h3 id="eliminations">Eliminations</h3>
+
+\[\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash fst(e):\tau_1}\]
+
+\[\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash snd(e):\tau_2}\]
+
+<h2 id="sum-types">Sum Types</h2>
+
+\[\tau_1+\tau_2\]
+
+<h3 id="introduction">Introduction</h3>
+
+\[\frac{\Gamma\vdash e_1:\tau_1}{\Gamma\vdash inl_{\tau_1,\tau_2}(e_1):\tau_1+\tau_2}\]
+
+\[\frac{\Gamma\vdash e_2:\tau_2}{\Gamma\vdash inr_{\tau_1,\tau_2}(e_2):\tau_1+\tau_2}\]
+
+<h3 id="eliminations-1">Eliminations</h3>
+
+\[\frac{\Gamma\vdash e:\tau_1+\tau_2;\Gamma,x_1:\tau_2\vdash e_1:\sigma;\Gamma,x_2:\tau_2\vdash e_2:\sigma}{\Gamma\vdash case(e)of\{inl(x_1)\hookrightarrow e_1,inr(x_2)\hookrightarrow e_2\}:\sigma}\]
+
+<h2 id="unit">Unit</h2>
+
+\[\frac{}{\Gamma\vdash &lt;&gt;:unit}\]
+
+<!--more-->
+
+<h1 id="recursive-types-in-a-partial-language">Recursive Types in a Partial Language</h1>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="natural-numbers">Natural Numbers</h3>
+
+<p>We can write</p>
+
+\[\mathbb{N}\cong unit+\mathbb{N}\]
+
+<p>where $\cong$ means “type isomorphism”
+which means to write functions back and forth that compose to the identity.</p>
+
+<p>From left to right:</p>
+
+\[\lambda x:\mathbb{N}:=rec\{0\hookrightarrow inl(&lt;&gt;),s(y)\hookrightarrow inr(y)\}\]
+
+<p>From right to left:</p>
+
+\[\lambda x:unit+\mathbb{N}:=case(z)of\{inl(\_)\hookrightarrow 0,inr(y)\hookrightarrow s(y)\}\]
+
+<p>It works because anything is observationally equivalent to $&lt;&gt;$ at type $unit$:</p>
+
+\[\_\sim_{unit}&lt;&gt;\]
+
+<h3 id="lists">Lists</h3>
+
+<p>Any list is either the empty list or a cons with the type and another list.</p>
+
+\[\tau list\cong unit+(\tau\times\tau list)\]
+
+<p>From left to right:</p>
+
+\[\lambda l:\tau list:=case(l)of\{[]\hookrightarrow inl(&lt;&gt;),x::xs\hookrightarrow inr(x,xs)\}\]
+
+<h2 id="construction">Construction</h2>
+
+<p>What we’ve got here is that: certain types can be characterize as solutions to equations
+of the form:</p>
+
+\[t\cong\sigma(t)\]
+
+<p>$\mathbb{N}$ solves $t=unit+t$</p>
+
+<p>$\tau list$ solves $t=unit+(\tau\times t)$</p>
+
+\[\frac{\Delta,t\ type\vdash\tau\ type}{\Delta\vdash rec(t.\tau)\ type}\]
+
+<p>which is a/the solution to $t\cong \tau(t)$. i.e.</p>
+
+\[rec(t.\tau)\cong [rec(t.\tau)/t]\tau\]
+
+<h2 id="introductions-1">Introductions</h2>
+
+\[\frac{\Gamma\vdash e:[rec(t.\tau)/t]\tau}{\Gamma\vdash fold(e):rec(t.\tau)}\]
+
+<h2 id="eliminations-2">Eliminations</h2>
+
+\[\frac{\Gamma\vdash e:rec(t.\tau)}{\Gamma\vdash unfold(e):[rec(t.\tau)/t]\tau}\]
+
+<h2 id="dynamics">Dynamics</h2>
+
+\[unfold(fold(e))\mapsto e\]
+
+<h2 id="examples-using-recursive-types">Examples using Recursive Types</h2>
+
+\[\mathbb{N}:=rec(t.unit+t)\]
+
+\[z:\mathbb{N}:=fold(inl(&lt;&gt;))\]
+
+\[s(e):\mathbb{N}:=fold(inr(e))\]
+
+<h1 id="bridging-recursive-types-and-programs">Bridging Recursive Types and Programs</h1>
+
+<p>In this language, even though there is no loops, no recursive functions in the terms,
+we can still get general recursion just from self-referencial types. Meaning that
+<strong>self-referential types will give us self-referential codes</strong>. How to do?</p>
+
+<ol>
+  <li>Define a type of self-referential programs, and get $fix(x.e)$ from it</li>
+  <li>Define the type of self-referential programs from $rec(t.\tau)$</li>
+</ol>
+
+<h2 id="self-types">Self Types</h2>
+
+<p>The following thing is only used as a bridge between $fix$ and $rec$ such that
+we can define both $fix$ and $rec$ from it. It’s only to help the constructions.</p>
+
+<p>In the following rules, $x$ could be interpreted as <code class="language-plaintext highlighter-rouge">this</code> in a normal programming language.</p>
+
+<p>$\tau self$ represents a self-referential computation of a $\tau$</p>
+
+<h3 id="introductions-2">Introductions</h3>
+
+\[\frac{\Gamma,x:\tau self\vdash e:\tau}{\Gamma\vdash self(x.e):\tau self}\]
+
+<h3 id="eliminations-3">Eliminations</h3>
+
+\[\frac{\Gamma\vdash e:\tau self}{\Gamma\vdash unroll(e):\tau}\]
+
+<h3 id="dynamics-1">Dynamics</h3>
+
+\[\frac{}{self(x.e)\ value}\]
+
+\[\frac{e\mapsto e'}{unroll(e)\mapsto unroll(e')}\]
+
+\[unroll(self(x.e))\mapsto[self(x.e)/x]e\]
+
+<h2 id="construct-recursive-programs">Construct Recursive Programs</h2>
+
+<p>Now we have $\tau self$, the above two steps can be rephrased as:</p>
+
+<ol>
+  <li>We want to get a recursive computation of any type, i.e. $fix(x.e):\tau$, from self types $\tau self$</li>
+  <li>We want to get self types $\tau self$ from recursive types $rec(x.e)$</li>
+</ol>
+
+<h3 id="from-recursive-computation-to-self-types">From Recursive Computation to Self Types</h3>
+
+<p>We have $\tau self$, and we want:</p>
+
+\[\frac{x:\tau\vdash e:\tau}{fix(x.e):\tau}\]
+
+\[\frac{}{fix(x.e)\mapsto[fix(x.e)/x]e}\]
+
+<p>Solution:</p>
+
+\[fix(x.e):\tau:=unroll(self(y:\tau self.[unroll(y)/x]e))\]
+
+<h3 id="from-self-types-to-recursive-types">From Self Types to Recursive Types</h3>
+
+<p>We want to solve:</p>
+
+\[\tau self\cong \tau self\rightarrow\tau\]
+
+<p>Solution:</p>
+
+\[\tau self:=rec(t.(t\rightarrow\tau))\]
+
+\[self(x.e):=fold(\lambda (x:\tau self).(e:\tau))\]
+
+\[unroll(e):=(unfold(e):\tau self\rightarrow \tau)(e)\]
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/18/Recursive-Programs/">Recursive Programs
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/09/Polymorphic-Functional-Programming/">Polymorphic Functional Programming
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2019/01/20/Jekyll-Search-Solutions/">Jekyll Search Solutions</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/01/20/Recursive-Types/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/01/20/Recursive-Types/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#recap-for-productsum-types">Recap for Product/Sum Types</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#product-types">Product Types</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#introductions">Introductions</a></li>
+<li class="toc-entry toc-h3"><a href="#eliminations">Eliminations</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#sum-types">Sum Types</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h3"><a href="#eliminations-1">Eliminations</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#unit">Unit</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#recursive-types-in-a-partial-language">Recursive Types in a Partial Language</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#examples">Examples</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#natural-numbers">Natural Numbers</a></li>
+<li class="toc-entry toc-h3"><a href="#lists">Lists</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#construction">Construction</a></li>
+<li class="toc-entry toc-h2"><a href="#introductions-1">Introductions</a></li>
+<li class="toc-entry toc-h2"><a href="#eliminations-2">Eliminations</a></li>
+<li class="toc-entry toc-h2"><a href="#dynamics">Dynamics</a></li>
+<li class="toc-entry toc-h2"><a href="#examples-using-recursive-types">Examples using Recursive Types</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#bridging-recursive-types-and-programs">Bridging Recursive Types and Programs</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#self-types">Self Types</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#introductions-2">Introductions</a></li>
+<li class="toc-entry toc-h3"><a href="#eliminations-3">Eliminations</a></li>
+<li class="toc-entry toc-h3"><a href="#dynamics-1">Dynamics</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#construct-recursive-programs">Construct Recursive Programs</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#from-recursive-computation-to-self-types">From Recursive Computation to Self Types</a></li>
+<li class="toc-entry toc-h3"><a href="#from-self-types-to-recursive-types">From Self Types to Recursive Types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

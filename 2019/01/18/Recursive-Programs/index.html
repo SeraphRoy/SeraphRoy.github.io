@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Recursive Programs</title>
+    <meta name="description" content="  Partial FunctionsPartial FunctionsSystem $T$, $F$ are total languages.PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/01/18/Recursive-Programs/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Recursive Programs | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Recursive Programs" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Partial Functions Partial Functions System $T$, $F$ are total languages. PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of partial languages. Idea: Extending the theory of computability to HIGHER TYPE. Standard computability courses only talk about computation over $\mathbb{N}$, but nothing beyond that. e.g. $gcd$ is defined by the following (recursive) equations: [gcd(m,n) = m\ if\ m=n gcd(m,n) = gcd(m-n,n)\ if\ m&gt;n gcd(m,n) = gcd(m,n-m) ow] We can transcribe the above in a real programming language (ML, Haskell) in an evident way. We call it “Recursive function” in a typical course - it is using recursion. Then the next typical topic would be about “stack”. Recursion has nothing to do with the stack. (One obvious example is flip-flop with two $NOR$ gates.) Better idea (correct idea): simultaneous equations in the variable gcd. Solve for gcd! We want: \(gcd\ s.t.\ gcd=G(gcd)\) where $G$ is the function of definition my $gcd$. We are looking for a FIXED POINT. The equations only make sense (solution exists) with computable partial functions." />
+<meta property="og:description" content="Partial Functions Partial Functions System $T$, $F$ are total languages. PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of partial languages. Idea: Extending the theory of computability to HIGHER TYPE. Standard computability courses only talk about computation over $\mathbb{N}$, but nothing beyond that. e.g. $gcd$ is defined by the following (recursive) equations: [gcd(m,n) = m\ if\ m=n gcd(m,n) = gcd(m-n,n)\ if\ m&gt;n gcd(m,n) = gcd(m,n-m) ow] We can transcribe the above in a real programming language (ML, Haskell) in an evident way. We call it “Recursive function” in a typical course - it is using recursion. Then the next typical topic would be about “stack”. Recursion has nothing to do with the stack. (One obvious example is flip-flop with two $NOR$ gates.) Better idea (correct idea): simultaneous equations in the variable gcd. Solve for gcd! We want: \(gcd\ s.t.\ gcd=G(gcd)\) where $G$ is the function of definition my $gcd$. We are looking for a FIXED POINT. The equations only make sense (solution exists) with computable partial functions." />
+<link rel="canonical" href="https://www.gaeblog.com/2019/01/18/Recursive-Programs/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/01/18/Recursive-Programs/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-01-18T22:25:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Recursive Programs" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Partial Functions Partial Functions System $T$, $F$ are total languages. PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of partial languages. Idea: Extending the theory of computability to HIGHER TYPE. Standard computability courses only talk about computation over $\\mathbb{N}$, but nothing beyond that. e.g. $gcd$ is defined by the following (recursive) equations: [gcd(m,n) = m\\ if\\ m=n gcd(m,n) = gcd(m-n,n)\\ if\\ m&gt;n gcd(m,n) = gcd(m,n-m) ow] We can transcribe the above in a real programming language (ML, Haskell) in an evident way. We call it “Recursive function” in a typical course - it is using recursion. Then the next typical topic would be about “stack”. Recursion has nothing to do with the stack. (One obvious example is flip-flop with two $NOR$ gates.) Better idea (correct idea): simultaneous equations in the variable gcd. Solve for gcd! We want: \\(gcd\\ s.t.\\ gcd=G(gcd)\\) where $G$ is the function of definition my $gcd$. We are looking for a FIXED POINT. The equations only make sense (solution exists) with computable partial functions.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/01/18/Recursive-Programs/"},"@type":"BlogPosting","headline":"Recursive Programs","dateModified":"2019-01-18T22:25:00+00:00","datePublished":"2019-01-18T22:25:00+00:00","url":"https://www.gaeblog.com/2019/01/18/Recursive-Programs/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Recursive Programs</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-01-18
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>&nbsp;
+    
+        <a href="/category/#Type Theory" title="Category: Type Theory" rel="category">Type Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>&nbsp;
+    
+        <!--a href="/tag/#Type+Theory" title="Tag: Type Theory" rel="tag">Type Theory</a-->
+        <a href="/tag/#Type Theory" title="Tag: Type Theory" rel="tag">Type Theory</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#partial-functions" id="markdown-toc-partial-functions">Partial Functions</a></li>
+  <li><a href="#recursive-programs-in-plotkin-pcf" id="markdown-toc-recursive-programs-in-plotkin-pcf">Recursive Programs in Plotkin PCF</a>    <ul>
+      <li><a href="#why-do-we-have-partial-functions" id="markdown-toc-why-do-we-have-partial-functions">Why do we have partial functions</a></li>
+      <li><a href="#statics" id="markdown-toc-statics">Statics</a></li>
+      <li><a href="#dynamics" id="markdown-toc-dynamics">Dynamics</a></li>
+      <li><a href="#equivalence" id="markdown-toc-equivalence">Equivalence</a>        <ul>
+          <li><a href="#main-theorm" id="markdown-toc-main-theorm">Main theorm</a></li>
+          <li><a href="#fixed-point-induction" id="markdown-toc-fixed-point-induction">Fixed point induction</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="partial-functions">Partial Functions</h1>
+
+<p>System $T$, $F$ are total languages.</p>
+
+<p>PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of partial languages.</p>
+
+<p>Idea: Extending the theory of computability to <em>HIGHER TYPE</em>. Standard computability
+courses only talk about computation over $\mathbb{N}$, but nothing beyond that.</p>
+
+<p>e.g. $gcd$ is defined by the following (recursive) equations:</p>
+
+\[gcd(m,n) = m\ if\ m=n\\
+gcd(m,n) = gcd(m-n,n)\ if\ m&gt;n\\
+gcd(m,n) = gcd(m,n-m) ow\]
+
+<p>We can transcribe the above in a real programming language (ML, Haskell) in an evident way.</p>
+
+<p>We call it “Recursive function” in a typical course - it is using recursion.</p>
+
+<p>Then the next typical topic would be about “stack”.</p>
+
+<p><em>Recursion has nothing to do with the stack</em>. (One obvious example is flip-flop with two $NOR$ gates.)</p>
+
+<p>Better idea (correct idea): simultaneous equations in the <em>variable</em> gcd. <em>Solve for gcd!</em></p>
+
+<p>We want: \(gcd\ s.t.\ gcd=G(gcd)\) where $G$ is the function of definition my $gcd$.
+We are looking for a <strong>FIXED POINT</strong>.</p>
+
+<p>The equations only make sense (solution exists) with <em>computable partial functions</em>.</p>
+
+<!--more-->
+
+<h1 id="recursive-programs-in-plotkin-pcf">Recursive Programs in Plotkin PCF</h1>
+
+<p>($\rightharpoonup$ means <em>partial functions</em>)</p>
+
+\[\tau:=nat|\tau_1\rightharpoonup\tau_2\]
+
+\[e:=x|z|s(e)|ifz(e,e_2,x.e_1)|\lambda x:\tau.e|e_1(e_2)|fix\{\tau\}(x.e)(written\ as\ fix\ x\ is\ e)\]
+
+<p>\(fix\) is called <em>general recursion</em>.</p>
+
+<p>Examples of equations:</p>
+
+\[gcd(m,n)=gcd(m,n)\]
+
+\[gcd(m,n)=1+gcd(m,n)\]
+
+<p>Both equations have solutions (only in the context of partial function, 2nd won’t work
+for total setting becuase it’s like $x=x+1$): <em>totally undefined function</em>!</p>
+
+<p>\(fix\ x\ is\ e\) is the solution to $x=e_x$</p>
+
+<p>\(\perp_{\tau}=fix\{\tau\}(x.x)\) ($\perp$ is called <em>bottom</em> (the least element in
+a certain pre-order)) (This is <em>undefined</em>, which mean it has no value)</p>
+
+<p>Then we can define \(gcd \triangleq fix\{nat\rightarrow nat\}(x.G(x))\) (Note: There
+is not occurrence of $gcd$ on the right hand side! It is solving a fixed point equation!)</p>
+
+<h2 id="why-do-we-have-partial-functions">Why do we have partial functions</h2>
+
+<ol>
+  <li>Challenge: Try to define $gcd$ in $Godel’s T$ (using products, sums, subtractions, equality/
+inequality). This is <em>hard</em>! Because you must bake the termination proof into the <strong>code</strong>
+(not your head).</li>
+  <li><strong>Blum Size Theorm</strong>: Fix an expansion factor, say $2^{2^n}$, there is a function
+\(f:\mathbb{N}\rightarrow\mathbb{N}\) whose <em>shortest</em> program in $T$ (or any total language)
+is $2^{2^n}$ longer than it’s code in $PCF$.</li>
+</ol>
+
+<h2 id="statics">Statics</h2>
+
+\[\frac{\Gamma,x:\tau\vdash e:\tau}{\Gamma\vdash fix\{\tau\}(x.e):\tau}\]
+
+<p>(Note: All $\tau$’’s are the same! The crucial thing: you assume what you are trying prove!)
+In other words, you assume what you are trying to prove, and you are showing that assumption
+is tenable (show that nothing contradicts that fact), then it just is the case! I don’t
+show anything absolutely outright. I just assume what I am trying to prove and consider
+that sufficient to be true because I don’t care if thing diverges like in partial maps.</p>
+
+<h2 id="dynamics">Dynamics</h2>
+
+\[\frac{}{fix\{\tau\}(x.e)\mapsto[fix\{\tau\}(x.e)/x]e}\]
+
+<p>(It’s just “$F\mapsto[F/x]e$”) It’s called “unrolling recursion”.</p>
+
+<p><em>There is no stack in the dynamics! :)</em></p>
+
+<h2 id="equivalence">Equivalence</h2>
+
+<h3 id="main-theorm">Main theorm</h3>
+
+\[If\ e:\tau\ then\ e\sim_{\tau}e\]
+
+<h3 id="fixed-point-induction">Fixed point induction</h3>
+
+<p>For <strong>admissible relations only</strong>:</p>
+
+<p>To show:</p>
+
+\[fix(x.e)\sim_\tau fix(x.e')\]
+
+<p>It’s suffice to show:</p>
+
+\[\forall n\ge 0\ fix^{(n)}(x.e)\sim_\tau fix^{(n)}(x.e')\]
+
+<p>(\(fix^{(n)}\) means the n-fold unrolling of the fix)</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/20/Recursive-Types/">Recursive Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/09/Polymorphic-Functional-Programming/">Polymorphic Functional Programming
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2019/01/20/Jekyll-Search-Solutions/">Jekyll Search Solutions</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/01/18/Recursive-Programs/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/01/18/Recursive-Programs/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#partial-functions">Partial Functions</a></li>
+<li class="toc-entry toc-h1"><a href="#recursive-programs-in-plotkin-pcf">Recursive Programs in Plotkin PCF</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#why-do-we-have-partial-functions">Why do we have partial functions</a></li>
+<li class="toc-entry toc-h2"><a href="#statics">Statics</a></li>
+<li class="toc-entry toc-h2"><a href="#dynamics">Dynamics</a></li>
+<li class="toc-entry toc-h2"><a href="#equivalence">Equivalence</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#main-theorm">Main theorm</a></li>
+<li class="toc-entry toc-h3"><a href="#fixed-point-induction">Fixed point induction</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

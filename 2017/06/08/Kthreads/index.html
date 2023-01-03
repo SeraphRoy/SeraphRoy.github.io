@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Kthreads</title>
+    <meta name="description" content="  The Kthreads Library          The Interface      The Kthreads LibraryKthreads is a relatively simple, non-preemptive threads library that we will be using ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Kthreads/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Kthreads | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Kthreads" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The Kthreads Library The Interface The Kthreads Library Kthreads is a relatively simple, non-preemptive threads library that we will be using to implement our operating system later in the labs. For our purposes, it has an advantage over pthreads because it works in the debugger and because it will not interfere with the simulator (making your development life easier). It’s also simple enough to understand, and therefore makes for a good teaching tool. The kthreads library is at /cs/faculty/rich/cs170/lib/libkt.a, the source is at /cs/faculty/rich/cs170/src/libkt/, and the header is /cs/faculty/rich/cs170/include. You will also need to link to /cs/faculty/rich/cs170/lib/libfdr.a which provides some basic C functions like linked lists and red-black trees. The Interface Using kthreads is pretty straightforward, so we will not go into it in much detail. You should all understand the basic thread primitives by now although you need to remember that (unlike in the case of pthreads) kthreads do not pre-empt each other. The kthreads calls are: void *kt_fork(void *(*func)(void *), void *arg); void kt_exit(); void kt_join(void *kt_id); void kt_joinall(); void *kt_self(); void kt_yield(); void kt_sleep(int sec); Kthreads includes counting semaphores as its only synchronization primitive. kt_sem make_kt_sem(int initval); void kill_kt_sem(kt_sem ksem); void P_kt_sem(kt_sem ksem); void V_kt_sem(kt_sem ksem); int kt_getval(kt_sem s); The basic kt primitives (fork, exit, join) play the same role that pthread_create, pthread_exit, and pthread_join play for pthreads. Of the other functions, kt_yield() interrupts the current thread and lets the scheduler run a new one. This primitive is nice in non-pre-emptive thread systems because it allows a kind of “polling” of the scheduler. A thread calling kt_yield() blocks itself and allows other threads that can run to go ahead. When no more runnable threads are available, the yielding thread will be resumed at the point of the yield. The call kt_sleep() sleeps the current thread for a specified time period. Again, because the thread is non-pre-emptive, the thread will be “awakened” and made runnable after the specified time, but it will not actually run until it is given the CPU. The call kt_self() returns the thread id. No confusion here. The function kt_joinall() is a useful function that causes the current thread to block until all other threads have either exited or blocked on a semaphore. You will find that this function is particularly handy in designing your OS. The semaphore primitives are exactly as we discussed. make_kt_sem() creates a semaphore with a value greater than or equal to zero, and kill_kt_sem() destroys (and frees) it. P_kt_sem() decrements the semaphore’s value by 1, and if it is negative blocks it. V_kt_sem() increments the value by one, and it if it is zero or less it unblocks one thread. There is also a call to interrogate the current value of the semaphore – kt_getval(). While not strictly part of the semaphore API, there are occasions where the ability to know how many threads are blocked on a semaphore is quite handy." />
+<meta property="og:description" content="The Kthreads Library The Interface The Kthreads Library Kthreads is a relatively simple, non-preemptive threads library that we will be using to implement our operating system later in the labs. For our purposes, it has an advantage over pthreads because it works in the debugger and because it will not interfere with the simulator (making your development life easier). It’s also simple enough to understand, and therefore makes for a good teaching tool. The kthreads library is at /cs/faculty/rich/cs170/lib/libkt.a, the source is at /cs/faculty/rich/cs170/src/libkt/, and the header is /cs/faculty/rich/cs170/include. You will also need to link to /cs/faculty/rich/cs170/lib/libfdr.a which provides some basic C functions like linked lists and red-black trees. The Interface Using kthreads is pretty straightforward, so we will not go into it in much detail. You should all understand the basic thread primitives by now although you need to remember that (unlike in the case of pthreads) kthreads do not pre-empt each other. The kthreads calls are: void *kt_fork(void *(*func)(void *), void *arg); void kt_exit(); void kt_join(void *kt_id); void kt_joinall(); void *kt_self(); void kt_yield(); void kt_sleep(int sec); Kthreads includes counting semaphores as its only synchronization primitive. kt_sem make_kt_sem(int initval); void kill_kt_sem(kt_sem ksem); void P_kt_sem(kt_sem ksem); void V_kt_sem(kt_sem ksem); int kt_getval(kt_sem s); The basic kt primitives (fork, exit, join) play the same role that pthread_create, pthread_exit, and pthread_join play for pthreads. Of the other functions, kt_yield() interrupts the current thread and lets the scheduler run a new one. This primitive is nice in non-pre-emptive thread systems because it allows a kind of “polling” of the scheduler. A thread calling kt_yield() blocks itself and allows other threads that can run to go ahead. When no more runnable threads are available, the yielding thread will be resumed at the point of the yield. The call kt_sleep() sleeps the current thread for a specified time period. Again, because the thread is non-pre-emptive, the thread will be “awakened” and made runnable after the specified time, but it will not actually run until it is given the CPU. The call kt_self() returns the thread id. No confusion here. The function kt_joinall() is a useful function that causes the current thread to block until all other threads have either exited or blocked on a semaphore. You will find that this function is particularly handy in designing your OS. The semaphore primitives are exactly as we discussed. make_kt_sem() creates a semaphore with a value greater than or equal to zero, and kill_kt_sem() destroys (and frees) it. P_kt_sem() decrements the semaphore’s value by 1, and if it is negative blocks it. V_kt_sem() increments the value by one, and it if it is zero or less it unblocks one thread. There is also a call to interrogate the current value of the semaphore – kt_getval(). While not strictly part of the semaphore API, there are occasions where the ability to know how many threads are blocked on a semaphore is quite handy." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Kthreads/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/Kthreads/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T15:06:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Kthreads" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"The Kthreads Library The Interface The Kthreads Library Kthreads is a relatively simple, non-preemptive threads library that we will be using to implement our operating system later in the labs. For our purposes, it has an advantage over pthreads because it works in the debugger and because it will not interfere with the simulator (making your development life easier). It’s also simple enough to understand, and therefore makes for a good teaching tool. The kthreads library is at /cs/faculty/rich/cs170/lib/libkt.a, the source is at /cs/faculty/rich/cs170/src/libkt/, and the header is /cs/faculty/rich/cs170/include. You will also need to link to /cs/faculty/rich/cs170/lib/libfdr.a which provides some basic C functions like linked lists and red-black trees. The Interface Using kthreads is pretty straightforward, so we will not go into it in much detail. You should all understand the basic thread primitives by now although you need to remember that (unlike in the case of pthreads) kthreads do not pre-empt each other. The kthreads calls are: void *kt_fork(void *(*func)(void *), void *arg); void kt_exit(); void kt_join(void *kt_id); void kt_joinall(); void *kt_self(); void kt_yield(); void kt_sleep(int sec); Kthreads includes counting semaphores as its only synchronization primitive. kt_sem make_kt_sem(int initval); void kill_kt_sem(kt_sem ksem); void P_kt_sem(kt_sem ksem); void V_kt_sem(kt_sem ksem); int kt_getval(kt_sem s); The basic kt primitives (fork, exit, join) play the same role that pthread_create, pthread_exit, and pthread_join play for pthreads. Of the other functions, kt_yield() interrupts the current thread and lets the scheduler run a new one. This primitive is nice in non-pre-emptive thread systems because it allows a kind of “polling” of the scheduler. A thread calling kt_yield() blocks itself and allows other threads that can run to go ahead. When no more runnable threads are available, the yielding thread will be resumed at the point of the yield. The call kt_sleep() sleeps the current thread for a specified time period. Again, because the thread is non-pre-emptive, the thread will be “awakened” and made runnable after the specified time, but it will not actually run until it is given the CPU. The call kt_self() returns the thread id. No confusion here. The function kt_joinall() is a useful function that causes the current thread to block until all other threads have either exited or blocked on a semaphore. You will find that this function is particularly handy in designing your OS. The semaphore primitives are exactly as we discussed. make_kt_sem() creates a semaphore with a value greater than or equal to zero, and kill_kt_sem() destroys (and frees) it. P_kt_sem() decrements the semaphore’s value by 1, and if it is negative blocks it. V_kt_sem() increments the value by one, and it if it is zero or less it unblocks one thread. There is also a call to interrogate the current value of the semaphore – kt_getval(). While not strictly part of the semaphore API, there are occasions where the ability to know how many threads are blocked on a semaphore is quite handy.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/Kthreads/"},"@type":"BlogPosting","headline":"Kthreads","dateModified":"2017-06-08T15:06:00+00:00","datePublished":"2017-06-08T15:06:00+00:00","url":"https://www.gaeblog.com/2017/06/08/Kthreads/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Kthreads</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Operating System" title="Category: Operating System" rel="category">Operating System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Thread" title="Tag: Thread" rel="tag">Thread</a-->
+        <a href="/tag/#Thread" title="Tag: Thread" rel="tag">Thread</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#the-kthreads-library" id="markdown-toc-the-kthreads-library">The Kthreads Library</a>    <ul>
+      <li><a href="#the-interface" id="markdown-toc-the-interface">The Interface</a></li>
+      <li><a href="#example" id="markdown-toc-example">Example</a></li>
+      <li><a href="#understanding-kt_joinall" id="markdown-toc-understanding-kt_joinall">Understanding kt_joinall()</a></li>
+      <li><a href="#implementation" id="markdown-toc-implementation">Implementation</a></li>
+      <li><a href="#global-data" id="markdown-toc-global-data">Global Data</a>        <ul>
+          <li><a href="#thread-structure" id="markdown-toc-thread-structure">Thread Structure</a></li>
+          <li><a href="#semaphore-structure" id="markdown-toc-semaphore-structure">Semaphore structure</a></li>
+        </ul>
+      </li>
+      <li><a href="#the-scheduler" id="markdown-toc-the-scheduler">The Scheduler</a>        <ul>
+          <li><a href="#the-kthreads-functions" id="markdown-toc-the-kthreads-functions">The Kthreads functions</a></li>
+          <li><a href="#semaphore-functions" id="markdown-toc-semaphore-functions">Semaphore functions</a></li>
+          <li><a href="#the-scheduler-revisited" id="markdown-toc-the-scheduler-revisited">The scheduler revisited</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="the-kthreads-library">The Kthreads Library</h1>
+
+<p>Kthreads is a relatively simple, non-preemptive threads library that we will be using to implement our operating system later in the labs. For our purposes, it has an advantage over pthreads because it works in the debugger and because it will not interfere with the simulator (making your development life easier). It’s also simple enough to understand, and therefore makes for a good teaching tool.</p>
+
+<p>The kthreads library is at <strong>/cs/faculty/rich/cs170/lib/libkt.a</strong>, the source is at <strong>/cs/faculty/rich/cs170/src/libkt/</strong>, and the header is <strong>/cs/faculty/rich/cs170/include</strong>. You will also need to link to <strong>/cs/faculty/rich/cs170/lib/libfdr.a</strong> which provides some basic C functions like linked lists and red-black trees.</p>
+
+<hr />
+
+<h2 id="the-interface">The Interface</h2>
+
+<p>Using kthreads is pretty straightforward, so we will not go into it in much detail. You should all understand the basic thread primitives by now although you need to remember that (unlike in the case of pthreads) kthreads do not pre-empt each other. The kthreads calls are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">void *kt_fork(void *(*func)(void *), void *arg);</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void kt_exit();</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void kt_join(void *kt_id);</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void kt_joinall();</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void *kt_self();</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void kt_yield();</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void kt_sleep(int sec);</code></li>
+</ul>
+
+<p>Kthreads includes <a href="http://www.cs.ucsb.edu/~rich/class/cs170/notes/Semaphores/index.html">counting semaphores</a> as its only synchronization primitive.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">kt_sem make_kt_sem(int initval);</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void kill_kt_sem(kt_sem ksem);</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void P_kt_sem(kt_sem ksem);</code></li>
+  <li><code class="language-plaintext highlighter-rouge">void V_kt_sem(kt_sem ksem);</code></li>
+  <li><code class="language-plaintext highlighter-rouge">int kt_getval(kt_sem s);</code></li>
+</ul>
+
+<p>The basic kt primitives (fork, exit, join) play the same role that pthread_create, pthread_exit, and pthread_join play for pthreads. Of the other functions, <code class="language-plaintext highlighter-rouge">kt_yield()</code> interrupts the current thread and lets the scheduler run a new one. This primitive is nice in non-pre-emptive thread systems because it allows a kind of “polling” of the scheduler. A thread calling <code class="language-plaintext highlighter-rouge">kt_yield()</code> blocks itself and allows other threads that can run to go ahead. When no more runnable threads are available, the yielding thread will be resumed at the point of the yield.</p>
+
+<p>The call <code class="language-plaintext highlighter-rouge">kt_sleep()</code> sleeps the current thread for a specified time period. Again, because the thread is non-pre-emptive, the thread will be “awakened” and made runnable after the specified time, but it will not actually run until it is given the CPU.</p>
+
+<p>The call <code class="language-plaintext highlighter-rouge">kt_self()</code> returns the thread id. No confusion here.</p>
+
+<p>The function <code class="language-plaintext highlighter-rouge">kt_joinall()</code> is a useful function that causes the current thread to block until all other threads have either exited or blocked on a semaphore.</p>
+
+<p>You will find that this function is particularly handy in designing your OS.</p>
+
+<p>The semaphore primitives are exactly as we discussed. <code class="language-plaintext highlighter-rouge">make_kt_sem()</code> creates a semaphore with a value greater than or equal to zero, and <code class="language-plaintext highlighter-rouge">kill_kt_sem()</code> destroys (and frees) it. <code class="language-plaintext highlighter-rouge">P_kt_sem()</code> decrements the semaphore’s value by 1, and if it is negative blocks it. <code class="language-plaintext highlighter-rouge">V_kt_sem()</code> increments the value by one, and it if it is zero or less it unblocks one thread.</p>
+
+<p>There is also a call to interrogate the current value of the semaphore – <code class="language-plaintext highlighter-rouge">kt_getval()</code>. While not strictly part of the semaphore API, there are occasions where the ability to know how many threads are blocked on a semaphore is quite handy.</p>
+
+<hr />
+
+<!--more-->
+
+<h2 id="example">Example</h2>
+
+<p>Here is a hopefully familiar example of how to use this library using the <a href="http://www.cs.ucsb.edu/~rich/class/cs170/notes/CondVar/index.html">Client-trader Simulation</a> from previous classes. Here is a version of <a href="https://www.gaeblog.com/assets/market-kthreads.c">market-kthreads.c</a> that uses the kthreads library. There are a couple things worth noting here. First, notice that it doesn’t bother protecting against any of the race conditions (the mutexes are gone) that the pthreads version does. That is, there is a distinct lack of calls to any primitive implementing mutual exclusion. This is because we know kthreads is strictly non-preemptive, and so there are no race conditions between running threads. Don’t be confused, however. In the OS you build, you can create race conditions – it just won’t be between runnable threads. We’ll discuss this at length later. for now it is enough for you to know that race conditions are possible in your labs, but not in this example. However, with that difference and small differences in the return values when threads are created and destroyed, the code is the same as the <a href="https://www.gaeblog.com/assets/market-semaphore.c">semaphore version of the client-trader simulation</a>. As we saw before, this is a pretty elegant solution to the problem. Run it a few times, however, and you’ll see that there is no speed-up gained through the use of multiple threads. Why? Kthreads doesn’t use multiple processors – it is strictly for decomposing a problem into thread like tasks and as this example shows converting something from kthreads to pthreads and back again is pretty simple.</p>
+
+<p>This single-threaded implementation comes in <em>VERY</em> handy when you will be developing your OS. Trust me.</p>
+
+<h2 id="understanding-kt_joinall">Understanding kt_joinall()</h2>
+
+<p>One curious primitive in the interface is <em>kt_joinall()</em> which bears some discussion. For reasons that will become clear when you begin working on your OS, it is sometimes convenient to have a way for a “master” thread to block and wait until there is nothing else that can run. That is, imagine you wanted to create a “watcher” thread that waits around for all of the other threads to do their work and, when they have finished or they are all blcoked waiting for something, this “watcher” thread wakes up and takes some action.</p>
+
+<p>Don’t ask why just yet – just imagine it to be true.</p>
+
+<p>You could try to pull this trick off using <em>kt_yield()</em> where each thread would yield right before any call to <em>P_kt_sem()</em> and the watcher thread were in a loop calling yield, but it would be tricky to make sure you don’t deadlock and the watcher thread is essentially spinning and burning CPU.</p>
+
+<p>Instead, kthreads includes the <em>kt_joinall()</em> command. It has the following properties</p>
+
+<ul>
+  <li>at most one thread in a kthreads program can call <em>kt_joinall()</em></li>
+  <li>the thread that calls <em>kt_joinall()</em> will block until all other threads in the program have
+    <ul>
+      <li>exited, or</li>
+      <li>blocked on a semaphoreat which point the call to <em>kt_joinall()</em> unblocks.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>You can also think of this as a way of setting a place in the code where you wish to continue once all other work has been finished.</p>
+
+<p>It may sound confusing. The code in <a href="https://www.gaeblog.com/assets/joinall-1.c">joinall-1.c</a> attempts to illustrate how it works. In it, the thread simply increments a shared counter (a pointer to which is passed as an argument) in a loop and does so under the control of a semaphore. The main thread (which will be the master in this example) waits until all threads have finished and then exits. It does so in a loop where it prints out the progress of the threads and calls <em>kt_joinall()</em></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/*
+         * loop showing progress
+         */</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">done_threads</span> <span class="o">&lt;</span> <span class="n">threads</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"shared counter: %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">counter</span><span class="p">);</span>
+                <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+                <span class="n">kt_joinall</span><span class="p">();</span> <span class="cm">/* gets here when all else is stopped */</span>
+        <span class="p">}</span>
+</code></pre></div></div>
+
+<p>What should the output of this program be? Here is the execution of the program with two worker threads, each one having to make two trips (as indicated by the <em>-C</em> argument). With two worker threads the final count should be <em>4</em> since each thread runs the count up by two.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./joinall-1 <span class="nt">-t</span> 2 <span class="nt">-C</span> 2
+shared counter: 0.000000
+final count: 4.000000
+</code></pre></div></div>
+
+<p>Is this what you expected? Try it with the <em>-V</em> flag:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./joinall-1 <span class="nt">-t</span> 2 <span class="nt">-C</span> 2 <span class="nt">-V</span>
+shared counter: 0.000000
+thread 0: incremented shared counter to 1.000000
+thread 0: incremented shared counter to 2.000000
+thread 1: incremented shared counter to 3.000000
+thread 1: incremented shared counter to 4.000000
+final count: 4.000000
+</code></pre></div></div>
+
+<p>Notice that both threads run and do their increments. However the master thread seems not to go around the progress loop more than once.</p>
+
+<p>This execution sequence is correct. The master thread spawns both worker threads and calls V on the semaphore to make sure one starts (the initial semaphore value is 0). It then enters the loop because the threads aren’t done, prints the “shared counter:” message, and calls <em>kt_joinall()</em> at which point it blocks waiting for all threads to either exit or block.</p>
+
+<p>The two worker threads then run (first thread 0 and then thread 1), finish their work and exit. The <em>kt_joinall()</em> command then completes, the master loops around and tests, finds them all completed and exits.</p>
+
+<p>Now take a look at <a href="https://www.gaeblog.com/assets/joinall-2.c">joinall-2.c</a>. Notice that there is no call to <em>V_kt_sem()</em> in either thread. That is, each thread blocks in a call to <em>P_kt_sem()</em> but they never unblock another thread.</p>
+
+<p>Instead, the master thread calls <em>V_kt_sem()</em> in its progress loop as well as <em>kt_joinall()</em>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/*
+         * loop showing progress
+         */</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">done_threads</span> <span class="o">&lt;</span> <span class="n">threads</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">V_kt_sem</span><span class="p">(</span><span class="n">sema</span><span class="p">);</span> <span class="cm">/* enable a thread */</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"shared counter: %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">counter</span><span class="p">);</span>
+                <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+                <span class="n">kt_joinall</span><span class="p">();</span> <span class="cm">/* gets here when all else is stopped */</span>
+        <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Run this code and you’ll see</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./joinall-2 <span class="nt">-t</span> 2 <span class="nt">-C</span> 2
+shared counter: 0.000000
+shared counter: 1.000000
+shared counter: 2.000000
+shared counter: 3.000000
+final count: 4.000000
+</code></pre></div></div>
+
+<p>and with the verbose flag set</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/joinall-2 <span class="nt">-t</span> 2 <span class="nt">-C</span> 2 <span class="nt">-V</span>
+shared counter: 0.000000
+thread 0: incremented shared counter to 1.000000
+shared counter: 1.000000
+thread 0: incremented shared counter to 2.000000
+shared counter: 2.000000
+thread 1: incremented shared counter to 3.000000
+shared counter: 3.000000
+thread 1: incremented shared counter to 4.000000
+final count: 4.000000
+</code></pre></div></div>
+
+<p>What happens in this case is that the master thread calls V to enable some thread blocked on the semaphore, prints its progress message, and blcoks in <em>kt_joinall()</em>. Which ever thread was awakened (thread 0 in this case) runs, increments, and then blocks again in its call to P and which point <strong>there are no other runnable threads</strong>. Take a moment to understand that last sentence. After thread 0 in this example runs for the first time, it calls P again. No other thread has called V and the master thread is blocked so all threads are blocked. Because the master thread is blocked in <em>kt_joinall()</em> the call unblocks at this moment, the master runs, tests to see if all threads have completed, calls V to enable another thread, and calls <em>kt_joinall()</em> again.</p>
+
+<p>Thus, <em>kt_joinall()</em> specifies a place to continue when all other threads have blocked or have exited which will come in handy at some point in your future.</p>
+
+<hr />
+
+<h2 id="implementation">Implementation</h2>
+
+<p>We will be discussing the logic that the kthreads library uses to make all of its calls, and also discuss some of the more important concepts. I regret that I will not have the time to go into the nitty gritty details on how this library works. It is realtively simple and relatively short, and I urge you all to do this on your own. It should not be difficult to relate the source code to the ideas I will discuss. Also, <a href="http://www.cs.utk.edu/~plank/">Dr. Plank</a> at UT has a very detailed lecture on kthreads implementation <a href="http://www.cs.utk.edu/~plank/plank/classes/cs560/560/notes/KThreads2/lecture.html">here</a>. To understand this explanation in deapth, you will need to understand the Linux calls <code class="language-plaintext highlighter-rouge">setjmp()</code> and <code class="language-plaintext highlighter-rouge">longjmp()</code>. If you don’t understand the man pages now, at some point before this class ends read them and you will certainly be able to see how they work.</p>
+
+<h2 id="global-data">Global Data</h2>
+
+<p>Kthreads uses a few pieces of global data to keep track of the current process. Let’s go over those first:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">KThread *ktRunning;</code> - currently running thread.</li>
+  <li><code class="language-plaintext highlighter-rouge">KThread *ktJoinall;</code> - current thread doing a joinall.</li>
+  <li><code class="language-plaintext highlighter-rouge">Dllist ktRunnable;</code> - fifo list of all runable threads.</li>
+  <li><code class="language-plaintext highlighter-rouge">JRB ktSleeping;</code> - sorted list of sleeping threads.</li>
+  <li><code class="language-plaintext highlighter-rouge">JRB ktBlocked;</code> - sorted list of blocked threads.</li>
+  <li><code class="language-plaintext highlighter-rouge">JRB ktActive;</code> - searchable list of all threads.</li>
+</ul>
+
+<h3 id="thread-structure">Thread Structure</h3>
+
+<p>Also, there are some variables associated with each thread.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">void (*func)(void *);</code> - thread function.</li>
+  <li><code class="language-plaintext highlighter-rouge">void *arg;</code> - thread function argument.</li>
+  <li><code class="language-plaintext highlighter-rouge">int id;</code> - unique thread id.</li>
+  <li><code class="language-plaintext highlighter-rouge">int state;</code> - state of the thread: BLOCKED, RUNNING, RUNABLE, SLEEPING</li>
+  <li><code class="language-plaintext highlighter-rouge">void *stack;</code> - thread’s stack.</li>
+  <li><code class="language-plaintext highlighter-rouge">jmp_buf jmpbuf;</code> - thread’s jump buffer.</li>
+</ul>
+
+<h3 id="semaphore-structure">Semaphore structure</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">int value;</code> - the semaphores value.</li>
+  <li><code class="language-plaintext highlighter-rouge">int id;</code> - the semaphores unique value.</li>
+</ul>
+
+<h2 id="the-scheduler">The Scheduler</h2>
+
+<p>The first thing to understand is that the scheduler is really managing a set of queues, each one of which contains jobs in a certain state. The implementation does not necessarily use a linked list for each of these queues, but logically, you can think of them as queues. They are</p>
+
+<ul>
+  <li><strong>The Run Queue</strong> contains a list of threads that have been made runnable. That is, can run as soon as their turn to use the CPU comes up.</li>
+  <li><strong>The Blocked Queue</strong> contains a list of threads that are blocked waiting to be awakened by other threads.</li>
+  <li><strong>The Sleep Queue</strong> contains a queue of jobs that are sleeping for a specified time period.</li>
+</ul>
+
+<p>There is also a global pointer to the currently running thread.</p>
+
+<p>The scheduler, called <code class="language-plaintext highlighter-rouge">KtSched()</code> is the core of the threads system. It is called whenever a thread is abdicating the CPU and its job is to manage these queues, and set the next runnable thread. Since this system is non-premptive, threads will only abdicate the cpu on their own initative. The calls that do this are <code class="language-plaintext highlighter-rouge">kt_join(), kt_exit(), kt_sleep(), kt_yield(), kt_joinall(), and P_kt_sem()</code>. When a thread abdicates the cpu, <code class="language-plaintext highlighter-rouge">KtSched()</code> takes the thread that is at the head of the Run Queue and makes it the running thread. It sets the global pointer and switches from the current thread (which is the one that is abdicating) to the new “running” thread. The scheduler does not return untill there is a thread that can be run or when there are no more threads in the system. We’ll discuss this behavior in greater detail as we discuss the other primitives. The important thing to know about the scheduler, however, is that its job is to switch from the currently running thread to the next runnable thread, and to manage the internal queues.</p>
+
+<h3 id="the-kthreads-functions">The Kthreads functions</h3>
+
+<p>The first function that we discuss is <code class="language-plaintext highlighter-rouge">kt_yield()</code> since it is now easy to understand. When a thread calls <code class="language-plaintext highlighter-rouge">kt_yield()</code> is simply adds itself to the end of the Run Queue and calls <code class="language-plaintext highlighter-rouge">ktSched()</code>. Here is the source code for <code class="language-plaintext highlighter-rouge">kt_yield()</code>.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">kt_yield</span><span class="p">()</span>
+<span class="p">{</span>
+        <span class="n">InitKThreadSystem</span><span class="p">();</span>
+
+        <span class="n">ktRunning</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">RUNNABLE</span><span class="p">;</span>
+        <span class="n">dll_append</span><span class="p">(</span><span class="n">ktRunnable</span><span class="p">,</span><span class="n">new_jval_v</span><span class="p">(</span><span class="n">ktRunning</span><span class="p">));</span>
+        <span class="n">KtSched</span><span class="p">();</span>
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Simple, huh? The call to <code class="language-plaintext highlighter-rouge">InitKThreadSystem()</code> is there just to handle the case when <code class="language-plaintext highlighter-rouge">kt_yield()</code> is the first thread call made by a thread. This idempotent call prevents us from having to make an explicit initialization call in a KThread code. A caller of <code class="language-plaintext highlighter-rouge">kt_yield()</code> sets its state to RUNNABLE (it will no longer be RUNNING), appends itself to the end of the Run Queue, and calls the scheduler. If there are other runnable threads, they will each be run in turn and then, when this thread’s turn comes up it will be run again.</p>
+
+<p>The next function we will cover is <code class="language-plaintext highlighter-rouge">kt_fork()</code>. It is going to create a stack and a state for the thread, which we will discuss later. It will then set the <em>func</em> and <em>arg</em> fields to their approprate values, choose a unique id for the thread, set its state to RUNNABLE, and add it to the end of ktRunning.</p>
+
+<p>The easiest function is <code class="language-plaintext highlighter-rouge">kt_self()</code>. It simply returns its unique thread id of ktRunning typecast to a (void *). The only reason it returns a (void *) is to hide some of the innerworkings of the library from the user.</p>
+
+<p><code class="language-plaintext highlighter-rouge">kt_sleep(int sec)</code> is pretty easy too. For this, you set the state to SLEEPING, calculate the wakup time (<code class="language-plaintext highlighter-rouge">time(NULL) + sec</code>), and insert it into ktSleeping keyed on its wakeup time.</p>
+
+<p><code class="language-plaintext highlighter-rouge">kt_join(void *ktid)</code> is simmilar. First off, check the thread at <em>ktid</em> exists. If it doesn’t, then we figure that it has exited and we simply return. Technically, this allows a caller to join with a thread id that has never existed, but in order to keep track, we’d have to have a list of all valid thread ids ever used. We’ll leave this as a subtle point.</p>
+
+<p>Next we need to see if there is a thread in ktBlocked keyed on the joinee’s id. Each thread can only have one other thread waiting to join with it. Think about that for a minute. Thread A tries to join with Thread B and later Thread C tries to join with Thread B. What do you want to have happen? Your options are</p>
+
+<ul>
+  <li>Thread A continues to wait and Thread C is ignored, returning an error.</li>
+  <li>Thread C waits and Thread A wakes up with an error</li>
+  <li>Global programming error.</li>
+</ul>
+
+<p>Kthreads takes this latter approach and exits your program.</p>
+
+<p>If we make it this far, then we set <em>ktid</em>’s joining field to point to ourself, set our state to BLOCKED, and add ourself to the blocked tree keyed on <em>ktid</em>’s id.</p>
+
+<p>With this in mind, <code class="language-plaintext highlighter-rouge">kt_joinall()</code> is pretty simple. We do the same as <code class="language-plaintext highlighter-rouge">kt_join()</code>, but we treat it is if we were joining with a thread with id 0 which we will never assign internally. The scheduler takes one last look at the Blocked Queue before it decides to exit, and if it sees a thread trying to join with 0, it wakes that thread as the joinall thread. Again, at most one thread can call <code class="language-plaintext highlighter-rouge">kt_joinall()</code>. Multiple calls casue the program to exit.</p>
+
+<p>Last, <code class="language-plaintext highlighter-rouge">kt_exit()</code> is going to free up all of the data for the thread and simply run the scheduler again without putting the current thread back in the list. I am glossing over the details of this because it is easier said than done. The only thing that it needs to do is check to see if it has a joiner. It check ktBlocked to see if anyone is blocked on its id. If there is, we remove it, set the state to RUNNABLE, and append it to ktRunnable.</p>
+
+<h3 id="semaphore-functions">Semaphore functions</h3>
+
+<p>Our semaphores are going to work simmilar to the <code class="language-plaintext highlighter-rouge">kt_join()</code> and <code class="language-plaintext highlighter-rouge">kt_joinall()</code> code. When they are created with the <code class="language-plaintext highlighter-rouge">make_kt_sem()</code> call, our semaphores are going to get their own unique ids. These are not going to overlap with the kthread ids because we will block exactly the same way as above. We will also set the semaphore up with an initial value when we create it.</p>
+
+<p>The function <code class="language-plaintext highlighter-rouge">P_kt_sem()</code> will decrement the value of the semaphore, and if this value is less than zero, it will block the thread. To do this, it will set its state to BLOCKED and insert it into ktBlocked keyed on the id of the semaphore. Here is the code:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">void</span> <span class="nf">P_kt_sem</span><span class="p">(</span><span class="n">kt_sem</span> <span class="n">iks</span><span class="p">){</span>
+        <span class="n">Ksem</span> <span class="n">ks</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ksem</span><span class="p">)</span><span class="n">iks</span><span class="p">;</span>
+        <span class="n">K_t</span> <span class="n">me</span> <span class="o">=</span> <span class="n">ktRunning</span><span class="p">;</span>
+
+        <span class="n">InitKThreadSystem</span><span class="p">();</span>
+        <span class="n">ks</span><span class="o">-&gt;</span><span class="n">val</span><span class="o">--</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">ks</span><span class="o">-&gt;</span><span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+                <span class="cm">/*
+                 * use the semaphore tid as the blocking key
+                 */</span>
+                <span class="n">ktRunning</span><span class="o">-&gt;</span><span class="n">ks</span> <span class="o">=</span> <span class="n">ks</span><span class="p">;</span>
+                <span class="n">BlockKThread</span><span class="p">(</span><span class="n">ktRunning</span><span class="p">,</span><span class="n">ks</span><span class="o">-&gt;</span><span class="n">sid</span><span class="p">);</span>
+                <span class="n">KtSched</span><span class="p">();</span>
+                <span class="n">ktRunning</span><span class="o">-&gt;</span><span class="n">ks</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+                <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Again – the code is fairly simple once you understand that <code class="language-plaintext highlighter-rouge">KtSched()</code> is doing all of the hard work associated with switching between threads.</p>
+
+<p><code class="language-plaintext highlighter-rouge">V_kt_sem()</code> increments the counter on the semaphore and checks to see if the value is less than or equal to zero. If it is, it searches ktBlocked for a thread keyed on its id, sets its state to RUNNABLE, and appends it to the end of ktRunnable. Notice that there is no garuntee that the threads are going to be ublocked in FIFO order. It would be hard to do, but we couldn’t keep up the nice, generic system we have. So it goes.</p>
+
+<p>Here is the code:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">V_kt_sem</span><span class="p">(</span><span class="n">kt_sem</span> <span class="n">iks</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="n">Ksem</span> <span class="n">ks</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ksem</span><span class="p">)</span><span class="n">iks</span><span class="p">;</span>
+        <span class="n">K_t</span> <span class="n">wake_kt</span><span class="p">;</span>
+
+        <span class="n">InitKThreadSystem</span><span class="p">();</span>
+
+        <span class="n">ks</span><span class="o">-&gt;</span><span class="n">val</span><span class="o">++</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">ks</span><span class="o">-&gt;</span><span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+                <span class="n">wake_kt</span> <span class="o">=</span> <span class="n">jval_v</span><span class="p">(</span><span class="n">jrb_val</span><span class="p">(</span><span class="n">jrb_find_int</span><span class="p">(</span><span class="n">ktBlocked</span><span class="p">,</span><span class="n">ks</span><span class="o">-&gt;</span><span class="n">sid</span><span class="p">)));</span>
+                <span class="n">WakeKThread</span><span class="p">(</span><span class="n">wake_kt</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Notice that it picks <em>some</em> thread off the list of threads blocked on the semaphore and wakes it up. The wake code is here:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">WakeKThread</span><span class="p">(</span><span class="n">K_t</span> <span class="n">kt</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="cm">/*
+         * look through the various blocked lists and try to wake the
+         * specified thread
+         */</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">kt</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">==</span> <span class="n">RUNNING</span> <span class="o">||</span> <span class="n">kt</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">==</span> <span class="n">RUNNABLE</span>
+                                 <span class="o">||</span> <span class="n">kt</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">==</span> <span class="n">DEAD</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+        <span class="n">jrb_delete_node</span><span class="p">(</span><span class="n">kt</span><span class="o">-&gt;</span><span class="n">blocked_list_ptr</span><span class="p">);</span>
+        <span class="n">kt</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">RUNNABLE</span><span class="p">;</span>
+        <span class="n">kt</span><span class="o">-&gt;</span><span class="n">blocked_list</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="n">kt</span><span class="o">-&gt;</span><span class="n">blocked_list_ptr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="n">dll_append</span><span class="p">(</span><span class="n">ktRunnable</span><span class="p">,</span><span class="n">new_jval_v</span><span class="p">(</span><span class="n">kt</span><span class="p">));</span>
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Last is <code class="language-plaintext highlighter-rouge">kill_kt_sem()</code>. There is not much to say about this except that it checks to see if there are any threads blocked on the semaphore, and if there are flags and error and exits.</p>
+
+<h3 id="the-scheduler-revisited">The scheduler revisited</h3>
+
+<p>So now that we know how the functions work I think we are in a better position to discuss the scheduler. It basically goes through a set of steps before it takes the next thread and runs is. Here is what it does:</p>
+
+<ol>
+  <li>Check ktSleeping to see if there are any threads that are ready to wake up. If there are, take them out of ktSleeping, set their state to RUNNABLE, and add them to the end of ktRunnable</li>
+  <li>If there are threads in ktRunnable, take the first one off the list and run it. At this point, the scheduler returns (actually it stops and never returns).</li>
+  <li>If there are threads in ktSleeping, take the next thread to wakeup and sleep until it is time for it to run again. Wake up and run the thread as step 2</li>
+  <li>If there is a joinall thread, make it runable and run it as in step 2</li>
+</ol>
+
+<p>So thats the scheduler, and now we understand how how kthreads works in general. Its surprisingly simple, isn’t it? The only “hard” part we haven’t discussed is what a thread actually is made of, and the scheduler switches between them. You need to understand the Unix calls <code class="language-plaintext highlighter-rouge">setjmp()</code> and <code class="language-plaintext highlighter-rouge">longjmp()</code> very clearly before we can address these questions. Unfortunately, we won’t do so explicitly, but by the time you implemented processes in your OS, you’ll know enough to be able to work through the man pages and the innerworking of <code class="language-plaintext highlighter-rouge">ktSched()</code>.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/Semaphore/">Semaphore</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/System-Calls/">System Calls</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/Kthreads/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/Kthreads/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#the-kthreads-library">The Kthreads Library</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#the-interface">The Interface</a></li>
+<li class="toc-entry toc-h2"><a href="#example">Example</a></li>
+<li class="toc-entry toc-h2"><a href="#understanding-kt_joinall">Understanding kt_joinall()</a></li>
+<li class="toc-entry toc-h2"><a href="#implementation">Implementation</a></li>
+<li class="toc-entry toc-h2"><a href="#global-data">Global Data</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#thread-structure">Thread Structure</a></li>
+<li class="toc-entry toc-h3"><a href="#semaphore-structure">Semaphore structure</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#the-scheduler">The Scheduler</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#the-kthreads-functions">The Kthreads functions</a></li>
+<li class="toc-entry toc-h3"><a href="#semaphore-functions">Semaphore functions</a></li>
+<li class="toc-entry toc-h3"><a href="#the-scheduler-revisited">The scheduler revisited</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Type Theory Foundations</title>
+    <meta name="description" content="  Intuitionistic Logic/Constructive LogicWe can think of Type Theory as being a catalog of a variety of notions of computation.The type structure determines ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Type Theory Foundations | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Type Theory Foundations" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Intuitionistic Logic/Constructive Logic We can think of Type Theory as being a catalog of a variety of notions of computation. The type structure determines the “programming language features”. For example, whether you have higher order functions amounts to saying “do you have exponential types”; whether you have structs or tuples amounts to saying “do you have Cartesian product types”; whether you have choices or multiple classes of data corresponds to “whether you have sum types”. A programming language is really just a collection of types. So type theory is just a theory of construction. From that point of view, logic is just an application of type theory, because there are particular constructions which correspond to proofs. Other constructions like natural numbers or geometric objects don’t correspond to proofs of particular propositions. They are just mathematical constructions. What type theory is intersted in is the general concept of what is a mathematical construction. That’s why intuitionistic logic is also called constructive logic. From this point of view, we can say that logic is just a corner of mathematics, and mathematics is just a corner of computer science ;) Intuitionistic Logic/Constructive Logic “Logic as if people matters”. We are talking about communication of knowledge. We treat proofs as mathematical objects, or programs. We claim that $A$ is true, we actually mean that we have a proof of $A$. $M:A$ means that $M$ is a proof of $A$, or $M$ is of type $A$, they are the same thing. There are many strong connections among proof theory, type theory, and category theory." />
+<meta property="og:description" content="Intuitionistic Logic/Constructive Logic We can think of Type Theory as being a catalog of a variety of notions of computation. The type structure determines the “programming language features”. For example, whether you have higher order functions amounts to saying “do you have exponential types”; whether you have structs or tuples amounts to saying “do you have Cartesian product types”; whether you have choices or multiple classes of data corresponds to “whether you have sum types”. A programming language is really just a collection of types. So type theory is just a theory of construction. From that point of view, logic is just an application of type theory, because there are particular constructions which correspond to proofs. Other constructions like natural numbers or geometric objects don’t correspond to proofs of particular propositions. They are just mathematical constructions. What type theory is intersted in is the general concept of what is a mathematical construction. That’s why intuitionistic logic is also called constructive logic. From this point of view, we can say that logic is just a corner of mathematics, and mathematics is just a corner of computer science ;) Intuitionistic Logic/Constructive Logic “Logic as if people matters”. We are talking about communication of knowledge. We treat proofs as mathematical objects, or programs. We claim that $A$ is true, we actually mean that we have a proof of $A$. $M:A$ means that $M$ is a proof of $A$, or $M$ is of type $A$, they are the same thing. There are many strong connections among proof theory, type theory, and category theory." />
+<link rel="canonical" href="https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/" />
+<meta property="og:url" content="https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-02-19T23:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Type Theory Foundations" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Intuitionistic Logic/Constructive Logic We can think of Type Theory as being a catalog of a variety of notions of computation. The type structure determines the “programming language features”. For example, whether you have higher order functions amounts to saying “do you have exponential types”; whether you have structs or tuples amounts to saying “do you have Cartesian product types”; whether you have choices or multiple classes of data corresponds to “whether you have sum types”. A programming language is really just a collection of types. So type theory is just a theory of construction. From that point of view, logic is just an application of type theory, because there are particular constructions which correspond to proofs. Other constructions like natural numbers or geometric objects don’t correspond to proofs of particular propositions. They are just mathematical constructions. What type theory is intersted in is the general concept of what is a mathematical construction. That’s why intuitionistic logic is also called constructive logic. From this point of view, we can say that logic is just a corner of mathematics, and mathematics is just a corner of computer science ;) Intuitionistic Logic/Constructive Logic “Logic as if people matters”. We are talking about communication of knowledge. We treat proofs as mathematical objects, or programs. We claim that $A$ is true, we actually mean that we have a proof of $A$. $M:A$ means that $M$ is a proof of $A$, or $M$ is of type $A$, they are the same thing. There are many strong connections among proof theory, type theory, and category theory.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/"},"@type":"BlogPosting","headline":"Type Theory Foundations","dateModified":"2018-02-19T23:00:00+00:00","datePublished":"2018-02-19T23:00:00+00:00","url":"https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Type Theory Foundations</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-02-19
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>&nbsp;
+    
+        <a href="/category/#Type Theory" title="Category: Type Theory" rel="category">Type Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>&nbsp;
+    
+        <!--a href="/tag/#Type+Theory" title="Tag: Type Theory" rel="tag">Type Theory</a-->
+        <a href="/tag/#Type Theory" title="Tag: Type Theory" rel="tag">Type Theory</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#intuitionistic-logicconstructive-logic" id="markdown-toc-intuitionistic-logicconstructive-logic">Intuitionistic Logic/Constructive Logic</a>    <ul>
+      <li><a href="#sythetic-judgement-vs-analytic-judgement" id="markdown-toc-sythetic-judgement-vs-analytic-judgement">Sythetic Judgement vs Analytic Judgement</a></li>
+      <li><a href="#equivalence-of-proofs" id="markdown-toc-equivalence-of-proofs">Equivalence of Proofs</a></li>
+      <li><a href="#negation-urcorner-in-heyting-algebra" id="markdown-toc-negation-urcorner-in-heyting-algebra">Negation (\(\urcorner\)) in Heyting Algebra</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>We can think of Type Theory as being a catalog of a variety of notions of computation.
+The type structure determines the “programming language features”. For example,
+whether you have higher order functions amounts to saying “do you have exponential types”;
+whether you have structs or tuples amounts to saying “do you have Cartesian product types”;
+whether you have choices or multiple classes of data corresponds to
+“whether you have sum types”. A programming language is really just a collection of types.
+So type theory is just a theory of construction. From that point of view, logic is
+just an application of type theory, because there are particular constructions which
+correspond to proofs. Other constructions like natural numbers or geometric objects
+don’t correspond to proofs of particular propositions. They are just mathematical
+constructions. What type theory is intersted in is the general concept of what is
+a mathematical construction. That’s why intuitionistic logic is also called constructive
+logic. From this point of view, we can say that logic is just a corner of mathematics,
+and mathematics is just a corner of computer science ;)</p>
+
+<h1 id="intuitionistic-logicconstructive-logic">Intuitionistic Logic/Constructive Logic</h1>
+
+<p>“Logic as if people matters”. We are talking about communication of knowledge.
+We treat proofs as mathematical objects, or programs. We claim
+that $A$ is true, we actually mean that we have a proof of $A$. $M:A$ means that
+$M$ is a proof of $A$, or $M$ is of type $A$, they are the same thing. There are
+many strong connections among proof theory, type theory, and category theory.</p>
+
+<!--more-->
+
+<p>Some connections between Intuitionisitc Propositional logic:proof theory ($\vdash$) and <strong>Heyting Algebra</strong>:category theory(Cartesian closed pre-order, which follows <strong>Reflexivity</strong> and <strong>Transitivity</strong>) ($\leq$)</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>\(A\ true\vdash T\ true\)</td>
+      <td>\(A\leq T\)</td>
+    </tr>
+    <tr>
+      <td>\(A\wedge B\ true\vdash A\ true\),\(A\wedge B\ true\vdash B\ true\)</td>
+      <td>\(A\wedge B\leq A\),\(A\wedge B\leq B\)</td>
+    </tr>
+    <tr>
+      <td>\(\frac{C\ true\vdash A\ true,C\ true\vdash B\ true}{C\ true\vdash A\wedge B\ true}\)</td>
+      <td>\(\frac{C\leq A,C\leq B}{C\leq A\wedge B}\)</td>
+    </tr>
+    <tr>
+      <td>\(\perp\ true\vdash A\ true\)</td>
+      <td>\(I\leq A\)</td>
+    </tr>
+    <tr>
+      <td>\(A\ true\vdash A\vee B\ true\),\(A\ true\vdash A\vee B\ true\)</td>
+      <td>\(A\leq A\vee B\),\(B\leq A\vee B\)</td>
+    </tr>
+    <tr>
+      <td>\(\frac{A\ true\vdash C\ true,B\ true\vdash C\ true}{A\vee B\ true\vdash C\ true}\)</td>
+      <td>\(\frac{A\leq C,B\leq C}{A\vee B\leq C}\)</td>
+    </tr>
+    <tr>
+      <td>Introduction rule: \(A\ true,A\supset B\ true\vdash B\ true\) Elimination rule: \(\frac{C\ true,A\ true\vdash B\ true}{C\ true\vdash A\supset B\ true}\)</td>
+      <td>\(A\wedge B\leq C\ iff\ A\leq(B\supset C)\) or \(A\wedge B\leq C\ iff\ A\leq C^B\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="sythetic-judgement-vs-analytic-judgement">Sythetic Judgement vs Analytic Judgement</h2>
+
+<p>For synthetic judgement, we have something like “$A$ is true”, which requires a proof.
+It means that we need to do some proof searching.</p>
+
+<p>For analytic judgement, we have “$M:A$”, which gives me a proof of $A$ which is $M$.
+All we need to do is to check whether $M$ is actually a proof of $A$, which is much
+easier than searching a proof. It is also called <strong>self-evident</strong>.</p>
+
+<h2 id="equivalence-of-proofs">Equivalence of Proofs</h2>
+
+<ol>
+  <li>
+    <p>Definitional Equality (analytic judgement): equality of sense
+\(\Gamma\vdash M\equiv N:A\)</p>
+  </li>
+  <li>
+    <p>Denotational Equality (synthetic judgement): equality of reference
+\(\Gamma\vdash M=N:A\)</p>
+  </li>
+  <li>
+    <p>(Homotopy) Equivalence (synthetic judgement)
+\(\Gamma\vdash\alpha:M\cong N:A\), where $\alpha$ is an evidence of equivalence.</p>
+  </li>
+</ol>
+
+<p>Example to distinguish 1 and 2:</p>
+
+<p>Define addition as follows:</p>
+
+\[a+0\equiv a\\
+a+succ(b)\equiv succ(a+b)\]
+
+<p>Then we have the following equalities:</p>
+
+\[true:2+2\equiv4\\
+true:x\in\mathbb{N}\vdash x+0\equiv x\\
+false:x\in\mathbb{N}\vdash 0+x\equiv x\\
+true:x\in\mathbb{N}\vdash 0+x=x\\
+true:x\in\mathbb{N}\vdash succ(x)\equiv x+1\\
+false:x\in\mathbb{N}\vdash succ(x)\equiv 1+x\\
+true:x\in\mathbb{N}\vdash succ(x)=1+x\\
+true:x,y\in\mathbb{N}\vdash x+y=y+x\\\]
+
+<p>For Denotational Equality, we are suppressing the trivial evidence which is always
+reflexivity/identity. But for Equivalence, $\alpha$ can be reflexivity but can also be
+something else.</p>
+
+<h2 id="negation-urcorner-in-heyting-algebra">Negation (\(\urcorner\)) in Heyting Algebra</h2>
+
+<p>Introduction rule:</p>
+
+\[\frac{C\vee A\leq\perp}
+{C\leq\urcorner A}\]
+
+<p>Elimination rule:</p>
+
+\[A\vee\urcorner A\leq\perp\]
+
+<p>Note: negation in Heyting algebra is not complement!!!</p>
+
+<p>Namely, we <em>don’t</em> have the following:</p>
+
+\[T\leq A\vee\urcorner A\]
+
+<p>or in logic, we don’t expect</p>
+
+\[A\vee\urcorner A\ true\]
+
+<p><strong>Boolean Algebra</strong> is <strong>Heyting Algebra</strong> with negation equals complement, which is also called <strong>law of excluded middle</strong>.</p>
+
+<p>We can define in Heyting Algebra:</p>
+
+\[A\ decidable\ iff\ (A\vee\urcorner A)\ true\]
+
+<p>It just means that there are propositions that we neither have a proof nor refutation. Example: $P=NP$.</p>
+
+<p>Note: Failing to affirm the decidability of every proposition is <em>not the same</em> as refuting the decidability of every proposition.</p>
+
+<p>We have the following theorm in intuitionistic logic:</p>
+
+\[\urcorner(\urcorner(A\vee\urcorner A))\]
+
+<p>To put it in human language, it says: intuitionistic logic does not refute the law of excluded middle. It does not affirm it, but it does not refute it also.</p>
+
+<p>The importance is: <strong>we can always heuristically assume a proposition is decidable even if we don’t have a proof. The apparent limitations of intuitionistic logic are the very source of its strength/expressiveness.</strong></p>
+
+<p>So far we have some elementry constructions:</p>
+
+\[0,1,A\times B,A+B,A\rightarrow B\]
+
+<p>or to write it in logic</p>
+
+\[\perp,T,A\wedge B,A\vee B, A\supset B\]
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/20/Recursive-Types/">Recursive Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/18/Recursive-Programs/">Recursive Programs
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/02/18/Sequent-Calculus/">Sequent Calculus</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/02/20/Basic-Computational-Type-Theory/">Basic Computational Type Theory</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2018/02/19/Type-Theory-Foundations/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#intuitionistic-logicconstructive-logic">Intuitionistic Logic/Constructive Logic</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#sythetic-judgement-vs-analytic-judgement">Sythetic Judgement vs Analytic Judgement</a></li>
+<li class="toc-entry toc-h2"><a href="#equivalence-of-proofs">Equivalence of Proofs</a></li>
+<li class="toc-entry toc-h2"><a href="#negation-urcorner-in-heyting-algebra">Negation (\(\urcorner\)) in Heyting Algebra</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

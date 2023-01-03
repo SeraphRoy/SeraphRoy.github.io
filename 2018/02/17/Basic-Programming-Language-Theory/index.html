@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Basic Programming Language Theory</title>
+    <meta name="description" content="  Total Programming Language          What does it mean for a PL to exist?      Total Programming LanguageE.Coli of Total PLs - Godel’s T:It codifies higher ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Basic Programming Language Theory | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Basic Programming Language Theory" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Total Programming Language What does it mean for a PL to exist? Total Programming Language E.Coli of Total PLs - Godel’s T: It codifies higher order functions and inductive types (nat) What does it mean for a PL to exist? A PL consists of two parts: Statics: What are the programs? Dynamics: How do we run them? Basic criterion: Coherence" />
+<meta property="og:description" content="Total Programming Language What does it mean for a PL to exist? Total Programming Language E.Coli of Total PLs - Godel’s T: It codifies higher order functions and inductive types (nat) What does it mean for a PL to exist? A PL consists of two parts: Statics: What are the programs? Dynamics: How do we run them? Basic criterion: Coherence" />
+<link rel="canonical" href="https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/" />
+<meta property="og:url" content="https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-02-17T15:15:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Basic Programming Language Theory" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Total Programming Language What does it mean for a PL to exist? Total Programming Language E.Coli of Total PLs - Godel’s T: It codifies higher order functions and inductive types (nat) What does it mean for a PL to exist? A PL consists of two parts: Statics: What are the programs? Dynamics: How do we run them? Basic criterion: Coherence","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/"},"@type":"BlogPosting","headline":"Basic Programming Language Theory","dateModified":"2018-02-17T15:15:00+00:00","datePublished":"2018-02-17T15:15:00+00:00","url":"https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Basic Programming Language Theory</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-02-17
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#total-programming-language" id="markdown-toc-total-programming-language">Total Programming Language</a>    <ul>
+      <li><a href="#what-does-it-mean-for-a-pl-to-exist" id="markdown-toc-what-does-it-mean-for-a-pl-to-exist">What does it mean for a PL to exist?</a></li>
+      <li><a href="#statics" id="markdown-toc-statics">Statics</a></li>
+      <li><a href="#dynamics" id="markdown-toc-dynamics">Dynamics</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="total-programming-language">Total Programming Language</h1>
+
+<p>E.Coli of Total PLs - Godel’s T:
+It codifies higher order functions and inductive types (nat)</p>
+
+<h2 id="what-does-it-mean-for-a-pl-to-exist">What does it mean for a PL to exist?</h2>
+
+<p>A PL consists of two parts:</p>
+<ul>
+  <li>Statics: What are the programs?</li>
+  <li>Dynamics: How do we run them?</li>
+</ul>
+
+<p>Basic criterion: <strong>Coherence</strong></p>
+
+<!--more-->
+
+<h2 id="statics">Statics</h2>
+
+<p>We will talk about <em>abstract syntax</em> and <em>context-sensitive-conditions on well-formation</em>.</p>
+
+<p>Formal = typing is <em>inductively</em> defined.</p>
+
+<p>We only have information about the types but not the elements themselves.</p>
+
+<p>So we only care about two things, higher order functions, and nat.</p>
+
+\[\tau:=nat|\tau_1\rightarrow\tau_2\\
+e:=x|z|s(e)|iter(e_0x.e_1)(e)|\lambda x:\tau.e|e_1(e_2)\]
+
+<p>So the typing:</p>
+
+\[\Gamma\vdash e:\tau\]
+
+<p>is inductively defined by rules, which is the <em>least</em> relation <em>closed under</em> under
+some rules</p>
+
+<p>Note: \(\Gamma\) can be viewed as a “context”. It could be written as something like
+\(\Gamma=x_1:\tau_1,x_2:\tau_2,\ldots,x_n:\tau_n\)</p>
+
+<p>e.g. <a href="/2018/02/20/Basic-Computational-Type-Theory/">natural number</a></p>
+
+<p>Hypothetical Judgement (Structural):</p>
+
+<p>Note: 1 and 2 are indefeasible. 3, 4, 5 is defeasible (Will be different in substructural type systems).</p>
+
+<ol>
+  <li>
+    <p>Reflexivity
+\(x:\tau\vdash x:\tau\)</p>
+  </li>
+  <li>
+    <p>Transitivity
+\(if:\Gamma\vdash e:\tau\ and\ \Gamma,x:\tau\vdash e':\tau' \\
+then:\Gamma\vdash[e/x]e':\tau'\)</p>
+  </li>
+  <li>
+    <p>Weakening
+\(if:\Gamma\vdash e':\tau'\ then\ \Gamma,x:\tau\vdash e':\tau'\)</p>
+  </li>
+  <li>
+    <p>Contraction
+\(if:\Gamma,x:\tau,y:\tau\vdash e':\tau' \\
+then:\Gamma,z:\tau\vdash[z,z/x,y]e':\tau'\)</p>
+  </li>
+  <li>
+    <p>Exchange
+\(if:\Gamma,x:\tau,y:\tau\vdash e':\tau' \\
+then:\Gamma,y:\tau,x:\tau\vdash e':\tau'\)</p>
+  </li>
+</ol>
+
+<h2 id="dynamics">Dynamics</h2>
+
+<p>Execute <em>close</em> <em>code</em> (no free variables)</p>
+
+<p>We need to specify:</p>
+<ul>
+  <li>$e\ val$</li>
+  <li>States of execution $S$</li>
+  <li>Transition $S\mapsto S’$</li>
+  <li>Initial State and final state</li>
+</ul>
+
+<p>Some rules:</p>
+
+<ul>
+  <li>zero is a value</li>
+</ul>
+
+\[\frac{}
+{z\ val}\]
+
+<ul>
+  <li>successor is a value</li>
+</ul>
+
+\[\frac{}
+{s(e)\ val}\]
+
+<ul>
+  <li>function is a value</li>
+</ul>
+
+\[\frac{}
+{\lambda x:\tau.e\ val}\]
+
+<ul>
+  <li>functions can be executed</li>
+</ul>
+
+\[\frac{e_2\ val}
+{(\lambda x:\tau.e)(e_2)\mapsto[e_2/x]e}\]
+
+<ul>
+  <li>
+\[\frac{e_1\mapsto e_1'}{e_1(e_2)\mapsto e_1'(e_2)}\]
+  </li>
+  <li>
+\[\frac{e\mapsto e'}{iter{\tau}(e_0;x.e_1)(e)\mapsto iter{\tau}(e_0;x.e_1)(e')}\]
+  </li>
+  <li>Values are stuck/finished</li>
+</ul>
+
+\[\frac{e\ val}
+{\nexists e'\ st\ e\mapsto\ e'}\]
+
+<ul>
+  <li>Determinism/functional language</li>
+</ul>
+
+\[\forall e\exists\leq 1\ v\ st\ v\ val\ and\ e\mapsto^\ast v\]
+
+<p>Note: dynamics doesn’t care about types!</p>
+
+<p><strong>Coherence</strong> of Dynamics/Statics/<strong>Type Safety</strong>($\infty$):</p>
+
+<ul>
+  <li>Preservation</li>
+</ul>
+
+\[\frac{e:\tau\ and\ e\mapsto e'}
+{e':\tau}\]
+
+<ul>
+  <li>Progress</li>
+</ul>
+
+\[\frac{e:\tau}
+{either\ e\ val\ or\ \exists e'\ e\mapsto e'}\]
+
+<ul>
+  <li>Termination</li>
+</ul>
+
+\[\forall e:\tau\exists unique\ v:\tau,v\ val,e\mapsto^\ast v\]
+
+<p>Here we proof Termination ($T(e)$ means $e$ terminates). According to Godel, if we proof termination, we are proving
+the consistency of the arithmetic, so we need methods that go beyong the arithmetic
+(Godel’s incompleteness):</p>
+
+<ol>
+  <li>$e$ itself can’t be a variable becasue it is <em>closed</em></li>
+  <li>
+\[z\mapsto^*z\ val\]
+  </li>
+  <li>
+\[s(e)\mapsto^*s(e)\ val\]
+  </li>
+  <li>
+\[\lambda x:\tau.e\mapsto^*\lambda x:\tau.e\ val\]
+  </li>
+  <li>But for \(e_1(e_2)\), even by inductive hypothesis, we know \(e_1\mapsto^*v_1\)
+and \(e_2\mapsto^*v_2\), and \(e_1:\tau_2\rightarrow \tau,e_2:\tau_2\), we can only do
+\(e_1(e_2)\mapsto^*v_1(e_2)=(\lambda x:\tau_2.e')(e_2)\mapsto[e_2/x]e'\), but we can’t
+get any further. We do need more info about $e’$!</li>
+</ol>
+
+<p>Therefor we introduct a strong property called <strong>hereditary termination</strong>: \(HT_\tau(e)\)</p>
+
+<ul>
+  <li>Want: $HT_{nat}(e)$ implies $T(e)$</li>
+  <li>Define: $HT_\tau(e)$ by induction on type $\tau$ [Tait’s Method]
+    <ul>
+      <li>\(HT_{nat}(e)\ iff\ e\mapsto^*z\) or \(e\mapsto^*s(e')\) with \(HT_{nat}(e')\) (it is 
+well-defined because it is the <em>strongest predicate satisfying these rules</em>)</li>
+      <li>\(HT_{\tau_1\rightarrow\tau_2}(e)\ iff\ e\mapsto^*\lambda x:\tau_1.e'\) and
+for every $e_1$ such that \(HT_{\tau_1}(e_1),HT_{\tau_2}([e_1/x]e')\) (meaning “type goes down”).
+To write this in another form,
+\(HT_{\tau_1\rightarrow\tau_2}(e)\ iff\ (if\ HT_{\tau_1}(e_1),then\ HT_{\tau_2}(e(e_1)))\)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>And we have $Thm(v2)$:</p>
+
+<p>If \(e:\tau\) then \(HT_\tau(e)\), and then therefore \(T_\tau(e)\)</p>
+
+<p>So now for inductive hypothesis, we not only know \(e_1\mapsto^*v_1\) 15 and \(e_2\mapsto^*v_2\),
+but also \(HT_{\tau_2\rightarrow\tau}(e_1)\) and \(HT_{\tau_2}(e_2)\). And because
+we know that $e_1$ is a $\lambda$, we now know that \([e_2/x]e'\) is $HT$!</p>
+
+<p>BUT! $Thm(v2)$ is only stating about $e$ being <em>closed</em> terms, but for $\lambda$:
+\(\frac{x:\tau_1\vdash e_2:\tau_2}{\lambda x:\tau_1.e_2:\tau_1\rightarrow\tau_2}\),
+$e_2$ is an open term, meaning it is a variable, so our theorm doesn’t quite work.
+We must account for open terms!</p>
+
+<p>$Thm(v3)$[Tait]:</p>
+
+<p>If \(\Gamma\vdash e:\tau\) and \(HT_\Gamma(\gamma)\), then \(HT_\tau(\hat{\gamma}(e))\)</p>
+
+<p>So \(HT_\Gamma(\gamma)\) means that if \(\Gamma=x_1:\tau_1,x_2:\tau_2,\ldots,x_n:\tau_n\),
+then $\gamma=x_1\hookrightarrow e_1,x_2\hookrightarrow e_2,\ldots,x_n\hookrightarrow x_n$ (substitution)
+such that \(HT_{\tau_1}(e_1),\ldots,HT_{\tau_n}(e_n)\), and \(\hat{\gamma}(e)\) means
+to do the substitution. So we are good now!</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/20/Recursive-Types/">Recursive Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/18/Recursive-Programs/">Recursive Programs
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/11/18/Garbage-Collection/">Garbage Collection</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/02/17/Sum-and-Product-Types/">Sum and Product Types</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2018/02/17/Basic-Programming-Language-Theory/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#total-programming-language">Total Programming Language</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#what-does-it-mean-for-a-pl-to-exist">What does it mean for a PL to exist?</a></li>
+<li class="toc-entry toc-h2"><a href="#statics">Statics</a></li>
+<li class="toc-entry toc-h2"><a href="#dynamics">Dynamics</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications</title>
+    <meta name="description" content="  Layout of the Whole BookAnthoer book summary/review!Layout of the Whole BookThe book is arranged into these parts:  Fundamental ideas that underpin the des...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Layout of the Whole Book Anthoer book summary/review! Layout of the Whole Book The book is arranged into these parts: Fundamental ideas that underpin the design of data-intensive applications. What we’re actually trying to achieve: reliability, scalability, and maintainability; how we need to think about them; and how we can achieve them. Comparisons of different data models and query languages Storage engines how databases arrange data on disk so that we can find it again efficiently. Encoding and evolution of schemas over time. Distributed Data Replication, partitioning/sharding Transactions Consistency and consensus Batching Streaming This blog post only talks about part 1." />
+<meta property="og:description" content="Layout of the Whole Book Anthoer book summary/review! Layout of the Whole Book The book is arranged into these parts: Fundamental ideas that underpin the design of data-intensive applications. What we’re actually trying to achieve: reliability, scalability, and maintainability; how we need to think about them; and how we can achieve them. Comparisons of different data models and query languages Storage engines how databases arrange data on disk so that we can find it again efficiently. Encoding and evolution of schemas over time. Distributed Data Replication, partitioning/sharding Transactions Consistency and consensus Batching Streaming This blog post only talks about part 1." />
+<link rel="canonical" href="https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-08-15T10:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Layout of the Whole Book Anthoer book summary/review! Layout of the Whole Book The book is arranged into these parts: Fundamental ideas that underpin the design of data-intensive applications. What we’re actually trying to achieve: reliability, scalability, and maintainability; how we need to think about them; and how we can achieve them. Comparisons of different data models and query languages Storage engines how databases arrange data on disk so that we can find it again efficiently. Encoding and evolution of schemas over time. Distributed Data Replication, partitioning/sharding Transactions Consistency and consensus Batching Streaming This blog post only talks about part 1.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/"},"@type":"BlogPosting","headline":"Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications","dateModified":"2019-08-15T10:00:00+00:00","datePublished":"2019-08-15T10:00:00+00:00","url":"https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-08-15
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Distributed System" title="Category: Distributed System" rel="category">Distributed System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Books" title="Tag: Books" rel="tag">Books</a-->
+        <a href="/tag/#Books" title="Tag: Books" rel="tag">Books</a>&nbsp;
+    
+        <!--a href="/tag/#Distributed+System" title="Tag: Distributed System" rel="tag">Distributed System</a-->
+        <a href="/tag/#Distributed System" title="Tag: Distributed System" rel="tag">Distributed System</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#layout-of-the-whole-book" id="markdown-toc-layout-of-the-whole-book">Layout of the Whole Book</a></li>
+  <li><a href="#data-models-and-query-languages" id="markdown-toc-data-models-and-query-languages">Data Models and Query Languages</a></li>
+  <li><a href="#storage-and-retrieval" id="markdown-toc-storage-and-retrieval">Storage and Retrieval</a>    <ul>
+      <li><a href="#sstables-and-lsm-trees" id="markdown-toc-sstables-and-lsm-trees">SSTables and LSM-Trees</a></li>
+      <li><a href="#b-trees" id="markdown-toc-b-trees">B-Trees</a></li>
+      <li><a href="#comparing-b-trees-and-lsm-trees" id="markdown-toc-comparing-b-trees-and-lsm-trees">Comparing B-Trees and LSM-Trees</a></li>
+      <li><a href="#oltp-and-olap" id="markdown-toc-oltp-and-olap">OLTP and OLAP</a></li>
+      <li><a href="#data-warehousing-and-column-oriented-storage" id="markdown-toc-data-warehousing-and-column-oriented-storage">Data Warehousing and Column-Oriented-Storage</a></li>
+    </ul>
+  </li>
+  <li><a href="#summary" id="markdown-toc-summary">Summary</a></li>
+</ul>
+
+<p>Anthoer book summary/review!</p>
+
+<h2 id="layout-of-the-whole-book">Layout of the Whole Book</h2>
+
+<p>The book is arranged into these parts:</p>
+
+<ol>
+  <li>Fundamental ideas that underpin the design of data-intensive applications.
+    <ul>
+      <li>What we’re actually trying to achieve: reliability,
+  scalability, and maintainability; how we need to think about them; and how we can
+  achieve them.</li>
+      <li>Comparisons of different data models and query languages</li>
+      <li>Storage engines how databases arrange data on disk so that we can find it again
+  efficiently.</li>
+      <li>Encoding and evolution of schemas over time.</li>
+    </ul>
+  </li>
+  <li>Distributed Data
+    <ul>
+      <li>Replication, partitioning/sharding</li>
+      <li>Transactions</li>
+      <li>Consistency and consensus</li>
+      <li>Batching</li>
+      <li>Streaming</li>
+    </ul>
+  </li>
+</ol>
+
+<p>This blog post only talks about part 1.</p>
+
+<!--more-->
+
+<h2 id="data-models-and-query-languages">Data Models and Query Languages</h2>
+
+<p>The book talks about various query languages other than SQL which can be referred from
+the book so we are not going to talk about them here. Essentially there are a few
+general-purpose data models for data storage and querying including relational model
+(SQL), the document model like JSON and XML (NoSQL), and graph-based model. The idea
+is that relational model is good at modeling relations (called tables in SQL),
+where each relation is an unordered collection of tuples (rows in SQL); the document
+model is good at modeling documents or “objects” in programming; when it comes to
+many-to-one and many-to-many relationships, graph-based model does the best job.</p>
+
+<h2 id="storage-and-retrieval">Storage and Retrieval</h2>
+
+<h3 id="sstables-and-lsm-trees">SSTables and LSM-Trees</h3>
+
+<p>SSTable stands for Sorted String Table. The idea is that we keep an in-memory table
+where every key is mapped to a byte offset in the data file. Whenever you append a new
+key-value pair to the file, you also update the table to reflect the offset of the
+data you just wrote (this works both for inserting new keys and for updating existing
+keys). When you want to look up a value, use the table to find the offset in the
+data file, seek to that location, and read the value. It’s basically an append-only
+log. The key idea is that the sequence of key-value pairs is <em>sorted by key</em>.</p>
+
+<p>How do you get your data to be sorted by key in the first place? Use a balanced BST!</p>
+
+<p>We can now make our storage engine work as follows:</p>
+<ul>
+  <li>When a write comes in, add it to an in-memory balanced tree data structure (for
+example, a red-black tree). This in-memory tree is sometimes called a memtable.</li>
+  <li>When the memtable gets bigger than some threshold—typically a few megabytes—write
+it out to disk as an SSTable file. This can be done efficiently because the tree
+already maintains the key-value pairs sorted by key. The new SSTable file becomes the
+most recent segment of the database. While the SSTable is being written out to disk,
+writes can continue to a new memtable instance.</li>
+  <li>In order to serve a read request, first try to find the key in the memtable, then
+in the most recent on-disk segment, then in the next-older segment, etc.</li>
+  <li>From time to time, run a merging and compaction process in the background to
+combine segment files and to discard overwritten or deleted values.</li>
+</ul>
+
+<p>How do we avoid eventually running out of disk space? A good solution is to break the
+log into segments of a certain size by closing a segment file when it reaches a
+certain size, and making subsequent writes to a new segment file. We can then
+perform compaction on these segments. Compaction means
+throwing away duplicate keys in the log, and keeping only the most recent update
+for each key. Moreover, since compaction often makes segments much smaller (assuming
+that a key is overwritten several times on average within one segment), we can also
+merge several segments together at the same time as performing the compaction.
+Segments are never modified after they have been written, so the merged segment is
+written to a new file. The merging and compaction of frozen segments can be done in
+a background thread, and while it is going on, we can still continue to serve read
+and write requests as normal, using the old segment files. After the merging process
+is complete, we switch read requests to using the new merged segment instead of the
+old segments—and then the old segment files can simply be deleted.</p>
+
+<p>If you want to delete a key and its associated value, you have to append a special
+deletion record to the data file (sometimes called a tombstone). When log segments
+are merged, the tombstone tells the merging process to discard any previous values
+for the deleted key.</p>
+
+<p>if the database crashes, the most recent writes (which are in the memtable but not
+yet written out to disk) are lost. In order to avoid that problem, we can keep a
+separate log on disk to which every write is immediately appended.
+That log is not in sorted order, but that doesn’t matter, because its only purpose
+is to restore the memtable after a crash. Every time the memtable is written out to an
+SSTable, the corresponding log can be discarded.</p>
+
+<p>Append-only log with SSTable has several advantages:</p>
+<ul>
+  <li>Appending and segment merging are sequential write operations, which are generally
+much faster than random writes, especially on magnetic spinning-disk hard drives.
+To some extent sequential writes are also preferable on flash-based solid state drives (SSDs)</li>
+  <li>Concurrency and crash recovery are much simpler if segment files are append-only or
+immutable. For example, you don’t have to worry about the case where a crash happened
+while a value was being overwritten, leaving you with a file containing part of the
+old and part of the new value spliced together.</li>
+  <li>Merging segments is simple and efficient, even if the files are bigger than the
+available memory. The approach is like the one used in the mergesort algorithm.
+You start reading the input files side by side, look at the first key in each file,
+copy the lowest key (according to the sort order) to the output file, and repeat.
+This produces a new merged segment file, also sorted by key. What if the same key
+appears in several input segments? Remember that each segment contains all the values
+written to the database during some period of time. This means that all the values in
+one input segment must be more recent than all the values in the other segment
+(assuming that we always merge adjacent segments). When multiple segments contain the
+same key, we can keep the value from the most recent segment and discard the values
+in older segments.</li>
+  <li>Merging old segments avoids the problem of data files getting fragmented over time.</li>
+  <li>Lookup is fast as it’s basically a binary search</li>
+</ul>
+
+<h3 id="b-trees">B-Trees</h3>
+
+<p>Like SSTables, B-trees keep key-value pairs sorted by key, which allows efficient
+key-value lookups and range queries. But that’s where the similarity ends: B-trees
+have a very different design philosophy. The log-structured indexes we saw earlier
+break the database down into variable-size segments, typically several megabytes or
+more in size, and always write a segment sequentially. By contrast, B-trees break the
+database down into fixed-size blocks or pages, traditionally 4 KB in size
+(sometimes bigger), and read or write one page at a time. This design corresponds
+more closely to the underlying hardware, as disks are also arranged in fixed-size
+blocks. Most databases can fit into a B-tree that is three or four levels deep, so
+you don’t need to follow many page references to find the page you are looking for.
+(A four-level tree of 4 KB pages with a branching factor of 500 can store up to 256 TB.)</p>
+
+<p>The basic underlying write operation of a B-tree is to overwrite a page on disk with
+new data. It is assumed that the overwrite does not change the location of the page;
+i.e., all references to that page remain intact when the page is overwritten.
+This is in stark contrast to log-structured indexes such as LSM-trees, which only
+append to files (and eventually delete obsolete files) but never modify files in place.</p>
+
+<p>In order to make the database resilient to crashes, it is common for B-tree
+implementations to include an additional data structure on disk: a write-ahead log
+(WAL, also known as a redo log). This is an append-only file to which every B-tree
+modification must be written before it can be applied to the pages of the tree itself.
+When the data‐ base comes back up after a crash, this log is used to restore the
+B-tree back to a consistent state</p>
+
+<h3 id="comparing-b-trees-and-lsm-trees">Comparing B-Trees and LSM-Trees</h3>
+
+<p>As a rule of thumb, LSM-trees are typically faster for writes, whereas B-trees are
+thought to be faster for reads. Reads are typically slower on LSM-trees because they
+have to check several different data structures and SSTables at different stages of compaction.</p>
+
+<h3 id="oltp-and-olap">OLTP and OLAP</h3>
+
+<p>OLTP stands for online transaction processing and OLAP stands for online analytic processing.
+We can compare characteristics of the two as following</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Property</td>
+      <td>OLTP</td>
+      <td>OLAP</td>
+    </tr>
+    <tr>
+      <td>Main read pattern</td>
+      <td>small number of records per query, fetched by key</td>
+      <td>Aggregate over large number of records</td>
+    </tr>
+    <tr>
+      <td>Main write pattern</td>
+      <td>Random-access, low-latency writes from user input</td>
+      <td>Bulk import (ETL) or event stream</td>
+    </tr>
+    <tr>
+      <td>Primarily used by</td>
+      <td>End user/customer, via web application</td>
+      <td>Internal analyst, for decision support</td>
+    </tr>
+    <tr>
+      <td>What data represents</td>
+      <td>Latest state of data (current point in time)</td>
+      <td>History of events that happened over time</td>
+    </tr>
+    <tr>
+      <td>Dataset size</td>
+      <td>Gigabytes to terabytes</td>
+      <td>Terabytes to petabytes</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="data-warehousing-and-column-oriented-storage">Data Warehousing and Column-Oriented-Storage</h3>
+
+<p>The example schema following shows a data warehouse that might be found at a grocery
+retailer. At the center of the schema is a so-called fact table (in this example,
+it is called fact_sales). Each row of the fact table represents an event that occurred
+at a particular time (here, each row represents a customer’s purchase of a product).
+If we were analyzing website traffic rather than retail sales, each row might
+represent a page view or a click by a user.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Star-Schema-in-Data-Warehouse.png" alt="" /></p>
+
+<p>In a typical data warehouse, tables are often very wide: fact tables often have over
+100 columns, sometimes several hundred. Dimension tables can also be very wide, as
+they include all the metadata that may be relevant for analysis—for example, the
+dim_store table may include details of which services are offered at each store,
+whether it has an in-store bakery, the square footage, the date when the store was
+first opened, when it was last remodeled, how far it is from the nearest highway, etc.
+Although fact tables are often over 100 columns wide, a typical data warehouse query
+only accesses 4 or 5 of them at one time (“SELECT *” queries are rarely needed for analytics).
+But in most OLTP databases, storage is laid out in a row-oriented fashion: all the values
+from one row of a table are stored next to each other. Document databases are
+similar: an entire document is typically stored as one contiguous sequence of bytes.
+So we need another layout of our storage engine, which is <em>column-oriented storage</em>.</p>
+
+<p>The idea behind column-oriented storage is simple: don’t store all the values from one
+row together, but store all the values from each column together instead. If each
+column is stored in a separate file, a query only needs to read and parse those
+columns that are used in that query, which can save a lot of work.
+This principle is illustrated below.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Column-Oriented-Storage.png" alt="" /></p>
+
+<p>Besides only loading those columns from disk that are required for a query, we can
+further reduce the demands on disk throughput by compressing data. Fortunately,
+column-oriented storage often lends itself very well to compression: columns often
+look quite repetitive (for example, a retailer may have billions of sales transactions,
+but only 100,000 distinct products), so we can use a bitmap to encode them.</p>
+
+<p>If n is very small (for example, a country column may have approximately 200 distinct
+values), those bitmaps can be stored with one bit per row. But if n is bigger, there
+will be a lot of zeros in most of the bitmaps (we say that they are sparse). In that
+case, the bitmaps can additionally be run-length encoded, as shown below.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Column-Compression.png" alt="" /></p>
+
+<p>Note: Cassandra and HBase have a concept of <em>column families</em>, which they inherited from
+Bigtable. However, it is very misleading to call them column-oriented: within each
+column family, they store all columns from a row together, along with a row key, and
+they do not use column compression. Thus, the Bigtable model is still mostly row-oriented.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>On a high level, we saw that storage engines fall into two broad categories: those
+optimized for transaction processing (OLTP), and those optimized for analytics (OLAP).
+There are big differences between the access patterns in those use cases:</p>
+
+<ul>
+  <li>OLTP systems are typically user-facing, which means that they may see a huge volume
+of requests. In order to handle the load, applications usually only touch a small
+number of records in each query. The application requests records using some kind of
+key, and the storage engine uses an index to find the data for the requested key.
+Disk seek time is often the bottleneck here.</li>
+  <li>Data warehouses and similar analytic systems are less well known, because they are
+primarily used by business analysts, not by end users. They handle a much lower
+volume of queries than OLTP systems, but each query is typically very demanding,
+requiring many millions of records to be scanned in a short time. Disk bandwidth
+(not seek time) is often the bottleneck here, and column- oriented storage is an
+increasingly popular solution for this kind of workload.</li>
+</ul>
+
+<p>On the OLTP side, we saw storage engines from two main schools of thought:</p>
+<ul>
+  <li>The log-structured school, which only permits appending to files and deleting
+obsolete files, but never updates a file that has been written. Bitcask, SSTables,
+LSM-trees, LevelDB, Cassandra, HBase, Lucene, and others belong to this group.</li>
+  <li>The update-in-place school, which treats the disk as a set of fixed-size pages that
+can be overwritten. B-trees are the biggest example of this philosophy, being used
+in all major relational databases and also many nonrelational ones.</li>
+</ul>
+
+<p>We then took a detour from the internals of storage engines to look at the high-level
+architecture of a typical data warehouse. This background illustrated why analytic
+workloads are so different from OLTP: when your queries require sequentially scanning
+across a large number of rows, indexes are much less relevant. Instead it becomes
+important to encode data very compactly, to minimize the amount of data that the
+query needs to read from disk. We discussed how column-oriented storage helps achieve
+this goal.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/08/15/Data-Encoding-and-Transmission/">Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/07/24/Streaming-Systems/">Streaming Systems
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2019/07/24/Streaming-Systems/">Streaming Systems</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2019/08/15/Data-Encoding-and-Transmission/">Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#layout-of-the-whole-book">Layout of the Whole Book</a></li>
+<li class="toc-entry toc-h2"><a href="#data-models-and-query-languages">Data Models and Query Languages</a></li>
+<li class="toc-entry toc-h2"><a href="#storage-and-retrieval">Storage and Retrieval</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#sstables-and-lsm-trees">SSTables and LSM-Trees</a></li>
+<li class="toc-entry toc-h3"><a href="#b-trees">B-Trees</a></li>
+<li class="toc-entry toc-h3"><a href="#comparing-b-trees-and-lsm-trees">Comparing B-Trees and LSM-Trees</a></li>
+<li class="toc-entry toc-h3"><a href="#oltp-and-olap">OLTP and OLAP</a></li>
+<li class="toc-entry toc-h3"><a href="#data-warehousing-and-column-oriented-storage">Data Warehousing and Column-Oriented-Storage</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#summary">Summary</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

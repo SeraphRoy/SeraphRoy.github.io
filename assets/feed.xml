@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gae Blog</title>
+    <description></description>
+    <link>https://www.gaeblog.com/</link>
+    <pubDate>Tue, 03 Jan 2023 21:33:07 +0000</pubDate>
+    <lastBuildDate>Tue, 03 Jan 2023 21:33:07 +0000</lastBuildDate>
+    <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Some personal updates</title>
+        <description>
+Just want to give a brief updates on my current status. I moved from Bay Area working for Arista Networks to Irvine@Orange County@SoCal
+working for Amazon on Oct 2019. Part of the reasons why I haven’t been updating this blog is just the work is far busier compared to
+what’s in Arista XD.
+
+I’ll have another post about this one and a half year journey in Amazon@Irvine, across two organizations two teams three managers.
+
+</description>
+        <pubDate>Tue, 09 Mar 2021 10:00:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2021/03/09/Some-Personal-Updates/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2021/03/09/Some-Personal-Updates/</guid>
+        
+        
+        <category>Random</category>
+        
+      </item>
+    
+      <item>
+        <title>Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications</title>
+        <description>This blog talks about various data encoding methods and their advantages/limitations,
+along with protocols of transmitting them.
+
+Efficiency is certainly one of the main concerns for various encoding methods. The other
+thing we need to care about is &lt;em&gt;compatibility&lt;/em&gt;. &lt;em&gt;Backward compatibility&lt;/em&gt; means that
+newer code can read data that was written by older code. and &lt;em&gt;Forward compatibility&lt;/em&gt;
+means that older code can read data that was written by newer code. Backward
+compatibility is normally not hard to achieve: as author of the newer code, you know
+the format of data written by older code, and so you can explicitly handle it
+(if necessary by simply keeping the old code to read the old data). Forward
+compatibility can be trickier, because it requires older code to ignore additions
+made by a newer version of the code.
+
+</description>
+        <pubDate>Thu, 15 Aug 2019 15:00:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/</guid>
+        
+        <category>Books</category>
+        
+        <category>Distributed System</category>
+        
+        
+        <category>Distributed System</category>
+        
+      </item>
+    
+      <item>
+        <title>Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#layout-of-the-whole-book&quot; id=&quot;markdown-toc-layout-of-the-whole-book&quot;&gt;Layout of the Whole Book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+Anthoer book summary/review!
+
+&lt;h2 id=&quot;layout-of-the-whole-book&quot;&gt;Layout of the Whole Book&lt;/h2&gt;
+
+The book is arranged into these parts:
+
+&lt;ol&gt;
+  &lt;li&gt;Fundamental ideas that underpin the design of data-intensive applications.
+    &lt;ul&gt;
+      &lt;li&gt;What we’re actually trying to achieve: reliability,
+  scalability, and maintainability; how we need to think about them; and how we can
+  achieve them.&lt;/li&gt;
+      &lt;li&gt;Comparisons of different data models and query languages&lt;/li&gt;
+      &lt;li&gt;Storage engines how databases arrange data on disk so that we can find it again
+  efficiently.&lt;/li&gt;
+      &lt;li&gt;Encoding and evolution of schemas over time.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Distributed Data
+    &lt;ul&gt;
+      &lt;li&gt;Replication, partitioning/sharding&lt;/li&gt;
+      &lt;li&gt;Transactions&lt;/li&gt;
+      &lt;li&gt;Consistency and consensus&lt;/li&gt;
+      &lt;li&gt;Batching&lt;/li&gt;
+      &lt;li&gt;Streaming&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+This blog post only talks about part 1.
+
+</description>
+        <pubDate>Thu, 15 Aug 2019 10:00:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/08/15/Data-Models-Querys-and-Storage/</guid>
+        
+        <category>Books</category>
+        
+        <category>Distributed System</category>
+        
+        
+        <category>Distributed System</category>
+        
+      </item>
+    
+      <item>
+        <title>Streaming Systems</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#layout-of-the-book&quot; id=&quot;markdown-toc-layout-of-the-book&quot;&gt;Layout of the book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+I recently read through the book &lt;em&gt;Streaming Systems&lt;/em&gt; so think it would be a good
+idea to write up a summary/thoughts about it. The book is recommended by
+&lt;a href=&quot;https://zhuanlan.zhihu.com/p/43301661&quot;&gt;评:Streaming System(简直炸裂,强势安利)&lt;/a&gt; on
+zhihu.
+
+&lt;h2 id=&quot;layout-of-the-book&quot;&gt;Layout of the book&lt;/h2&gt;
+
+The book consists of 10 chapters. The book starts of by stating that traditionally
+batching systems, streaming systems, databases are three distinct concepts.
+Batching systems are systems that process finite amount of data (bounded data)
+producing accurate (strong consistent) (exactly-once) results which typically have
+higher throughput and higher latency. Streaming systems deal with unbounded data
+and are typically not as accurate (consistent) as batching systems, which could be
+implemented by repeated batching. Databases are just persistent data storage that
+one can do CRUD operations and queries on. The first half of the book summarizes various
+techniques that modern streaming systems use to achieve certain goals like dealing
+with out-of-order updates based on event time and end-to-end exactly-once processing.
+The argument the author wants to make for the first half of the book is that,
+given the recent improvements of various streaming systems, strong consistency can be
+achieve in streaming systems (examples are MillWheel, Spark Streaming, and Flink).
+As a result, streaming systems can have parity with batch.
+
+In the second half of the book, the author presents a view or way of thinking, where
+streaming systems and databases are just two sides of a coin, where they are just
+processors of two different forms of data, called &lt;em&gt;“Theory of Stream and Table Relativity”&lt;/em&gt;,
+and show that how those different techniques used in streaming systems like trigger,
+watermark, and windowing play a role in the new unified world. The author also talks
+about how to extend the current SQL syntax to support the new unified theory (which
+unfortunately I personally am not interested in so I just skimmed through that part).
+
+I think the core of this book, or I personally find the most value out of this book,
+is the point of view that tables (databases) and streams are basically talking about
+the same thing. This is a conclusion the author draws after many years of working in
+distributed systems and examining different techniques used by modern streaming
+systems, this post will talk in the reverse order of the book, such that the theory
+will first be presented and explained, and after that various techniques will be
+presented to see how they fit into the big picture. I won’t be going into details
+of how those techniques work though.
+
+</description>
+        <pubDate>Wed, 24 Jul 2019 10:25:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/07/24/Streaming-Systems/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/07/24/Streaming-Systems/</guid>
+        
+        <category>Books</category>
+        
+        <category>Distributed System</category>
+        
+        
+        <category>Distributed System</category>
+        
+      </item>
+    
+      <item>
+        <title>Cost Semantics for Parallelism</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#simple-example-of-product-types&quot; id=&quot;markdown-toc-simple-example-of-product-types&quot;&gt;Simple Example of Product Types&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+Cost semantics is to discuss: How long do programs run (abstractly)?
+
+The idea of cost semantics for parallelism is that we have the concrete ability
+to compute simultaneously.
+
+&lt;h1 id=&quot;simple-example-of-product-types&quot;&gt;Simple Example of Product Types&lt;/h1&gt;
+
+For sequential computation we have:
+
+\[\frac{e_1\mapsto_{seq}e_1'}{(e_1,e_2)\mapsto_{seq}(e_1',e_2)}\]
+
+\[\frac{e_1\ val;e_2\mapsto_{seq}e_2'}{(e_1,e_2)\mapsto_{seq}(e_1,e_2')}\]
+
+For parallel computation we have:
+
+\[\frac{e_1\mapsto_{par}e_1';e_2\mapsto_{par}e_2'}{(e_1,e_2)\mapsto_{par}(e_1',e_2')}\]
+
+</description>
+        <pubDate>Tue, 22 Jan 2019 20:00:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/01/22/Cost-Semantics/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/01/22/Cost-Semantics/</guid>
+        
+        <category>Programming Languages</category>
+        
+        <category>Type Theory</category>
+        
+        
+        <category>Programming Language Theory</category>
+        
+        <category>Type Theory</category>
+        
+      </item>
+    
+      <item>
+        <title>Imperative Programming - Algol</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#modernized-algol-ma---revised-by-robert-harper&quot; id=&quot;markdown-toc-modernized-algol-ma---revised-by-robert-harper&quot;&gt;Modernized Algol (MA) - revised by Robert Harper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;strong&gt;Haskell is a dialect Algol!&lt;/strong&gt;
+
+&lt;h1 id=&quot;modernized-algol-ma---revised-by-robert-harper&quot;&gt;Modernized Algol (MA) - revised by Robert Harper&lt;/h1&gt;
+
+MA = PCF with a $modality$ - distinguishes expressions from commands
+
+\[\tau=things\ in\ PCF|cmd(\tau) \\
+expressions\ e=things\ in\ PCF|cmd(m)\\
+commands\ m=ret(e)|bnd(e,x.m)|dcl(e,a.m)\ (dcl\ a:=e\ in\ m)|set[a](e)\ (a:=e)|get[a]\ (get\ a)\]
+
+$a$’s are &lt;strong&gt;assignables&lt;/strong&gt; not variables! $x$’s are variables! Assignables are not a 
+form of an expression of it’s type. Assignables is a location in memory whose contents
+has a type, where we write $a_1\sim\tau_1$ (not $a_1:\tau_1$). Assignables are really
+&lt;strong&gt;indices&lt;/strong&gt; to a family of $get$, $set$ operations, they are &lt;strong&gt;not&lt;/strong&gt; values, arguments,
+or evaluated. They are just &lt;strong&gt;indices&lt;/strong&gt;, and $get$’s and $set$’s are just &lt;strong&gt;capabilities&lt;/strong&gt;
+to get and set $a$. We can define references, i.e. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;amp;a&lt;/code&gt; in a real programming language,
+as a pair $&amp;lt;get_a,set_a&amp;gt;$, which just a thing that gives you access to the capabilities
+of getting and setting $a$.
+
+Types and expressions are “pure” - don’t depend on memory, whereas commands are “impure”.
+
+</description>
+        <pubDate>Mon, 21 Jan 2019 19:58:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/01/21/imperative-programming/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/01/21/imperative-programming/</guid>
+        
+        <category>Programming Languages</category>
+        
+        <category>Type Theory</category>
+        
+        
+        <category>Programming Language Theory</category>
+        
+        <category>Type Theory</category>
+        
+      </item>
+    
+      <item>
+        <title>Recursive Types</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#recap-for-productsum-types&quot; id=&quot;markdown-toc-recap-for-productsum-types&quot;&gt;Recap for Product/Sum Types&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#product-types&quot; id=&quot;markdown-toc-product-types&quot;&gt;Product Types&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#introductions&quot; id=&quot;markdown-toc-introductions&quot;&gt;Introductions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#eliminations&quot; id=&quot;markdown-toc-eliminations&quot;&gt;Eliminations&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#sum-types&quot; id=&quot;markdown-toc-sum-types&quot;&gt;Sum Types&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#introduction&quot; id=&quot;markdown-toc-introduction&quot;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#eliminations-1&quot; id=&quot;markdown-toc-eliminations-1&quot;&gt;Eliminations&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#unit&quot; id=&quot;markdown-toc-unit&quot;&gt;Unit&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;recap-for-productsum-types&quot;&gt;Recap for Product/Sum Types&lt;/h1&gt;
+
+Brief recap for product and sum to have a consensus on notations.
+
+&lt;h2 id=&quot;product-types&quot;&gt;Product Types&lt;/h2&gt;
+
+\[\tau_1\times\tau_2\]
+
+&lt;h3 id=&quot;introductions&quot;&gt;Introductions&lt;/h3&gt;
+
+\[\frac{\Gamma\vdash e_1:\tau_2,\Gamma\vdash e_2:\tau_2}{\Gamma\vdash &amp;lt;e_1,e_2&amp;gt;:\tau_1\times\tau_2}\]
+
+&lt;h3 id=&quot;eliminations&quot;&gt;Eliminations&lt;/h3&gt;
+
+\[\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash fst(e):\tau_1}\]
+
+\[\frac{\Gamma\vdash e:\tau_1\times\tau_2}{\Gamma\vdash snd(e):\tau_2}\]
+
+&lt;h2 id=&quot;sum-types&quot;&gt;Sum Types&lt;/h2&gt;
+
+\[\tau_1+\tau_2\]
+
+&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+\[\frac{\Gamma\vdash e_1:\tau_1}{\Gamma\vdash inl_{\tau_1,\tau_2}(e_1):\tau_1+\tau_2}\]
+
+\[\frac{\Gamma\vdash e_2:\tau_2}{\Gamma\vdash inr_{\tau_1,\tau_2}(e_2):\tau_1+\tau_2}\]
+
+&lt;h3 id=&quot;eliminations-1&quot;&gt;Eliminations&lt;/h3&gt;
+
+\[\frac{\Gamma\vdash e:\tau_1+\tau_2;\Gamma,x_1:\tau_2\vdash e_1:\sigma;\Gamma,x_2:\tau_2\vdash e_2:\sigma}{\Gamma\vdash case(e)of\{inl(x_1)\hookrightarrow e_1,inr(x_2)\hookrightarrow e_2\}:\sigma}\]
+
+&lt;h2 id=&quot;unit&quot;&gt;Unit&lt;/h2&gt;
+
+\[\frac{}{\Gamma\vdash &amp;lt;&amp;gt;:unit}\]
+
+</description>
+        <pubDate>Sun, 20 Jan 2019 20:25:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/01/20/Recursive-Types/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/01/20/Recursive-Types/</guid>
+        
+        <category>Programming Languages</category>
+        
+        <category>Type Theory</category>
+        
+        
+        <category>Programming Language Theory</category>
+        
+        <category>Type Theory</category>
+        
+      </item>
+    
+      <item>
+        <title>Jekyll Search Solutions</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#updates&quot; id=&quot;markdown-toc-updates&quot;&gt;Updates&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#问题和需求&quot; id=&quot;markdown-toc-问题和需求&quot;&gt;问题和需求&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;updates&quot;&gt;Updates&lt;/h1&gt;
+
+终于我找到了&lt;a href=&quot;https://github.com/wzpan/hexo-theme-freemind/blob/master/source/js/search.js&quot;&gt;这个&lt;/a&gt;。
+但是这个其实充满了各种bug，比如我提交的&lt;a href=&quot;https://github.com/wzpan/hexo-theme-freemind/issues/83&quot;&gt;这个&lt;/a&gt;。
+里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正
+所以我现在自己写了&lt;a href=&quot;https://github.com/SeraphRoy/SimpleBlogSearch&quot;&gt;我自己的版本&lt;/a&gt;。
+现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概
+
+Agolia的我还是先留着吧，毕竟我自己写的也没有特别满意，而且他们也帮我&lt;a href=&quot;https://community.algolia.com/jekyll-algolia/themes.html&quot;&gt;卖广告&lt;/a&gt;
+了所以就
+都保留着想用哪个用哪个吧。。
+
+&lt;h1 id=&quot;问题和需求&quot;&gt;问题和需求&lt;/h1&gt;
+
+最近心血来潮想自己在博客上加上搜索功能，因为我用的这个框架的程序员一直不更新就一气之下想着自己写一个算了。
+问题在于我就完全没碰过前端，工作也跟写网页一点关系都没有，于是我就google呗，看看有啥
+好的在jekyll创建的静态网页有好用的搜索。问题在于，无论google用中文搜索还是英文都没有
+一个完美的方案来对应我的需求，见到有&lt;a href=&quot;https://chenkaihua.com/&quot;&gt;别人的博客&lt;/a&gt;能实现我的需求
+但是好像并没有开源……好吧说了这么多我先列个需求：
+
+&lt;ol&gt;
+  &lt;li&gt;方便：最好是一个小插件或者一段js就好，我懒得换主题而且换了的新主题就算搜索功能很好
+也不一定别的功能很好&lt;/li&gt;
+  &lt;li&gt;能搜索全文&lt;/li&gt;
+  &lt;li&gt;搜索出来的东西能高亮：这个是最重要的feature，也是我到处怎么找开源也找不到的feature。
+意思就是你搜索正文中的东西能把match上的文字以及前后文的一小段都显示出来而且高亮match。
+我看到的基本要么只显示title，要么只能显示正文节选。&lt;/li&gt;
+  &lt;li&gt;免费开源：这样我自己也能改样式&lt;/li&gt;
+  &lt;li&gt;API好用&lt;/li&gt;
+&lt;/ol&gt;
+
+好吧基本上2+3就能排除掉一大箱的google上的选项了，下面说说我的解决方案吧……
+
+</description>
+        <pubDate>Sun, 20 Jan 2019 15:13:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/</guid>
+        
+        <category>Jekyll</category>
+        
+        <category>Blog</category>
+        
+        
+        <category>Jekyll</category>
+        
+      </item>
+    
+      <item>
+        <title>Recursive Programs</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#partial-functions&quot; id=&quot;markdown-toc-partial-functions&quot;&gt;Partial Functions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;partial-functions&quot;&gt;Partial Functions&lt;/h1&gt;
+
+System $T$, $F$ are total languages.
+
+PCF (Programming Language for Computable Functions) (By Gordon Plotkin) - E. col. of partial languages.
+
+Idea: Extending the theory of computability to &lt;em&gt;HIGHER TYPE&lt;/em&gt;. Standard computability
+courses only talk about computation over $\mathbb{N}$, but nothing beyond that.
+
+e.g. $gcd$ is defined by the following (recursive) equations:
+
+\[gcd(m,n) = m\ if\ m=n\\
+gcd(m,n) = gcd(m-n,n)\ if\ m&amp;gt;n\\
+gcd(m,n) = gcd(m,n-m) ow\]
+
+We can transcribe the above in a real programming language (ML, Haskell) in an evident way.
+
+We call it “Recursive function” in a typical course - it is using recursion.
+
+Then the next typical topic would be about “stack”.
+
+&lt;em&gt;Recursion has nothing to do with the stack&lt;/em&gt;. (One obvious example is flip-flop with two $NOR$ gates.)
+
+Better idea (correct idea): simultaneous equations in the &lt;em&gt;variable&lt;/em&gt; gcd. &lt;em&gt;Solve for gcd!&lt;/em&gt;
+
+We want: \(gcd\ s.t.\ gcd=G(gcd)\) where $G$ is the function of definition my $gcd$.
+We are looking for a &lt;strong&gt;FIXED POINT&lt;/strong&gt;.
+
+The equations only make sense (solution exists) with &lt;em&gt;computable partial functions&lt;/em&gt;.
+
+</description>
+        <pubDate>Fri, 18 Jan 2019 22:25:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2019/01/18/Recursive-Programs/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2019/01/18/Recursive-Programs/</guid>
+        
+        <category>Programming Languages</category>
+        
+        <category>Type Theory</category>
+        
+        
+        <category>Programming Language Theory</category>
+        
+        <category>Type Theory</category>
+        
+      </item>
+    
+      <item>
+        <title>Parametricity - Logical Equivalence for Polymorphic Types</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#hereditary-termination-and-logical-equivalence-recap&quot; id=&quot;markdown-toc-hereditary-termination-and-logical-equivalence-recap&quot;&gt;Hereditary Termination and Logical Equivalence Recap&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;hereditary-termination-and-logical-equivalence-recap&quot;&gt;Hereditary Termination and Logical Equivalence Recap&lt;/h1&gt;
+
+Hereditary Termination:
+&lt;ul&gt;
+  &lt;li&gt;$HT_{\tau}(e)$ hereditary termination at type $\tau$&lt;/li&gt;
+  &lt;li&gt;$HT_{nat}(e)$ $iff $$e\mapsto^*z$ or $e\mapsto^*s(e’)$ such that $HT_{nat}(e’)$ (inductively defined)&lt;/li&gt;
+  &lt;li&gt;$HT_{\tau_1\rightarrow\tau_2}(e)$ $iff $$if\ HT_{\tau_1}(e_1)\ then\ HT_{\tau_2}(e(e_1))$ (implication)&lt;/li&gt;
+&lt;/ul&gt;
+
+Logical Equivalence:
+&lt;ul&gt;
+  &lt;li&gt;$e\sim_{nat}e’$ $iff $either $e\mapsto^*n^*\leftarrow e’$ or $e\mapsto^*s(e_1),e’\mapsto^*s(e_1’),e_1\sim_{nat}e_1’$&lt;/li&gt;
+  &lt;li&gt;$e\sim_{\tau_1\rightarrow\tau_2}e’$ $iff $$if\ e_1\sim_{\tau_1}e_1’\ then\ e(e_1)\sim_{\tau_2}e’(e_1’)$&lt;/li&gt;
+&lt;/ul&gt;
+
+Some theorem:
+&lt;ul&gt;
+  &lt;li&gt;$e:\tau\ implies\ e\sim_{nat} e$&lt;/li&gt;
+  &lt;li&gt;$e\sim_{\tau}e’$ $iff$ $e\simeq_{\tau}e’$&lt;/li&gt;
+  &lt;li&gt;$e\sim_{\tau}e\ iff\ HT_{\tau}(e)$&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 30 Sep 2018 17:25:00 +0000</pubDate>
+        <link>https://www.gaeblog.com/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/</link>
+        <guid isPermaLink="true">https://www.gaeblog.com/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/</guid>
+        
+        <category>Programming Languages</category>
+        
+        <category>Type Theory</category>
+        
+        
+        <category>Programming Language Theory</category>
+        
+        <category>Type Theory</category>
+        
+      </item>
+    
+  </channel>
+</rss>

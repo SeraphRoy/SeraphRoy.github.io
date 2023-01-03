@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications</title>
+    <meta name="description" content="This blog talks about various data encoding methods and their advantages/limitations,along with protocols of transmitting them.Efficiency is certainly one of...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog talks about various data encoding methods and their advantages/limitations, along with protocols of transmitting them. Efficiency is certainly one of the main concerns for various encoding methods. The other thing we need to care about is compatibility. Backward compatibility means that newer code can read data that was written by older code. and Forward compatibility means that older code can read data that was written by newer code. Backward compatibility is normally not hard to achieve: as author of the newer code, you know the format of data written by older code, and so you can explicitly handle it (if necessary by simply keeping the old code to read the old data). Forward compatibility can be trickier, because it requires older code to ignore additions made by a newer version of the code." />
+<meta property="og:description" content="This blog talks about various data encoding methods and their advantages/limitations, along with protocols of transmitting them. Efficiency is certainly one of the main concerns for various encoding methods. The other thing we need to care about is compatibility. Backward compatibility means that newer code can read data that was written by older code. and Forward compatibility means that older code can read data that was written by newer code. Backward compatibility is normally not hard to achieve: as author of the newer code, you know the format of data written by older code, and so you can explicitly handle it (if necessary by simply keeping the old code to read the old data). Forward compatibility can be trickier, because it requires older code to ignore additions made by a newer version of the code." />
+<link rel="canonical" href="https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-08-15T15:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"This blog talks about various data encoding methods and their advantages/limitations, along with protocols of transmitting them. Efficiency is certainly one of the main concerns for various encoding methods. The other thing we need to care about is compatibility. Backward compatibility means that newer code can read data that was written by older code. and Forward compatibility means that older code can read data that was written by newer code. Backward compatibility is normally not hard to achieve: as author of the newer code, you know the format of data written by older code, and so you can explicitly handle it (if necessary by simply keeping the old code to read the old data). Forward compatibility can be trickier, because it requires older code to ignore additions made by a newer version of the code.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/"},"@type":"BlogPosting","headline":"Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications","dateModified":"2019-08-15T15:00:00+00:00","datePublished":"2019-08-15T15:00:00+00:00","url":"https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-08-15
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Distributed System" title="Category: Distributed System" rel="category">Distributed System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Books" title="Tag: Books" rel="tag">Books</a-->
+        <a href="/tag/#Books" title="Tag: Books" rel="tag">Books</a>&nbsp;
+    
+        <!--a href="/tag/#Distributed+System" title="Tag: Distributed System" rel="tag">Distributed System</a-->
+        <a href="/tag/#Distributed System" title="Tag: Distributed System" rel="tag">Distributed System</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <p>This blog talks about various data encoding methods and their advantages/limitations,
+along with protocols of transmitting them.</p>
+
+<p>Efficiency is certainly one of the main concerns for various encoding methods. The other
+thing we need to care about is <em>compatibility</em>. <em>Backward compatibility</em> means that
+newer code can read data that was written by older code. and <em>Forward compatibility</em>
+means that older code can read data that was written by newer code. Backward
+compatibility is normally not hard to achieve: as author of the newer code, you know
+the format of data written by older code, and so you can explicitly handle it
+(if necessary by simply keeping the old code to read the old data). Forward
+compatibility can be trickier, because it requires older code to ignore additions
+made by a newer version of the code.</p>
+
+<!--more-->
+
+<h2 id="programming-languagespecific-encodings">Programming language–specific encodings</h2>
+
+<p>Examples <code class="language-plaintext highlighter-rouge">java.io.Serializable</code> for Java, <code class="language-plaintext highlighter-rouge">pickle</code> for Python. Problems:</p>
+
+<ul>
+  <li>The encoding is often tied to a particular programming language, and reading the
+data in another language is very difficult. If you store or transmit data in such an
+encoding, you are committing yourself to your current programming language for
+potentially a very long time, and precluding integrating your systems with those of
+other organizations (which may use different languages).</li>
+  <li>In order to restore data in the same object types, the decoding process needs to be
+able to instantiate arbitrary classes. This is frequently a source of security
+problems: if an attacker can get your application to decode an arbitrary byte sequence,
+they can instantiate arbitrary classes, which in turn often allows them to do terrible
+things such as remotely executing arbitrary code.</li>
+  <li>Versioning data is often an afterthought in these libraries: as they are intended
+for quick and easy encoding of data, they often neglect the inconvenient problems of
+forward and backward compatibility.</li>
+  <li>Efficiency (CPU time taken to encode or decode, and the size of the encoded structure)
+is also often an afterthought. For example, Java’s built-in serialization is
+notorious for its bad performance and bloated encoding.</li>
+</ul>
+
+<p>For these reasons it’s generally a bad idea to use your language’s built-in encoding
+for anything other than very transient purpose</p>
+
+<h2 id="json-xml-and-binary-variants">JSON, XML, and Binary Variants</h2>
+
+<p>Problems:</p>
+
+<ul>
+  <li>There is a lot of ambiguity around the encoding of numbers. In XML and CSV, you cannot
+distinguish between a number and a string that happens to consist of digits (except
+by referring to an external schema). JSON distinguishes strings and numbers, but it
+doesn’t distinguish integers and floating-point numbers, and it doesn’t specify a precision.
+This is a problem when dealing with large numbers; for example, integers greater than
+253 cannot be exactly represented in an IEEE 754 double-precision floating- point
+number, so such numbers become inaccurate when parsed in a language that uses
+floating-point numbers (such as JavaScript). An example of numbers larger than 253
+occurs on Twitter, which uses a 64-bit number to identify each tweet. The JSON
+returned by Twitter’s API includes tweet IDs twice, once as a JSON number and once
+as a decimal string, to work around the fact that the numbers are not correctly
+parsed by JavaScript applications.</li>
+  <li>JSON and XML have good support for Unicode character strings (i.e., human-readable
+text), but they don’t support binary strings (sequences of bytes without a character
+encoding). Binary strings are a useful feature, so people get around this limitation
+by encoding the binary data as text using Base64. The schema is then used to indicate
+that the value should be interpreted as Base64-encoded. This works, but it’s somewhat
+hacky and increases the data size by 33%.</li>
+  <li>CSV does not have any schema, so it is up to the application to define the meaning
+of each row and column. If an application change adds a new row or column, you have
+to handle that change manually. CSV is also a quite vague format (what happens if a
+value contains a comma or a newline character?). Although its escaping rules have
+been formally specified, not all parsers implement them correctly.</li>
+</ul>
+
+<p>Despite these flaws, JSON, XML, and CSV are good enough for many purposes. It’s likely
+that they will remain popular, especially as data interchange formats (i.e., for
+sending data from one organization to another). In these situations, as long as people
+agree on what the format is, it often doesn’t matter how pretty or efficient the
+format is. The difficulty of getting different organizations to agree on anything
+outweighs most other concerns.</p>
+
+<h2 id="binary-encoding">Binary Encoding</h2>
+
+<h3 id="messagepack">MessagePack</h3>
+
+<p>MessagePack is a binary encoding for JSON. Here is an example:</p>
+
+<p><img src="https://www.gaeblog.com/assets/MessagePack-1.png" alt="" /></p>
+
+<p><img src="https://www.gaeblog.com/assets/MessagePack-2.png" alt="" /></p>
+
+<ol>
+  <li>The first byte, 0x83, indicates that what follows is an object (top four bits =
+0x80) with three fields (bottom four bits = 0x03). (In case you’re wondering what
+happens if an object has more than 15 fields, so that the number of fields doesn’t
+fit in four bits, it then gets a different type indicator, and the number of fields
+is encoded in two or four bytes.)</li>
+  <li>The second byte, 0xa8, indicates that what follows is a string (top four bits =
+0xa0) that is eight bytes long (bottom four bits = 0x08).</li>
+  <li>The next eight bytes are the field name “userName” in ASCII. Since the length was
+indicated previously, there’s no need for any marker to tell us where the string
+ends (or any escaping).</li>
+  <li>The next seven bytes encode the six-letter string value Martin with a prefix 0xa6,
+and so on.</li>
+</ol>
+
+<p>The binary encoding is 66 bytes long, which is only a little less than the 81 bytes
+taken by the textual JSON encoding (with whitespace removed). All the binary encodings
+of JSON are similar in this regard. It’s not clear whether such a small space reduction
+(and perhaps a speedup in parsing) is worth the loss of human-readability.</p>
+
+<h3 id="thrift-and-protocol-buffers">Thrift and Protocol Buffers</h3>
+
+<p>Apache Thrift and Protocol Buffers (protobuf) are binary encoding libraries that are
+based on the same principle. Protocol Buffers was originally developed at Google,
+Thrift was originally developed at Facebook, and both were made open source in 2007–08.</p>
+
+<p>Both Thrift and Protocol Buffers require a schema for any data that is encoded.
+To encode the data above in Thrift, you would describe the schema in the Thrift
+interface definition language (IDL) like this:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Thrift-1.png" alt="" /></p>
+
+<p>The equivalent schema definition for Protocol Buffers looks very similar:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Protobuf-1.png" alt="" /></p>
+
+<p>Thrift and Protocol Buffers each come with a code generation tool that takes a schema
+definition like the ones shown here, and produces classes that implement the schema
+in various programming languages. Your application code can call this generated code
+to encode or decode records of the schema.</p>
+
+<p>Confusingly, Thrift has two different binary encoding formats, called BinaryProtocol
+and CompactProtocol, respectively. Let’s look at BinaryProtocol first.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Thrift-2.png" alt="" /></p>
+
+<p>Similarly to MessagePack, each field has a type annotation (to indicate whether it is
+a string, integer, list, etc.) and, where required, a length indication (length of a
+string, number of items in a list). The strings that appear in the data (“Martin”,
+“daydreaming”, “hacking”) are also encoded as ASCII (or rather, UTF-8), similar to before.</p>
+
+<p>The big difference compared to MessagePack is that there are no field names
+(userName, favoriteNumber, interests). Instead, the encoded data contains field tags,
+which are numbers (1, 2, and 3). Those are the numbers that appear in the schema
+definition. Field tags are like aliases for fields—they are a compact way of saying
+what field we’re talking about, without having to spell out the field name.</p>
+
+<p>The Thrift CompactProtocol encoding is semantically equivalent to BinaryProtocol, but
+as you can see in the following, it packs the same information into only 34 bytes.
+It does this by packing the field type and tag number into a single byte, and by using
+variable-length integers. Rather than using a full eight bytes for the number 1337,
+it is encoded in two bytes, with the top bit of each byte used to indicate whether
+there are still more bytes to come. This means numbers between –64 and 63 are encoded
+in one byte, numbers between –8192 and 8191 are encoded in two bytes, etc.
+Bigger numbers use more bytes.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Thrift-3.png" alt="" /></p>
+
+<p>Finally, Protocol Buffers (which has only one binary encoding format) encodes the same
+data as shown in Figure 4-4. It does the bit packing slightly differently, but is
+otherwise very similar to Thrift’s CompactProtocol. Protocol Buffers fits the same
+record in 33 bytes.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Protobuf-2.png" alt="" /></p>
+
+<h4 id="compatibility">Compatibility</h4>
+
+<p>For forward compatibility, You can change the name of a field in the schema, since the encoded
+data never refers to field names, but you cannot change a field’s tag, since that
+would make all existing encoded data invalid. You can add new fields to the schema,
+provided that you give each field a new tag number. If old code (which doesn’t know
+about the new tag numbers you added) tries to read data written by new code,
+including a new field with a tag number it doesn’t recognize, it can simply ignore
+that field. The datatype annotation allows the parser to determine how many bytes it
+needs to skip. This maintains forward compatibility: old code can read records that
+were written by new code.</p>
+
+<p>For backward compatibility, As long as each field has a
+unique tag number, new code can always read old data, because the tag numbers still
+have the same meaning. The only detail is that if you add a new field, you cannot
+make it required. If you were to add a field and make it required, that check would
+fail if new code read data written by old code, because the old code will not have
+written the new field that you added. Therefore, to maintain backward compatibility,
+every field you add after the initial deployment of the schema must be optional or
+have a default value.</p>
+
+<p>Removing a field is just like adding a field, with backward and forward compatibility
+concerns reversed. That means you can only remove a field that is optional
+(a required field can never be removed), and you can never use the same tag number
+again (because you may still have data written somewhere that includes the old tag
+number, and that field must be ignored by new code).</p>
+
+<p>Changing datatype of a field is possible, but there’s a risk that values will lose
+precision or get truncated (say if you write a 64-bit variable and decode it in 32 bits).</p>
+
+<h3 id="avro">Avro</h3>
+
+<p>Apache Avro is another binary encoding format that is interestingly different from
+Protocol Buffers and Thrift. It was started in 2009 as a subproject of Hadoop,
+as a result of Thrift not being a good fit for Hadoop’s use cases.</p>
+
+<p>Avro also uses a schema to specify the structure of the data being encoded. It has
+two schema languages: one (Avro IDL) intended for human editing, and one (based on
+JSON) that is more easily machine-readable.</p>
+
+<p>Our example schema, written in Avro IDL, might look like this:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Avro-1.png" alt="" /></p>
+
+<p>The equivalent JSON representation of that schema is as follows:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Avro-2.png" alt="" /></p>
+
+<p>Here is the breakdown of the encoded byte sequence:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Avro-3.png" alt="" /></p>
+
+<p>First of all, notice that there are no tag numbers in the schema.</p>
+
+<p>If you examine the byte sequence, you can see that there is nothing to identify
+fields or their datatypes. The encoding simply consists of values concatenated together.
+A string is just a length prefix followed by UTF-8 bytes, but there’s nothing in the
+encoded data that tells you that it is a string. It could just as well be an integer,
+or something else entirely. An integer is encoded using a variable-length encoding
+(the same as Thrift’s CompactProtocol).</p>
+
+<p>To parse the binary data, you go through the fields in the order that they appear in
+the schema and use the schema to tell you the datatype of each field. This means that
+the binary data can only be decoded correctly if the code reading the data is using
+the exact same schema as the code that wrote the data. Any mismatch in the schema
+between the reader and the writer would mean incorrectly decoded data.</p>
+
+<h4 id="compatibility-1">Compatibility</h4>
+
+<p>With Avro, when an application wants to encode some data (to write it to a file or
+database, to send it over the network, etc.), it encodes the data using whatever
+version of the schema it knows about—for example, that schema may be compiled into
+the application. This is known as the writer’s schema.</p>
+
+<p>When an application wants to decode some data (read it from a file or database,
+receive it from the network, etc.), it is expecting the data to be in some schema,
+which is known as the reader’s schema. That is the schema the application code is
+relying on -code may have been generated from that schema during the application’s
+build process.</p>
+
+<p>The key idea with Avro is that the writer’s schema and the reader’s schema don’t have
+to be the same—they only need to be compatible. When data is decoded (read), the
+Avro library resolves the differences by looking at the writer’s schema and the
+reader’s schema side by side and translating the data from the writer’s schema
+into the reader’s schema. The Avro specification defines exactly how this resolution
+works, and it is illustrated below.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Avro-4.png" alt="" /></p>
+
+<p>For example, it’s no problem if the writer’s schema and the reader’s schema have
+their fields in a different order, because the schema resolution matches up the fields
+by field name. If the code reading the data encounters a field that appears in
+the writer’s schema but not in the reader’s schema, it is ignored. If the code
+reading the data expects some field, but the writer’s schema does not contain a
+field of that name, it is filled in with a default value declared in the reader’s schema.</p>
+
+<p>With Avro, forward compatibility means that you can have a new version of the schema
+as writer and an old version of the schema as reader. Conversely, backward
+compatibility means that you can have a new version of the schema as reader
+and an old version as writer.</p>
+
+<p>To maintain compatibility, you may only add or remove a field that has a default value.
+(The field favoriteNumber in our Avro schema has a default value of null.) For example,
+say you add a field with a default value, so this new field exists in the new schema
+but not the old one. When a reader using the new schema reads a record written with
+the old schema, the default value is filled in for the missing field.</p>
+
+<p>If you were to add a field that has no default value, new readers wouldn’t be able to
+read data written by old writers, so you would break backward compatibility. If you
+were to remove a field that has no default value, old readers wouldn’t be able to
+read data written by new writers, so you would break forward compatibility.</p>
+
+<h3 id="writers-schema">Writer’s Schema</h3>
+
+<p>There is an important question that we’ve glossed over so far: how does the reader
+know the writer’s schema with which a particular piece of data was encoded? We can’t
+just include the entire schema with every record, because the schema would likely be
+much bigger than the encoded data, making all the space savings from the binary encoding futile.</p>
+
+<p>The answer depends on the context in which Avro is being used. To give a few examples:</p>
+
+<ul>
+  <li>
+    <p>Large file with lots of records: A common use for Avro—especially in the context of
+Hadoop—is for storing a large file containing millions of records, all encoded with
+the same schema. In this case, the writer of that file can just include the writer’s
+schema once at the beginning of the file. Avro specifies a file format
+(object container files) to do this.</p>
+  </li>
+  <li>
+    <p>Database with individually written records: In a database, different records may be
+written at different points in time using different writer’s schemas—you cannot
+assume that all the records will have the same schema. The simplest solution is to
+include a version number at the beginning of every encoded record, and to keep a list
+of schema versions in your database. A reader can fetch a record, extract the version
+number, and then fetch the writer’s schema for that version number from the database.
+Using that writer’s schema, it can decode the rest of the record. (Espresso works this way, for example.)</p>
+  </li>
+  <li>
+    <p>Sending records over a network connection: When two processes are communicating over
+a bidirectional network connec‐ tion, they can negotiate the schema version on
+connection setup and then use that schema for the lifetime of the connection.
+The Avro RPC protocol works like this.</p>
+  </li>
+</ul>
+
+<h3 id="dynamically-generated-schemas">Dynamically generated Schemas</h3>
+
+<p>One advantage of Avro’s approach, compared to Protocol Buffers and Thrift, is that the
+schema doesn’t contain any tag numbers. But why is this important? What’s the problem
+with keeping a couple of numbers in the schema?</p>
+
+<p>The difference is that Avro is friendlier to dynamically generated schemas. For
+example, say you have a relational database whose contents you want to dump to a file,
+and you want to use a binary format to avoid the aforementioned problems with textual
+formats (JSON, CSV, SQL). If you use Avro, you can fairly easily generate an Avro
+schema (in the JSON representation we saw earlier) from the relational schema and
+encode the database contents using that schema, dumping it all to an Avro object
+container file. You generate a record schema for each database table, and each column
+becomes a field in that record. The column name in the database maps to the field name in Avro.</p>
+
+<p>Now, if the database schema changes (for example, a table has one column added and one
+column removed), you can just generate a new Avro schema from the updated database
+schema and export data in the new Avro schema. The data export process does not need
+to pay any attention to the schema change—it can simply do the schema conversion
+every time it runs. Anyone who reads the new data files will see that the fields of
+the record have changed, but since the fields are identified by name, the updated
+writer’s schema can still be matched up with the old reader’s schema.</p>
+
+<p>By contrast, if you were using Thrift or Protocol Buffers for this purpose, the field
+tags would likely have to be assigned by hand: every time the database schema changes,
+an administrator would have to manually update the mapping from data‐ base column names
+to field tags. (It might be possible to automate this, but the schema generator would
+have to be very careful to not assign previously used field tags.) This kind of
+dynamically generated schema simply wasn’t a design goal of Thrift or Protocol Buffers,
+whereas it was for Avro.</p>
+
+<h3 id="code-generation-and-dynamically-typed-languages">Code Generation and Dynamically Typed Languages</h3>
+
+<p>Thrift and Protocol Buffers rely on code generation: after a schema has been defined,
+you can generate code that implements this schema in a programming language of your
+choice. This is useful in statically typed languages such as Java, C++, or C#, because
+it allows efficient in-memory structures to be used for decoded data, and it allows
+type checking and autocompletion in IDEs when writing programs that access the data structures.</p>
+
+<p>In dynamically typed programming languages such as JavaScript, Ruby, or Python, there
+is not much point in generating code, since there is no compile-time type checker to
+satisfy. Code generation is often frowned upon in these languages, since they
+otherwise avoid an explicit compilation step. Moreover, in the case of a dynamically
+generated schema (such as an Avro schema generated from a database table), code
+generation is an unnecessarily obstacle to getting to the data.</p>
+
+<p>Avro provides optional code generation for statically typed programming languages, but
+it can be used just as well without any code generation. If you have an object
+container file (which embeds the writer’s schema), you can simply open it using the
+Avro library and look at the data in the same way as you could look at a JSON file.
+The file is self-describing since it includes all the necessary metadata.</p>
+
+<p>This property is especially useful in conjunction with dynamically typed data processing
+languages like Apache Pig [26]. In Pig, you can just open some Avro files, start
+analyzing them, and write derived datasets to output files in Avro format without
+even thinking about schemas.</p>
+
+<h2 id="models-of-dataflow">Models of Dataflow</h2>
+
+<h3 id="dataflow-through-databases">Dataflow Through Databases</h3>
+
+<p>In a database, the process that writes to the database encodes the data, and the
+process that reads from the database decodes it. There may just be a single process
+accessing the database, in which case the reader is simply a later version of the same
+process—in that case you can think of storing something in the database as sending
+a message to your future self.</p>
+
+<p>A couple issues need to be taken care of:</p>
+
+<p>A database generally allows any value to be updated at any time. This means that
+within a single database you may have some values that were written five milliseconds
+ago, and some values that were written five years ago.</p>
+
+<p>When you deploy a new version of your application (of a server-side application,
+at least), you may entirely replace the old version with the new version within a few
+minutes. The same is not true of database contents: the five-year-old data will still
+be there, in the original encoding, unless you have explicitly rewritten it since then.
+This observation is sometimes summed up as data outlives code.</p>
+
+<p>Rewriting (migrating) data into a new schema is certainly possible, but it’s an
+expensive thing to do on a large dataset, so most databases avoid it if possible.
+Most relational databases allow simple schema changes, such as adding a new column
+with a null default value, without rewriting existing data.v When an old row is read,
+the database fills in nulls for any columns that are missing from the encoded data on
+disk. LinkedIn’s document database Espresso uses Avro for storage, allowing it to use
+Avro’s schema evolution rules.</p>
+
+<p>Schema evolution thus allows the entire database to appear as if it was encoded with
+a single schema, even though the underlying storage may contain records encoded with
+various historical versions of the schema.</p>
+
+<h3 id="dataflow-through-services-rest-and-rpc">Dataflow Through Services: REST and RPC</h3>
+
+<p>We all know about REST and RPC so we’ll just talk about the relationships between
+them and data encoding, i.e. compatibility.</p>
+
+<p>For evolvability, it is important that RPC clients and servers can be changed and
+deployed independently. Compared to data flowing through databases (as described in
+the last section), we can make a simplifying assumption in the case of dataflow
+through services: it is reasonable to assume that all the servers will be updated
+first, and all the clients second. Thus, you only need backward compatibility on
+requests, and forward compatibility on responses. And bhe backward and forward
+compatibility properties of an RPC scheme are inherited from whatever encoding it uses.</p>
+
+<h3 id="message-passing-dataflow">Message-Passing Dataflow</h3>
+
+<p>Basically a streaming or pub/sub system like RabbitMQ and Kafka.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/08/15/Data-Models-Querys-and-Storage/">Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/07/24/Streaming-Systems/">Streaming Systems
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2019/08/15/Data-Models-Querys-and-Storage/">Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2021/03/09/Some-Personal-Updates/">Some personal updates</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/08/15/Data-Encoding-and-Transmission/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#programming-languagespecific-encodings">Programming language–specific encodings</a></li>
+<li class="toc-entry toc-h2"><a href="#json-xml-and-binary-variants">JSON, XML, and Binary Variants</a></li>
+<li class="toc-entry toc-h2"><a href="#binary-encoding">Binary Encoding</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#messagepack">MessagePack</a></li>
+<li class="toc-entry toc-h3"><a href="#thrift-and-protocol-buffers">Thrift and Protocol Buffers</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#compatibility">Compatibility</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#avro">Avro</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#compatibility-1">Compatibility</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#writers-schema">Writer’s Schema</a></li>
+<li class="toc-entry toc-h3"><a href="#dynamically-generated-schemas">Dynamically generated Schemas</a></li>
+<li class="toc-entry toc-h3"><a href="#code-generation-and-dynamically-typed-languages">Code Generation and Dynamically Typed Languages</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#models-of-dataflow">Models of Dataflow</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#dataflow-through-databases">Dataflow Through Databases</a></li>
+<li class="toc-entry toc-h3"><a href="#dataflow-through-services-rest-and-rpc">Dataflow Through Services: REST and RPC</a></li>
+<li class="toc-entry toc-h3"><a href="#message-passing-dataflow">Message-Passing Dataflow</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

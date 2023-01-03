@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Fibonacci Heap</title>
+    <meta name="description" content="  Some Notes about Fibonacci Heaps          Operations:      Some Notes about Fibonacci HeapsOperations:  make_heap Return an empty heap  insert(i,h) Add ite...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Fibonacci Heap | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Fibonacci Heap" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Some Notes about Fibonacci Heaps Operations: Some Notes about Fibonacci Heaps Operations: make_heap Return an empty heap insert(i,h) Add item $i$ to heap $h$. find_min(h) Return the smallest item in heap $h$ delete_min(h) Delete min from heap $h$ and return it meld(h1, h2) Return the heap formed by putting all elements in $h_1$ with all the elements in $h_2$. $h_1$ and $h_2$ are destroyed. decrease_key(delta, i, h) Assume that position of $i$ is known. Decrease the value of item $i$ of delta (delta &gt; 0) delete(i, h) Assume that position of $i$ is known. Delete $i$ from heap" />
+<meta property="og:description" content="Some Notes about Fibonacci Heaps Operations: Some Notes about Fibonacci Heaps Operations: make_heap Return an empty heap insert(i,h) Add item $i$ to heap $h$. find_min(h) Return the smallest item in heap $h$ delete_min(h) Delete min from heap $h$ and return it meld(h1, h2) Return the heap formed by putting all elements in $h_1$ with all the elements in $h_2$. $h_1$ and $h_2$ are destroyed. decrease_key(delta, i, h) Assume that position of $i$ is known. Decrease the value of item $i$ of delta (delta &gt; 0) delete(i, h) Assume that position of $i$ is known. Delete $i$ from heap" />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-09T10:05:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Fibonacci Heap" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Some Notes about Fibonacci Heaps Operations: Some Notes about Fibonacci Heaps Operations: make_heap Return an empty heap insert(i,h) Add item $i$ to heap $h$. find_min(h) Return the smallest item in heap $h$ delete_min(h) Delete min from heap $h$ and return it meld(h1, h2) Return the heap formed by putting all elements in $h_1$ with all the elements in $h_2$. $h_1$ and $h_2$ are destroyed. decrease_key(delta, i, h) Assume that position of $i$ is known. Decrease the value of item $i$ of delta (delta &gt; 0) delete(i, h) Assume that position of $i$ is known. Delete $i$ from heap","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/"},"@type":"BlogPosting","headline":"Fibonacci Heap","dateModified":"2017-06-09T10:05:00+00:00","datePublished":"2017-06-09T10:05:00+00:00","url":"https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Fibonacci Heap</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-09
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Algorithm" title="Category: Algorithm" rel="category">Algorithm</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a-->
+        <a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#some-notes-about-fibonacci-heaps" id="markdown-toc-some-notes-about-fibonacci-heaps">Some Notes about Fibonacci Heaps</a>    <ul>
+      <li><a href="#operations" id="markdown-toc-operations">Operations:</a></li>
+      <li><a href="#amortized-time-complexity" id="markdown-toc-amortized-time-complexity">Amortized Time Complexity</a></li>
+      <li><a href="#structure" id="markdown-toc-structure">Structure</a></li>
+      <li><a href="#representation-of-f-heap" id="markdown-toc-representation-of-f-heap">Representation of F-Heap</a></li>
+      <li><a href="#definitions" id="markdown-toc-definitions">Definitions</a></li>
+      <li><a href="#idea" id="markdown-toc-idea">Idea</a></li>
+      <li><a href="#implementation-of-operations" id="markdown-toc-implementation-of-operations">Implementation of Operations</a>        <ul>
+          <li><a href="#delete_minh" id="markdown-toc-delete_minh"><code class="language-plaintext highlighter-rouge">delete_min(h)</code></a></li>
+          <li><a href="#decrease_keydelta-i-h" id="markdown-toc-decrease_keydelta-i-h"><code class="language-plaintext highlighter-rouge">decrease_key(delta, i, h)</code></a></li>
+          <li><a href="#deletei-h" id="markdown-toc-deletei-h"><code class="language-plaintext highlighter-rouge">delete(i, h)</code></a></li>
+        </ul>
+      </li>
+      <li><a href="#additional-details-cascade-cut" id="markdown-toc-additional-details-cascade-cut">Additional Details (Cascade Cut)</a></li>
+      <li><a href="#marking-nodes" id="markdown-toc-marking-nodes">Marking Nodes</a></li>
+      <li><a href="#crucial-properties" id="markdown-toc-crucial-properties">Crucial Properties</a></li>
+      <li><a href="#observations" id="markdown-toc-observations">Observations</a></li>
+      <li><a href="#redefinition" id="markdown-toc-redefinition">Redefinition</a></li>
+      <li><a href="#revist-decrease_key" id="markdown-toc-revist-decrease_key">Revist <code class="language-plaintext highlighter-rouge">decrease_key</code></a></li>
+      <li><a href="#revist-delete" id="markdown-toc-revist-delete">Revist <code class="language-plaintext highlighter-rouge">delete</code></a></li>
+      <li><a href="#summary" id="markdown-toc-summary">Summary</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="some-notes-about-fibonacci-heaps">Some Notes about Fibonacci Heaps</h1>
+
+<h3 id="operations">Operations:</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">make_heap</code> Return an empty heap</li>
+  <li><code class="language-plaintext highlighter-rouge">insert(i,h)</code> Add item $i$ to heap $h$.</li>
+  <li><code class="language-plaintext highlighter-rouge">find_min(h)</code> Return the smallest item in heap $h$</li>
+  <li><code class="language-plaintext highlighter-rouge">delete_min(h)</code> Delete min from heap $h$ and return it</li>
+  <li><code class="language-plaintext highlighter-rouge">meld(h1, h2)</code> Return the heap formed by putting all elements in $h_1$ with all the elements in $h_2$. $h_1$ and $h_2$ are destroyed.</li>
+  <li><code class="language-plaintext highlighter-rouge">decrease_key(delta, i, h)</code> Assume that position of $i$ is known. Decrease the value of item $i$ of delta (delta &gt; 0)</li>
+  <li><code class="language-plaintext highlighter-rouge">delete(i, h)</code> Assume that position of $i$ is known. Delete $i$ from heap</li>
+</ul>
+
+<p><img src="https://www.gaeblog.com/assets/Fibonacci-Heap-Fig3.png" alt="" />
+<img src="https://www.gaeblog.com/assets/Fibonacci-Heap-Fig5.png" alt="" /></p>
+
+<!--more-->
+
+<h3 id="amortized-time-complexity">Amortized Time Complexity</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">delete_min(h)</code> and <code class="language-plaintext highlighter-rouge">delete(i, h)</code> takes $O(\log n)$ time</li>
+  <li>Other operations take $O(1)$ time</li>
+</ul>
+
+<h3 id="structure">Structure</h3>
+<ul>
+  <li><strong>Heap Ordered Trees</strong>: Rooted tree containing a set of item, 1 item / node, with items arranged in heap order</li>
+  <li><strong>Heap Order</strong>: Key of item $x$ is no less than the key of the item in its parent $p(x)$, provided $x$ has a parent.</li>
+  <li><strong>Linking</strong>: Combine two item-disjoint trees into one. (Make one root (bigger) a child of the other (smaller))</li>
+  <li><strong>Fibonacci heap (F-heap)</strong>: Collection item disjoint heap ordered trees. (the algorithms impose an additinoal constraint).</li>
+  <li><strong>rank</strong> $r(x)$: Number of children of node $x$. It turns out that if $x$ has $n$ descendants, the number of children is at most $\log n$.</li>
+  <li>Nodes will be marked or unmarked.</li>
+</ul>
+
+<h3 id="representation-of-f-heap">Representation of F-Heap</h3>
+<ul>
+  <li>Each node contains pointer to its parent (or to $null$ if it doesn’t have one).</li>
+  <li>Each node has a pointer to one of its children (or to $null$ if it doesn’t have any).</li>
+  <li>The children of each node are in a doubly linked circular list.</li>
+  <li>Node has its rank $r(x)$ and a bit indicating its mark.</li>
+  <li>All the roots of the (sub)heaps are in a circular list.</li>
+  <li>There is a pointer to a root containing an item of minimum key ($minimum\ node$ of the F-heap).</li>
+</ul>
+
+<h3 id="definitions">Definitions</h3>
+<ul>
+  <li>$S$: Collection of Heaps.</li>
+  <li>$\Phi(S)$: Potential of $S$.</li>
+  <li>$m$ operations with times $t_1,t_2,\cdots,t_m$</li>
+  <li>$a_i$ amortized time for operation $i$.</li>
+  <li>$\Phi_i$: Potential after operation $i$.</li>
+  <li>$\Phi_0$: Initial potential.</li>
+  <li>$\sum t_i=\sum(a_i-\Phi_i+\Phi_{i-1})=\Phi_0-\Phi_m+\sum a_i$</li>
+  <li>$\Phi_0$ is initially zero.</li>
+  <li>$\Phi_i$ is non-negative.</li>
+</ul>
+
+<h3 id="idea">Idea</h3>
+<ul>
+  <li>Potential of a collection of heaps: The total number of trees they contain.</li>
+  <li>Initial potential is zero</li>
+  <li><code class="language-plaintext highlighter-rouge">make_heap</code>, <code class="language-plaintext highlighter-rouge">find_min</code>, <code class="language-plaintext highlighter-rouge">insert</code>, and <code class="language-plaintext highlighter-rouge">meld</code> take $O(1)$ time.</li>
+  <li>Insertion increases the number of trees by one. And other operations do not affect the number of trees</li>
+  <li><code class="language-plaintext highlighter-rouge">delete_min</code>: Amorzied time $O(\log n)$ where $n$ is the number of items in the heap. Increases the number of trees by at most $\log n$.</li>
+  <li>Linking Step: Decreases the number of trees by one.</li>
+</ul>
+
+<h3 id="implementation-of-operations">Implementation of Operations</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">make_heap</code> Just retur $null$</li>
+  <li><code class="language-plaintext highlighter-rouge">find_min(h)</code> Return the minimum node of $h$</li>
+  <li><code class="language-plaintext highlighter-rouge">insert(i, h)</code> Create a heap of only node $i$ and replace $h$ by meld of $h$ and the new heap</li>
+  <li><code class="language-plaintext highlighter-rouge">meld(h1, h2)</code> Combine the root lists of $h_1$ and $h_2$ into one list and set the minimum node to the appropriate new minimum node.</li>
+</ul>
+
+<h4 id="delete_minh"><code class="language-plaintext highlighter-rouge">delete_min(h)</code></h4>
+<ul>
+  <li>Remove the minimum node ($x$) from $h$</li>
+  <li>Concatenate the list of children of $x$ with the list of roots of $h$ (other than $x$)</li>
+  <li>Repeat the following Linking Step until it no longer applies
+    <ul>
+      <li>Find any two trees whose roots have the same rank and link them (the new root has rank +1)</li>
+    </ul>
+  </li>
+  <li>Form a list of the remaining roots.</li>
+  <li>Find the item of minimum key.</li>
+</ul>
+
+<p><em>Note</em>: Implementation (use an array indexed by ranks).</p>
+
+<h4 id="decrease_keydelta-i-h"><code class="language-plaintext highlighter-rouge">decrease_key(delta, i, h)</code></h4>
+<ul>
+  <li>Key of item $i$ is decreased by delta</li>
+  <li>Cut out the node $x$ containing item $i$ from its parent</li>
+  <li>$x$ and its descendants is added as a new tree of $h$.</li>
+  <li>The appropriate update operations are performed</li>
+</ul>
+
+<h4 id="deletei-h"><code class="language-plaintext highlighter-rouge">delete(i, h)</code></h4>
+<ul>
+  <li>Find node $x$ containing item $i$.</li>
+  <li>Cut out the node $x$ containing item $i$ from its parent.</li>
+  <li>Form a new list of roots by concatenating the list of children of $x$ with the original list of roots.</li>
+  <li>The appropriate update operations are performed.</li>
+  <li><code class="language-plaintext highlighter-rouge">delete</code> takes $O(1)$, except when the minimum element is deleted.</li>
+</ul>
+
+<h3 id="additional-details-cascade-cut">Additional Details (Cascade Cut)</h3>
+<ul>
+  <li>When node $x$ has been made a child of another node by a linking step and it loses 2 of its children through cuts, we cut the edge joining $x$ and its parent and we make $x$ ad new root (as in <code class="language-plaintext highlighter-rouge">decrease_key</code>)</li>
+  <li>A <code class="language-plaintext highlighter-rouge">decrease_key</code> or <code class="language-plaintext highlighter-rouge">delete</code> operation my casue a possibly large number of cascading cuts.</li>
+</ul>
+
+<p><img src="https://www.gaeblog.com/assets/Fibonacci-Heap-Fig6.png" alt="" /></p>
+
+<h3 id="marking-nodes">Marking Nodes</h3>
+<ul>
+  <li>Purpose: Keep track of where to make cascade cuts.</li>
+  <li>Unmark $x$: When making a root node $x$ a child of another node in a linking step</li>
+  <li>When curring edge joining $x$ and its parent $(p(x))$, we decrease the rank of $p(x)$ and check it $p(x)$ is a root
+    <ul>
+      <li>if $p(x)$ is not a root, we mark it if it is unmarked and cut the edge to its parent it it is marked. (latter cut my be cascading)</li>
+    </ul>
+  </li>
+  <li>Each cut takes $O(1)$.</li>
+</ul>
+
+<h3 id="crucial-properties">Crucial Properties</h3>
+<ol>
+  <li>Each tree in an F-heap has a size at lease exponential in the rank of its root. i.e. the number of children is at most $\log n$.</li>
+  <li>The number of cascading cutus that take place during a sequence of heap operations is bounded by the number of decrease key and delete operations.</li>
+</ol>
+
+<h3 id="observations">Observations</h3>
+<ul>
+  <li>The purpose of cascade cuts in to preserve property 1.</li>
+  <li>Loss of two children rule limits the frequency of cascade cuts.</li>
+</ul>
+
+<p><strong>Lemma 1</strong>: Let $x$ be any node in a F-heap. Arrange the children of $x$ in the order they were linked to $x$, from earliest to latest. Then the $i^{th}$ child of $x$ has rank of at least $i-2$.</p>
+
+<p><strong>Corollary 1</strong>: A node of rank $k$ in an F-heap has at least $F_{k+2}\geq\phi^k$ descendants, including itself, where $F_k$ is the $k^{th}$ Fibonacci number and $\phi$ is the golden ratio.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Fibonacci-Heap-Fig7.png" alt="" /></p>
+
+<h3 id="redefinition">Redefinition</h3>
+<ul>
+  <li>Potential: Total numbere of trees plus twice the number of marked nonroot nodes.</li>
+  <li>The bounds of $O(1)$ for <code class="language-plaintext highlighter-rouge">make_heap</code>, <code class="language-plaintext highlighter-rouge">find_min</code>, <code class="language-plaintext highlighter-rouge">insert</code>, and <code class="language-plaintext highlighter-rouge">meld</code> remain valid, as does not $O(\log n)$ bound for <code class="language-plaintext highlighter-rouge">delete_min</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">delete_min(h)</code>: increases the potential by at most $1.4404\log n$ minus the number of linking steps, since, if the minimum node has rank $k$, then $\phi_k\leq n$ and thus</li>
+</ul>
+
+\[k\leq\log n/\log\phi\leq1.4404\log n\]
+
+<h3 id="revist-decrease_key">Revist <code class="language-plaintext highlighter-rouge">decrease_key</code></h3>
+<ul>
+  <li>Causes potential to increase by at most three mins the number of cascading cuts, since
+    <ul>
+      <li>the first cut converts a possible unmarked nonroot node into a root</li>
+      <li>each cascading cut converts a marked nonroot node into a root</li>
+      <li>the last cut can convert a nonroot node from unmarked to marked</li>
+    </ul>
+  </li>
+  <li>It follows that decrease key has an $O(1)$ amortized time bound.</li>
+</ul>
+
+<h3 id="revist-delete">Revist <code class="language-plaintext highlighter-rouge">delete</code></h3>
+<p>Just combine the analysis of <code class="language-plaintext highlighter-rouge">decrease_key</code> with <code class="language-plaintext highlighter-rouge">delete_min</code></p>
+
+<h3 id="summary">Summary</h3>
+<p>If we begin with no F-heaps and perform an arbitrary sequence of F-heap operations, then the total time is at most the total amortized time, where the amortized time is $O(\log n)$ for each <code class="language-plaintext highlighter-rouge">delete_min</code> or <code class="language-plaintext highlighter-rouge">delete</code>, and $O(1)$ for each other operations.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/Introduction-to-Algorithm/">Introduction to Algorithm</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/09/%E8%B5%AB%E7%82%8E%E5%89%8D%E5%9B%9B%E7%AB%A0%E6%84%9F%E6%83%B3/">赫炎前四章感想</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/09/Fibonacci-Heap/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#some-notes-about-fibonacci-heaps">Some Notes about Fibonacci Heaps</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#operations">Operations:</a></li>
+<li class="toc-entry toc-h3"><a href="#amortized-time-complexity">Amortized Time Complexity</a></li>
+<li class="toc-entry toc-h3"><a href="#structure">Structure</a></li>
+<li class="toc-entry toc-h3"><a href="#representation-of-f-heap">Representation of F-Heap</a></li>
+<li class="toc-entry toc-h3"><a href="#definitions">Definitions</a></li>
+<li class="toc-entry toc-h3"><a href="#idea">Idea</a></li>
+<li class="toc-entry toc-h3"><a href="#implementation-of-operations">Implementation of Operations</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#delete_minh">delete_min(h)</a></li>
+<li class="toc-entry toc-h4"><a href="#decrease_keydelta-i-h">decrease_key(delta, i, h)</a></li>
+<li class="toc-entry toc-h4"><a href="#deletei-h">delete(i, h)</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#additional-details-cascade-cut">Additional Details (Cascade Cut)</a></li>
+<li class="toc-entry toc-h3"><a href="#marking-nodes">Marking Nodes</a></li>
+<li class="toc-entry toc-h3"><a href="#crucial-properties">Crucial Properties</a></li>
+<li class="toc-entry toc-h3"><a href="#observations">Observations</a></li>
+<li class="toc-entry toc-h3"><a href="#redefinition">Redefinition</a></li>
+<li class="toc-entry toc-h3"><a href="#revist-decrease_key">Revist decrease_key</a></li>
+<li class="toc-entry toc-h3"><a href="#revist-delete">Revist delete</a></li>
+<li class="toc-entry toc-h3"><a href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

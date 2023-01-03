@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Imperative Programming - Algol</title>
+    <meta name="description" content="  Modernized Algol (MA) - revised by Robert HarperHaskell is a dialect Algol!Modernized Algol (MA) - revised by Robert HarperMA = PCF with a $modality$ - dis...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/01/21/imperative-programming/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Imperative Programming - Algol | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Imperative Programming - Algol" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Modernized Algol (MA) - revised by Robert Harper Haskell is a dialect Algol! Modernized Algol (MA) - revised by Robert Harper MA = PCF with a $modality$ - distinguishes expressions from commands [\tau=things\ in\ PCF cmd(\tau) \       expressions\ e=things\ in\ PCF cmd(m)\       commands\ m=ret(e) bnd(e,x.m) dcl(e,a.m)\ (dcl\ a:=e\ in\ m) seta\ (a:=e) get[a]\ (get\ a)] $a$’s are assignables not variables! $x$’s are variables! Assignables are not a form of an expression of it’s type. Assignables is a location in memory whose contents has a type, where we write $a_1\sim\tau_1$ (not $a_1:\tau_1$). Assignables are really indices to a family of $get$, $set$ operations, they are not values, arguments, or evaluated. They are just indices, and $get$’s and $set$’s are just capabilities to get and set $a$. We can define references, i.e. &amp;a in a real programming language, as a pair $&lt;get_a,set_a&gt;$, which just a thing that gives you access to the capabilities of getting and setting $a$. Types and expressions are “pure” - don’t depend on memory, whereas commands are “impure”." />
+<meta property="og:description" content="Modernized Algol (MA) - revised by Robert Harper Haskell is a dialect Algol! Modernized Algol (MA) - revised by Robert Harper MA = PCF with a $modality$ - distinguishes expressions from commands [\tau=things\ in\ PCF cmd(\tau) \       expressions\ e=things\ in\ PCF cmd(m)\       commands\ m=ret(e) bnd(e,x.m) dcl(e,a.m)\ (dcl\ a:=e\ in\ m) seta\ (a:=e) get[a]\ (get\ a)] $a$’s are assignables not variables! $x$’s are variables! Assignables are not a form of an expression of it’s type. Assignables is a location in memory whose contents has a type, where we write $a_1\sim\tau_1$ (not $a_1:\tau_1$). Assignables are really indices to a family of $get$, $set$ operations, they are not values, arguments, or evaluated. They are just indices, and $get$’s and $set$’s are just capabilities to get and set $a$. We can define references, i.e. &amp;a in a real programming language, as a pair $&lt;get_a,set_a&gt;$, which just a thing that gives you access to the capabilities of getting and setting $a$. Types and expressions are “pure” - don’t depend on memory, whereas commands are “impure”." />
+<link rel="canonical" href="https://www.gaeblog.com/2019/01/21/imperative-programming/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/01/21/imperative-programming/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-01-21T19:58:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Imperative Programming - Algol" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Modernized Algol (MA) - revised by Robert Harper Haskell is a dialect Algol! Modernized Algol (MA) - revised by Robert Harper MA = PCF with a $modality$ - distinguishes expressions from commands [\\tau=things\\ in\\ PCF cmd(\\tau) \\       expressions\\ e=things\\ in\\ PCF cmd(m)\\       commands\\ m=ret(e) bnd(e,x.m) dcl(e,a.m)\\ (dcl\\ a:=e\\ in\\ m) seta\\ (a:=e) get[a]\\ (get\\ a)] $a$’s are assignables not variables! $x$’s are variables! Assignables are not a form of an expression of it’s type. Assignables is a location in memory whose contents has a type, where we write $a_1\\sim\\tau_1$ (not $a_1:\\tau_1$). Assignables are really indices to a family of $get$, $set$ operations, they are not values, arguments, or evaluated. They are just indices, and $get$’s and $set$’s are just capabilities to get and set $a$. We can define references, i.e. &amp;a in a real programming language, as a pair $&lt;get_a,set_a&gt;$, which just a thing that gives you access to the capabilities of getting and setting $a$. Types and expressions are “pure” - don’t depend on memory, whereas commands are “impure”.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/01/21/imperative-programming/"},"@type":"BlogPosting","headline":"Imperative Programming - Algol","dateModified":"2019-01-21T19:58:00+00:00","datePublished":"2019-01-21T19:58:00+00:00","url":"https://www.gaeblog.com/2019/01/21/imperative-programming/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Imperative Programming - Algol</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-01-21
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>&nbsp;
+    
+        <a href="/category/#Type Theory" title="Category: Type Theory" rel="category">Type Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>&nbsp;
+    
+        <!--a href="/tag/#Type+Theory" title="Tag: Type Theory" rel="tag">Type Theory</a-->
+        <a href="/tag/#Type Theory" title="Tag: Type Theory" rel="tag">Type Theory</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#modernized-algol-ma---revised-by-robert-harper" id="markdown-toc-modernized-algol-ma---revised-by-robert-harper">Modernized Algol (MA) - revised by Robert Harper</a>    <ul>
+      <li><a href="#statics" id="markdown-toc-statics">Statics</a></li>
+      <li><a href="#dynamics" id="markdown-toc-dynamics">Dynamics</a></li>
+      <li><a href="#some-issues-with-type-safety" id="markdown-toc-some-issues-with-type-safety">Some issues with type safety</a></li>
+      <li><a href="#ma---scoped-assignables" id="markdown-toc-ma---scoped-assignables">MA - Scoped Assignables</a>        <ul>
+          <li><a href="#references" id="markdown-toc-references">References</a></li>
+        </ul>
+      </li>
+      <li><a href="#ma---scope-free-assignables" id="markdown-toc-ma---scope-free-assignables">MA - (Scope) Free Assignables</a></li>
+    </ul>
+  </li>
+  <li><a href="#issues" id="markdown-toc-issues">Issues</a></li>
+</ul>
+
+<p><strong>Haskell is a dialect Algol!</strong></p>
+
+<h1 id="modernized-algol-ma---revised-by-robert-harper">Modernized Algol (MA) - revised by Robert Harper</h1>
+
+<p>MA = PCF with a $modality$ - distinguishes expressions from commands</p>
+
+\[\tau=things\ in\ PCF|cmd(\tau) \\
+expressions\ e=things\ in\ PCF|cmd(m)\\
+commands\ m=ret(e)|bnd(e,x.m)|dcl(e,a.m)\ (dcl\ a:=e\ in\ m)|set[a](e)\ (a:=e)|get[a]\ (get\ a)\]
+
+<p>$a$’s are <strong>assignables</strong> not variables! $x$’s are variables! Assignables are not a 
+form of an expression of it’s type. Assignables is a location in memory whose contents
+has a type, where we write $a_1\sim\tau_1$ (not $a_1:\tau_1$). Assignables are really
+<strong>indices</strong> to a family of $get$, $set$ operations, they are <strong>not</strong> values, arguments,
+or evaluated. They are just <strong>indices</strong>, and $get$’s and $set$’s are just <strong>capabilities</strong>
+to get and set $a$. We can define references, i.e. <code class="language-plaintext highlighter-rouge">&amp;a</code> in a real programming language,
+as a pair $&lt;get_a,set_a&gt;$, which just a thing that gives you access to the capabilities
+of getting and setting $a$.</p>
+
+<p>Types and expressions are “pure” - don’t depend on memory, whereas commands are “impure”.</p>
+
+<!--more-->
+
+<h2 id="statics">Statics</h2>
+
+\[\Gamma\vdash_\Sigma e:\tau\]
+
+<p>where $\Sigma$ is tye types of assignables, i.e. $a_1\sim\tau_1,…,a_n\sim\tau_n$.</p>
+
+\[\Gamma\vdash_\Sigma m\sim:\tau\]
+
+<p>It means a well-formed command whose return values has type $\tau$</p>
+
+\[\frac{\Gamma\vdash_\Sigma m\sim:\tau}{\Gamma\vdash_\Sigma cmd(m):cmd(\tau)}\]
+
+<p>The above is the <strong>Introduction</strong> rule for $cmd$</p>
+
+\[\frac{\Gamma\vdash_\Sigma e:cmd(\tau);\Gamma,x:\tau\vdash_\Sigma m'\sim:\tau'}
+{\Gamma\vdash_\Sigma bnd(e,x.m')\sim:\tau'}\]
+
+<p>The above is the <strong>Elimination</strong> rule for $cmd$</p>
+
+\[\frac{\Gamma\vdash_\Sigma e:\tau}{\Gamma\vdash_\Sigma ret(e)\sim:\tau}\]
+
+\[\frac{\Gamma\vdash_\Sigma e:\tau; \Gamma\vdash_{\Sigma,a\sim\tau}m'\sim:\tau';\tau\ mobile;\tau'\ mobile}
+{\Gamma\vdash_\Sigma dcl(e,a.m')\sim:\tau'}\]
+
+<p>It means I am declaring an assignable: I declare $a$, initialize it to $e$, and
+run the command $m’$. A type is $mobile$ if the value of the type can be pulled out
+from the scope of the assignable. Example of mobile types: <em>eager natural numbers</em>,
+<em>pairs/sums of mobile types</em>. Example of not mobile types: <em>functions</em> (because
+the body of the function can use assignables even if the ultimate return value is $nat$), 
+commands. This will be explained in later sections when we talk about the dynamics.</p>
+
+\[\frac{}{\Gamma\vdash_{\Sigma,a\sim\tau}get[a]\sim:\tau}\]
+
+\[\frac{\Gamma\vdash_{\Sigma,a\sim\tau}e:\tau}
+{\Gamma\vdash_{\Sigma,a\sim\tau}set[a](e)\sim:\tau}\]
+
+<p>Exercise: We have the following [Pre-]monad defined:</p>
+
+\[T(a):type\\
+r:a\rightarrow T(a)\\
+b:T(a)\rightarrow(a\rightarrow T(b))\rightarrow T(b)\]
+
+<p>Show that you can define $r$ and $b$ for $T(a)=cmd(a)$.</p>
+
+<p>The important fact is that you <strong>start with the modality</strong>, then they can be formed
+into a pre-monad.</p>
+
+<h2 id="dynamics">Dynamics</h2>
+
+\[e\ val_\Sigma\]
+
+\[e\mapsto_\Sigma e'\]
+
+<p>\(\mu||m\)
+means a command $m$ in memory \(\mu\). The notation is designed to connecto with concurrency.
+The idea is that we have a concurrent composition of a main program $m$ running simultaneously
+with threads that govern the contents of each of the location.</p>
+
+\[\mu||m\ final_\Sigma\]
+
+\[\mu||m\mapsto_\Sigma \mu'||m'\]
+
+\[\frac{}{cmd(m)\ val_\Sigma}\]
+
+\[frac{e\mapsto_\Sigma e'}{\mu||ret(e)\mapsto_\Sigma\mu||ret(e')}\]
+
+\[\frac{e\ val_\Sigma}{\mu||ret(e)\ final_\Sigma}\]
+
+\[\frac{e\mapsto_\Sigma e'}{\mu||bnd(e,x.m_1)\mapsto_\Sigma\mu||bnd(e',x.m_1)}\]
+
+\[\frac{\mu||m\mapsto_\Sigma\mu'||m'}
+{\mu||bnd(cmd(m),x.m_1)\mapsto_\Sigma\mu||bnd(cmd(m'),x.m_1)}\]
+
+\[\frac{e\ val_\Sigma}{\mu||bnd(cmd(ret(e)),x.m_1)\mapsto\mu||[e/x]m_1}\]
+
+\[\frac{}{\mu\otimes a\hookrightarrow e||get[a]\mapsto_{\Sigma,a\sim\tau}\mu\otimes a\hookrightarrow e||ret(e)}\]
+
+<p>Exercise: define $set$</p>
+
+<p>We have something called <em>Stack Discipline</em> invented by Dijkstra.
+The idea is that the assignables in Algol are stack alocated.
+When I do a $dcl(e,a.m’)$, I declare an assignable in $m’$, I can get it and set it in $m’$.
+When $m’$ is finished it’s deallocated.</p>
+
+\[\frac{e\ val_\Sigma;\mu\otimes a\hookrightarrow e||m\mapsto_\Sigma\mu'\otimes a\hookrightarrow e'||m'}
+{\mu||dcl(e,a.m)\mapsto_\Sigma\mu'||dcl(e',a.m')}\]
+
+<p>To rephrase the above in English: Start from lower left: I have a value $e$ which is the initializer of the
+assignable $a$ and I want to execute $m$ in the presence of that assignable. What can
+I do? I go above the line and do: let’s extend the memory \(\mu\)
+with $a$ having the content $e$, and I execute $m$, and I will, in the process of
+doing that, maybe modify some outer assignables (turn \(\mu\) to \(\mu'\)), maybe
+modify some inner assignables (make $a$ have the content $e’$ instead of $e$ originally)
+and get a new command $m’$. Then I update the memory (from \(\mu\) to \(\mu'\)), and 
+reset the world (from $m$ to $m’$). In other words, I take the starting state where
+I declare $a$ being initialized to $e$ and execute $m$, once you take a step of execution
+of $m$ in the situation of \(\mu\otimes a\hookrightarrow e\), you might have done a $set$
+in $a$ and updated that to $e’$! The resulting state is: I restart your program in the
+situation in which the initializer is not what it was ($e$) but what it becomes as result
+of the execution step ($e’$) and then proceed from there.</p>
+
+\[\frac{e,e'\ val_\Sigma}{\mu||dcl(e,a.ret(e'))\mapsto_\Sigma\mu||ret(e')}\]
+
+<p>To rephrase the above in English: Start from lower left: I declare an assignable
+$a$ and assign it to $e$, and I am returning a value $ret(e’)$, what do I do next?
+The idea of the <em>stack discipline</em> is: when you finish executing the body of $dcl$
+then you get out of it!</p>
+
+<h2 id="some-issues-with-type-safety">Some issues with type safety</h2>
+
+<p>In the above formula, in the lower left part, if $e$ has type $\tau$,
+then $e’$ has type $\tau’$ in the context of $\Sigma,a\sim\tau$, but in the lower
+right part, $e’$ should also have type $\tau’$, but with only $\Sigma$ alone. In
+traditional Algol, we can only return $nat$, which means if a numeric value $val$
+type checks with an assignable present ($\Sigma,a\sim\tau$), it will type checks
+with the assignable absence (only $\Sigma$), <strong>only under some conditions</strong>!</p>
+
+<p>So here is the question: Under what condition is the following statement true?</p>
+
+<p>If $e$ is a value of type $nat$ and type checks with the assignable $a$, it will also
+type check in type $nat$ without $a$.</p>
+
+<p>Answer: <strong>Only if the successors are valued eagerly</strong>! if the successors are lazy,
+then the arguments of the successors are unevaluated expressions (they are no longer
+values $val$)! Algol only makes sense if the constructors of the successors are eager!</p>
+
+<p>Here is an (clever) example of a successor of \(\mathbb{N}\) doesn’t type check if lazy. I want a
+successor of something, which is an expression, that uses an assignable $a$. The goal
+is it will not type check outside of scope of $a$:</p>
+
+\[S((\lambda x:nat.z)(cmd(get([a]))))\]
+
+<p>Explanation: We have a constant function that takes in a $nat$ and return 0 $z$.
+And to type check the argument $cmd(get([a]))$ we have to eventually type check $a$,
+even though it doesn’t matter the ultimate return value of the function because it’s
+constant!</p>
+
+<p>This is a perfect example of the interactions between language features. We might think
+that whatever I do with the PCF level whatever we don’t care lazy or eager and the
+command level is separated. This is wrong! The hard part of a language design is to make
+everything fit in a coherent way. This is way language design is hard!</p>
+
+<p>So traditional Algol they make things work by restricting the return value only $nat$,
+and make $nat$ eager. A better idea is that we can demand the result type of $dcl$ $mobile$!
+And we also need to restrict that we cannot assign values that aren’t $mobile$, because
+we can assign the value from a return value. This is the explanation of the
+above “This will be explained in later sections”.</p>
+
+<h2 id="ma---scoped-assignables">MA - Scoped Assignables</h2>
+
+<h3 id="references">References</h3>
+
+<p>We can define $ref(\tau)$ (<strong>immobile</strong>) as we mentioned briefly before in the following ways:</p>
+
+<p>Concretely:</p>
+
+\[ref(\tau)\triangleq cmd(\tau)\times(\tau\rightarrow cmd(\tau))\]
+
+<p>Where $cmd(\tau)$ is just the getter and $\tau\rightarrow cmd(\tau)$ is the setter.</p>
+
+<p>Then we can have:</p>
+
+\[getref(&lt;g,s&gt;)\mapsto g\\
+setref(&lt;g,s&gt;)\mapsto s\]
+
+<p>The problem is, if you look at the type $ref(\tau)$, it only says it has getter and
+setters, but it doesn’t say the <em>getter and setter are for the same assignable</em>! So
+you can have a getter for $a$ and a setter for $b$ and you won’t know the difference.
+So then we can define it in another way:</p>
+
+<p>Abstractly:</p>
+
+<p>The type is still $ref(\tau)$, but we have the following elim rules:</p>
+
+\[getref(\&amp;a)\mapsto get[a]\\
+setref(\&amp;a,e)\mapsto set[a](e)\]
+
+<h2 id="ma---scope-free-assignables">MA - (Scope) Free Assignables</h2>
+
+<p><strong>All types are mobile</strong>. Previously because the <em>stack discipline</em> is causing us
+trouble about mobility, and we go back to to add some mobility rules in the statics.
+But there are other ways to fix this: let’s change the statics, make every type mobile,
+and we’ll make our dynamics fit that. Here are the new dynamics. (Also called
+<strong>scope-free</strong> dynamics, or in other words, assignables are <em>heap</em> allocated.)</p>
+
+\[\gamma\Sigma\{\mu||m\}\mapsto\gamma\Sigma'\{\mu'||m'\}\]
+
+<p>Note the above transition is unlabelled.</p>
+
+\[\frac{e\ val_\Sigma}{\gamma\Sigma\{\mu||dcl[\tau](e,a.m)\}\mapsto
+\gamma\Sigma,a\sim\tau\{\mu\otimes a\hookrightarrow e||m\}}\]
+
+\[\frac{e\ val}{\gamma\Sigma\{\mu||ret(e)\}\ final}\]
+
+<p>PCF (FPC with recursive types $rec$) + commands above with free assignables
+$\approx$ Haskell :)</p>
+
+<h1 id="issues">Issues</h1>
+
+<p>In Algol, we have a clear distinction between expressions and commands; they are
+completely separated. There are many benefits of doing that. But in the “real world”,
+in doing that, we lose a lot of <em>benign effects</em>. For example <em>efficiency</em>, we lose:</p>
+
+<ul>
+  <li>laziness/memoization</li>
+  <li>splay trees - self-adjusting data structures</li>
+  <li>…</li>
+</ul>
+
+<p>While we are condemning benign effects, we do rely on them in real life.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/20/Recursive-Types/">Recursive Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/18/Recursive-Programs/">Recursive Programs
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/09/Polymorphic-Functional-Programming/">Polymorphic Functional Programming
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2019/01/20/Recursive-Types/">Recursive Types</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/01/21/imperative-programming/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/01/21/imperative-programming/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#modernized-algol-ma---revised-by-robert-harper">Modernized Algol (MA) - revised by Robert Harper</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#statics">Statics</a></li>
+<li class="toc-entry toc-h2"><a href="#dynamics">Dynamics</a></li>
+<li class="toc-entry toc-h2"><a href="#some-issues-with-type-safety">Some issues with type safety</a></li>
+<li class="toc-entry toc-h2"><a href="#ma---scoped-assignables">MA - Scoped Assignables</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#references">References</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#ma---scope-free-assignables">MA - (Scope) Free Assignables</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#issues">Issues</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SDN Introduction</title>
+    <meta name="description" content="  Software Defined Networking and The CloudSoftware Defined Networking and The CloudCloud computing (as it is defined today) depends on the ability to provis...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/SDN-Introduction/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>SDN Introduction | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="SDN Introduction" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Software Defined Networking and The Cloud Software Defined Networking and The Cloud Cloud computing (as it is defined today) depends on the ability to provision an IP network that reaches all of the resources a user wishes to employ. The challenge, however, is that this network must be provisioned and ultimately deprovisioned (decommissioned) dynamically and the “normal” IP management protocols were not designed for dynamic reconfiguration. The main goals for IP, when it was designed, were routing robustness and delivery determinism (including reliable delivery). Because latencies were so high and connectivity to intermittent, the protocols were designed to react slowly so that transient changes in the network did not cause instability. Fiber-based networks (which are more reliable, lower latency and higher bandwidth than wire networks) introduced the possibility of implementing dynamic network reconfiguration without sacrificing network stability. In particular, it became possible to use table-driven forwarding rules at the link level. Before this time, IP defined network routes at layer 3 – the network routing level. Link level protocols were “stateless” in that they need only manage the transfer of data between two fixed end points. The “state” defining the end points doesn’t change (or it can be rebuilt using a broadcast via ARP). Thus all information pertaining to a route that data must take as it traverses the network was originally confined to Layer 3. This information is managed in a per-hop “routing table” that indicates the point-to-point network link that data must take to make its next hop. With ATM and SONET, however, table-driven link-level protocols made it possible for an abstract “network link” to be implemented as a routed “path” across intermediate link nodes. These original technology-specific protocols eventually informed a standard for such link-level state management called MPLS." />
+<meta property="og:description" content="Software Defined Networking and The Cloud Software Defined Networking and The Cloud Cloud computing (as it is defined today) depends on the ability to provision an IP network that reaches all of the resources a user wishes to employ. The challenge, however, is that this network must be provisioned and ultimately deprovisioned (decommissioned) dynamically and the “normal” IP management protocols were not designed for dynamic reconfiguration. The main goals for IP, when it was designed, were routing robustness and delivery determinism (including reliable delivery). Because latencies were so high and connectivity to intermittent, the protocols were designed to react slowly so that transient changes in the network did not cause instability. Fiber-based networks (which are more reliable, lower latency and higher bandwidth than wire networks) introduced the possibility of implementing dynamic network reconfiguration without sacrificing network stability. In particular, it became possible to use table-driven forwarding rules at the link level. Before this time, IP defined network routes at layer 3 – the network routing level. Link level protocols were “stateless” in that they need only manage the transfer of data between two fixed end points. The “state” defining the end points doesn’t change (or it can be rebuilt using a broadcast via ARP). Thus all information pertaining to a route that data must take as it traverses the network was originally confined to Layer 3. This information is managed in a per-hop “routing table” that indicates the point-to-point network link that data must take to make its next hop. With ATM and SONET, however, table-driven link-level protocols made it possible for an abstract “network link” to be implemented as a routed “path” across intermediate link nodes. These original technology-specific protocols eventually informed a standard for such link-level state management called MPLS." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/SDN-Introduction/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/SDN-Introduction/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T16:48:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="SDN Introduction" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Software Defined Networking and The Cloud Software Defined Networking and The Cloud Cloud computing (as it is defined today) depends on the ability to provision an IP network that reaches all of the resources a user wishes to employ. The challenge, however, is that this network must be provisioned and ultimately deprovisioned (decommissioned) dynamically and the “normal” IP management protocols were not designed for dynamic reconfiguration. The main goals for IP, when it was designed, were routing robustness and delivery determinism (including reliable delivery). Because latencies were so high and connectivity to intermittent, the protocols were designed to react slowly so that transient changes in the network did not cause instability. Fiber-based networks (which are more reliable, lower latency and higher bandwidth than wire networks) introduced the possibility of implementing dynamic network reconfiguration without sacrificing network stability. In particular, it became possible to use table-driven forwarding rules at the link level. Before this time, IP defined network routes at layer 3 – the network routing level. Link level protocols were “stateless” in that they need only manage the transfer of data between two fixed end points. The “state” defining the end points doesn’t change (or it can be rebuilt using a broadcast via ARP). Thus all information pertaining to a route that data must take as it traverses the network was originally confined to Layer 3. This information is managed in a per-hop “routing table” that indicates the point-to-point network link that data must take to make its next hop. With ATM and SONET, however, table-driven link-level protocols made it possible for an abstract “network link” to be implemented as a routed “path” across intermediate link nodes. These original technology-specific protocols eventually informed a standard for such link-level state management called MPLS.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/SDN-Introduction/"},"@type":"BlogPosting","headline":"SDN Introduction","dateModified":"2017-06-08T16:48:00+00:00","datePublished":"2017-06-08T16:48:00+00:00","url":"https://www.gaeblog.com/2017/06/08/SDN-Introduction/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>SDN Introduction</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Software-Defined Networking" title="Category: Software-Defined Networking" rel="category">Software-Defined Networking</a>&nbsp;
+    
+        <a href="/category/#Cloud Computing" title="Category: Cloud Computing" rel="category">Cloud Computing</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#SDN" title="Tag: SDN" rel="tag">SDN</a-->
+        <a href="/tag/#SDN" title="Tag: SDN" rel="tag">SDN</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#software-defined-networking-and-the-cloud" id="markdown-toc-software-defined-networking-and-the-cloud">Software Defined Networking and The Cloud</a></li>
+  <li><a href="#openflow" id="markdown-toc-openflow">OpenFlow</a></li>
+  <li><a href="#sdn" id="markdown-toc-sdn">SDN</a></li>
+  <li><a href="#thoughts-on-sdn-and-cloud" id="markdown-toc-thoughts-on-sdn-and-cloud">Thoughts on SDN and Cloud</a></li>
+</ul>
+
+<h2 id="software-defined-networking-and-the-cloud">Software Defined Networking and The Cloud</h2>
+
+<p>Cloud computing (as it is defined today) depends on the ability to provision an IP network that reaches all of the resources a user wishes to employ. The challenge, however, is that this network must be provisioned and ultimately deprovisioned (decommissioned) dynamically and the “normal” IP management protocols were not designed for dynamic reconfiguration. The main goals for IP, when it was designed, were routing robustness and delivery determinism (including reliable delivery). Because latencies were so high and connectivity to intermittent, the protocols were designed to react slowly so that transient changes in the network did not cause instability.</p>
+
+<p>Fiber-based networks (which are more reliable, lower latency and higher bandwidth than wire networks) introduced the possibility of implementing dynamic network reconfiguration without sacrificing network stability. In particular, it became possible to use table-driven forwarding rules at the link level.</p>
+
+<p>Before this time, IP defined network routes at layer 3 – the network routing level. Link level protocols were “stateless” in that they need only manage the transfer of data between two fixed end points. The “state” defining the end points doesn’t change (or it can be rebuilt using a broadcast via ARP). Thus all information pertaining to a route that data must take as it traverses the network was originally confined to Layer 3. This information is managed in a per-hop “routing table” that indicates the point-to-point network link that data must take to make its next hop.</p>
+
+<p>With ATM and SONET, however, table-driven link-level protocols made it possible for an abstract “network link” to be implemented as a routed “path” across intermediate link nodes. These original technology-specific protocols eventually informed a standard for such link-level state management called <a href="http://en.wikipedia.org/wiki/Multiprotocol_Label_Switching">MPLS</a>.</p>
+
+<!--more-->
+
+<h2 id="openflow">OpenFlow</h2>
+
+<p>Like most techniques in networking, the idea of manipulating layer 2 network state is not unique. MPLS defines “label based routing” as a methodology for doing a table look up in the switch to determine where a packet is going based on a tag (or label) in the packet. Since it is a layer 2 protocol, it can (and usually does) rewrite the tag before the packet egresses based on the “path” through the layer 2 network that the packet needs to take (the table specifies the output port and the next tag).</p>
+
+<p>Turns out that “normal” IP network switches implement some of this functionality as well. First, it is important to understand the difference between a router and a switch.</p>
+
+<ul>
+  <li><strong>router</strong>: examines the destination address of a packet and determines the next link to use for the packet. Morally, all Linux systems are routers since they implement Layer 3 routing although the next link is often either the transport layer (if the packet is inbound and addressed to the host) or some network interface to which the host is connected (for outbound packets).</li>
+  <li><strong>switch</strong>: examines the destination address in a layer 2 packet (called a MAC address) and determines the next port to which the packet should be sent.</li>
+</ul>
+
+<p>If you stare at these two definitions for a minute you still might come away thinking that a router and a switch dot he same thing: route inbound packets to an outbound interface based on destination address. From an engineering perspective this conceptual similarity is accurate. However, architecturally they are different.</p>
+
+<p>For IP, a <em>router</em> must implement a “longest-prefix-match” algorithm to determine the outbound network interface. IP addresses come in classes and, of course, IP address ranges can be subnetted. Thus the job of the router is to find the “best” (longest) match between prefixes in its routing tables and the destination address. Indeed, the original motivation for MPLS and its predecessors was that longest-prefix-match was too complex to implement in an ASIC. Today’s routers use more complex ASICs and do the routing entirely in hardware, but originally, routing was a software activity.</p>
+
+<p>A switch does not implement hierarchical addressing. In fact, originally (and for so called “dumb” switches today) there was no table look up at layer 2. In a switch, a packet that came in on a port was sent unceremoniously to all other ports. Since the switch was stateless, it couldn’t “know” which outbound port a packet should use so it simply sent it to all of them.</p>
+
+<p><em>Managed Switches</em>, however, are smarter (and more scalable) than their dumb counter parts. They pay attention to ARP broadcasts and record MAC address-port mappings in forwarding tables. Because the MAC address is not hierarchical (it is strictly point to point), a switch need not implement longest-prefix-match and thus the table management is very fast and cheap to implement in hardware.</p>
+
+<p>Switch tables are managed internally using only local information. That is, because a switch is theoretically between two end points of a link, it need not consult with other switches when it builds its tables (say to avoid routing loops). However, it wasn’t long before network architects discovered that manipulating these tables via a control interface could prove useful (say because a spanning tree algorithm was malfunctioning).</p>
+
+<p><a href="http://en.wikipedia.org/wiki/OpenFlow">OpenFlow</a> is a standard control protocol for managing forwarding table information at layer 2. Instead of allowing the internal switch logic to build and rebuild its tables, OpenFlow specifies that each switch has a controller (one controller can serve many switches) that is responsible for managing the switches tables.</p>
+
+<p>The advantage of OpenFlow is that the controller is programmable meaning that it can implement policies that determine what table updates to send the switches it controls. For example, it is possible to implement Access Control Lists for MAC address forwarding that change dynamically. The model is that a switch will forward packets using its hardware and tables if there is a table match. If there is not, it will contact the controller and ask for a table entry for the packet. Thus, by keeping an ACL and invalidating switch tables when it changes, an OpenFlow controller can implement policy in the layer 2 path.</p>
+
+<p>The disadvantage of this approach is that the controller’s logic (at least some portion of it) may need to be executed while the packet is in flight. Unless pre-computed tables are loaded into the switches, the typical interaction is for a packet is to contact the controller the first time it sees a packet with a MAC address it doesn’t recognize (i.e. for which there is no table entry) to get a table entry. This table initialization address a performance overhead to the initial packet reception since the controller is a software entity and may be remote from the switch.</p>
+
+<p>Another perceived disadvantage of OpenFlow is the possibility for layer 2 network chaos. Switch table entries are no longer strictly based on local information. If all switches are controlled by a single controller, the controller can keep the tables consistent, but in a scaled network setting, controllers may need to agree on policies to prevent loops, partitions, etc. Great care must be taken if this agreement is not transactional.</p>
+
+<h2 id="sdn">SDN</h2>
+
+<p>An this point in the cloud SDN story, some debate has arisen. Some proponents of SDN believe that OpenFlow is software defined networking. That is, using policies specified in software run by the OpenFlow controllers, it is possible to provision and decommission virtual networks (based on ACLs that are installed dynamically) linking together cloud resources. Others maintain that OpenFlow is merely an interface through which other SDN services implement policy.</p>
+
+<p>The basis for this latter argument is in the notion that once switch behavior can be programmed, it is possible to implement different isolated network architectures over the same physical hardware. To see why this architectural control is important, consider the problem of provisioning a network for a set of VM’s in a cloud. For the purposes of illustration, I’ll use the AWS nomenclature in the following example.</p>
+
+<p>Recall that when a user creates one or more instances they are assigned to a security group that corresponds to an isolated layer 3 and layer 2 network between the VMs. If there is just one VM, it is the only host in the security group. The security group also specifies firewall rules that describe layer 3 routing into and out of the group. All VMs inside the group communicate as if the network were physically dedicated to them.</p>
+
+<p>Using “normal” networking protocols (i.e. without OpenFlow and/or SDN) creating a security group involves the following steps:</p>
+
+<ul>
+  <li>Create an isolated layer 2 network that the hosts running the VMs can access.</li>
+  <li>In a layer 3 router that is also on this isolated layer 2 network, create and install a layer 3 routing table entry that forwards packets traversing the security group boundary to a firewall.</li>
+  <li>Create and install firewall rules that describe access controls for the security group.</li>
+  <li>Attach the VMs at their respective hosts to the layer 2 network.</li>
+  <li>Set the default routes in the VMs to the router with the routing tables for the security group.</li>
+</ul>
+
+<p>Depending on the networking equipment that is used to connect the VMs to the router and the router to the firewall, there are several implementation options available. The easiest and most compatible with standard off-the-shelf networking components using VLAN truncking between the hosts running the VMs and the router. Each security group corresponds to a separate VLAN. Hosts must be able to pass packets tagged with different VLANs and must also be responsible for ensuring that VLAN-tagged packets are delivered only to the correctly specified VM. The router must also be trunked and must logically sit on all VLANs. That takes care of layer 2.</p>
+
+<p>For layer 3, each security group gets its own subnet. The router must allow the cloud to install and remove layer 3 routes corresponding to different subnets as security groups are created and destroyed.</p>
+
+<p>With SDN, however, it is possible to define these functions in terms of a new network architecture. Rather than defining a relationship between security groups, VLANs, and IP routes, the SDN-controlled network can define “roles” for different programmable components (presumably using a combination of open flow and layer 3 route control) in the network.</p>
+
+<p>For example, it is possible to build a layer 3 network between VMs that does not use an intermediate router. Instead, each host becomes an “edge router” that can send packets to a layer 2 network that sets up secure “circuits” between edge routers. In this model, each host hosting a VM maintains a routing table entry for the security group that correspond to a network or subnet. The layer 2 network, then, accepts commands from the cloud to set up a set of virtual circuits (implemented using switch forwarding tables) between all pairs of hosts participating in a security group. When a VM routes a packet, it goes to the host first (to make sure the VM isn’t spoofing its layer 3 address) and then the host forwards the packet to the layer 2 circuit switch.</p>
+
+<p>The advantage of this approach is that there need not be a centralized router that is programmed with routing table entries. The disadvantage is that the layer 3 edge routers and the virtual circuit set up and tear down must be coordinated.</p>
+
+<h2 id="thoughts-on-sdn-and-cloud">Thoughts on SDN and Cloud</h2>
+
+<p>For the purposes of cloud computing it is not clear whether one approach is significantly more powerful than the other. Indeed, it is possible to implement edge routers using standard networks and Linux machines. It is also possible to implement layer 2/layer 3 provisioning using a router and VLANs with SDN.</p>
+
+<p>However, the proponents of SDN point out that architecturally the cloud is implementing a limited form of software defined networking when it provisions security groups. There is a controller (the cloud) that implements policy (isolated layer 2/layer 3 network and firewall rules) using programmable network devices (hosts for VLANs, router, and firewall device). They reason that these activities are independent of cloud computing (cloud computing is a special case) and thus should be implemented as their own service that the cloud uses.</p>
+
+<p>The scalability of the approach is also an argument that gets made although far less convincingly. Many SDN papers hypothesize a new hierarchical separation of concerns for The Internet. The reasoning is that the current approach relies on a consistent set of layer 2/3 protocols <strong>everywhere</strong> the Internet is to go. If The Internet were designed as a common set of “core” protocols (say the current IP protocols) and edge routers that can tunnel new protocols through the core, innovations in networking will be possible. It is true that an overlay approach using tunnels is more flexible. The feature of The Internet that is most compelling, however, is its ability to remain stable at a global scale. It is not at all clear that the additional flexibility offered by SDN will scale to Internet sizes.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/AWS-Introduction/">AWS Introduction</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/Operating-System-Virtualization/">Operating System Virtualization</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/SDN-Introduction/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/SDN-Introduction/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#software-defined-networking-and-the-cloud">Software Defined Networking and The Cloud</a></li>
+<li class="toc-entry toc-h2"><a href="#openflow">OpenFlow</a></li>
+<li class="toc-entry toc-h2"><a href="#sdn">SDN</a></li>
+<li class="toc-entry toc-h2"><a href="#thoughts-on-sdn-and-cloud">Thoughts on SDN and Cloud</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

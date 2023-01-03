@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Semaphore</title>
+    <meta name="description" content="  SynchronizationSynchronizationSo far we have discussed mutexes and condition variables as the tools of synchronization and of managing critical sections of...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Semaphore/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Semaphore | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Semaphore" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Synchronization Synchronization So far we have discussed mutexes and condition variables as the tools of synchronization and of managing critical sections of code. These are not the only tools that can be used for the job, and you are going to find yourselves very soon doing a lab where mutexes and condition variables are not available to you, but semaphores are. So we need to consider semaphores. The concept of semaphores as used in computer synchronization is due to the Dutch computer scientist Edsgar Dijkstra. They have the advantages of being very simple, but sufficient to construct just about any other synchronization function you would care to have; we will cover a few of them here. There are several versions of the semaphore idea in common use, and you may run into variants from time to time. The end of these notes briefly describe two of the most common, binary semaphores and the SYSV IPC semaphores. A semaphore is an integer with a difference. Well, actually a few differences. You set the value of the integer when you create it, but can never access the value directly after that; you must use one of the semaphore functions to adjust it, and you cannot ask for the current value. There are semaphore functions to increment or decrement the value of the integer by one. Decrementing is a (possibly) blocking function. If the resulting semaphore value is negative, the calling thread or process is blocked, and cannot continue until some other thread or process increments it. Incrementing the semaphore when it is negative causes one (and only one) of the threads blocked by this semaphore to become unblocked and runnable. All semaphore operations are atomic. There are various ways that these operations are named and described, more or less interchangeably. This can be confusing, but such things happen in computer science when we try to use metaphors, especially multiple metaphors, to describe what a program is doing. Here are some: **Increment** Dijkstra called this function **V()**; it is also called signal, unlock, leave or release. **Decrement** Dijkstra called this function **P()**; it is also called wait, lock, enter, or get." />
+<meta property="og:description" content="Synchronization Synchronization So far we have discussed mutexes and condition variables as the tools of synchronization and of managing critical sections of code. These are not the only tools that can be used for the job, and you are going to find yourselves very soon doing a lab where mutexes and condition variables are not available to you, but semaphores are. So we need to consider semaphores. The concept of semaphores as used in computer synchronization is due to the Dutch computer scientist Edsgar Dijkstra. They have the advantages of being very simple, but sufficient to construct just about any other synchronization function you would care to have; we will cover a few of them here. There are several versions of the semaphore idea in common use, and you may run into variants from time to time. The end of these notes briefly describe two of the most common, binary semaphores and the SYSV IPC semaphores. A semaphore is an integer with a difference. Well, actually a few differences. You set the value of the integer when you create it, but can never access the value directly after that; you must use one of the semaphore functions to adjust it, and you cannot ask for the current value. There are semaphore functions to increment or decrement the value of the integer by one. Decrementing is a (possibly) blocking function. If the resulting semaphore value is negative, the calling thread or process is blocked, and cannot continue until some other thread or process increments it. Incrementing the semaphore when it is negative causes one (and only one) of the threads blocked by this semaphore to become unblocked and runnable. All semaphore operations are atomic. There are various ways that these operations are named and described, more or less interchangeably. This can be confusing, but such things happen in computer science when we try to use metaphors, especially multiple metaphors, to describe what a program is doing. Here are some: **Increment** Dijkstra called this function **V()**; it is also called signal, unlock, leave or release. **Decrement** Dijkstra called this function **P()**; it is also called wait, lock, enter, or get." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Semaphore/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/Semaphore/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T14:54:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Semaphore" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Synchronization Synchronization So far we have discussed mutexes and condition variables as the tools of synchronization and of managing critical sections of code. These are not the only tools that can be used for the job, and you are going to find yourselves very soon doing a lab where mutexes and condition variables are not available to you, but semaphores are. So we need to consider semaphores. The concept of semaphores as used in computer synchronization is due to the Dutch computer scientist Edsgar Dijkstra. They have the advantages of being very simple, but sufficient to construct just about any other synchronization function you would care to have; we will cover a few of them here. There are several versions of the semaphore idea in common use, and you may run into variants from time to time. The end of these notes briefly describe two of the most common, binary semaphores and the SYSV IPC semaphores. A semaphore is an integer with a difference. Well, actually a few differences. You set the value of the integer when you create it, but can never access the value directly after that; you must use one of the semaphore functions to adjust it, and you cannot ask for the current value. There are semaphore functions to increment or decrement the value of the integer by one. Decrementing is a (possibly) blocking function. If the resulting semaphore value is negative, the calling thread or process is blocked, and cannot continue until some other thread or process increments it. Incrementing the semaphore when it is negative causes one (and only one) of the threads blocked by this semaphore to become unblocked and runnable. All semaphore operations are atomic. There are various ways that these operations are named and described, more or less interchangeably. This can be confusing, but such things happen in computer science when we try to use metaphors, especially multiple metaphors, to describe what a program is doing. Here are some: **Increment** Dijkstra called this function **V()**; it is also called signal, unlock, leave or release. **Decrement** Dijkstra called this function **P()**; it is also called wait, lock, enter, or get.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/Semaphore/"},"@type":"BlogPosting","headline":"Semaphore","dateModified":"2017-06-08T14:54:00+00:00","datePublished":"2017-06-08T14:54:00+00:00","url":"https://www.gaeblog.com/2017/06/08/Semaphore/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Semaphore</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Operating System" title="Category: Operating System" rel="category">Operating System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Thread" title="Tag: Thread" rel="tag">Thread</a-->
+        <a href="/tag/#Thread" title="Tag: Thread" rel="tag">Thread</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#synchronization" id="markdown-toc-synchronization">Synchronization</a></li>
+  <li><a href="#implementation" id="markdown-toc-implementation">Implementation</a></li>
+  <li><a href="#implementing-semaphores-using-pthreads" id="markdown-toc-implementing-semaphores-using-pthreads">Implementing Semaphores Using pthreads</a></li>
+  <li><a href="#types-of-synchronization-problems" id="markdown-toc-types-of-synchronization-problems">Types of Synchronization Problems</a></li>
+  <li><a href="#the-client-trader-example-revisited" id="markdown-toc-the-client-trader-example-revisited">The Client-Trader Example Revisited</a></li>
+  <li><a href="#implementing-mutual-exclusion" id="markdown-toc-implementing-mutual-exclusion">Implementing Mutual Exclusion</a></li>
+  <li><a href="#atomic-update-of-a-counter" id="markdown-toc-atomic-update-of-a-counter">Atomic Update of a Counter</a></li>
+  <li><a href="#sending-a-signal" id="markdown-toc-sending-a-signal">Sending a Signal</a></li>
+  <li><a href="#speed-of-the-solution" id="markdown-toc-speed-of-the-solution">Speed of the Solution</a></li>
+  <li><a href="#summarizing" id="markdown-toc-summarizing">Summarizing</a></li>
+</ul>
+
+<h2 id="synchronization">Synchronization</h2>
+
+<p>So far we have discussed mutexes and condition variables as the tools of synchronization and of managing critical sections of code. These are not the only tools that can be used for the job, and you are going to find yourselves very soon doing a lab where mutexes and condition variables are not available to you, but semaphores are. So we need to consider semaphores.</p>
+
+<p>The concept of semaphores as used in computer synchronization is due to the Dutch computer scientist Edsgar Dijkstra. They have the advantages of being very simple, but sufficient to construct just about any other synchronization function you would care to have; we will cover a few of them here. There are several versions of the semaphore idea in common use, and you may run into variants from time to time. The end of these notes briefly describe two of the most common, binary semaphores and the SYSV IPC semaphores.</p>
+
+<p>A semaphore is an integer with a difference. Well, actually a few differences.</p>
+
+<ul>
+  <li>You set the value of the integer when you create it, but can never access the value directly after that; you must use one of the semaphore functions to adjust it, and you cannot ask for the current value.</li>
+  <li>There are semaphore functions to increment or decrement the value of the integer by one.</li>
+  <li>Decrementing is a (possibly) blocking function. If the resulting semaphore value is negative, the calling thread or process is blocked, and cannot continue until some other thread or process increments it.</li>
+  <li>Incrementing the semaphore when it is negative causes one (and only one) of the threads blocked by this semaphore to become unblocked and runnable.</li>
+  <li>All semaphore operations are atomic.</li>
+</ul>
+
+<p>There are various ways that these operations are named and described, more or less interchangeably. This can be confusing, but such things happen in computer science when we try to use metaphors, especially multiple metaphors, to describe what a program is doing. Here are some:</p>
+
+<dl>
+
+<dt>**Increment**</dt>
+
+<dd>Dijkstra called this function **<font color="green">V()</font>**; it is also called signal, unlock, leave or release.</dd>
+
+<dt>**Decrement**</dt>
+
+<dd>Dijkstra called this function **<font color="green">P()</font>**; it is also called wait, lock, enter, or get.</dd>
+
+</dl>
+
+<!--more-->
+
+<h2 id="implementation">Implementation</h2>
+
+<p>The easiest way for me to think of semaphores is, of course, with code. Here is a little pseudo-code that may help.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">sem</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+  <span class="n">other_stuff</span>
+<span class="p">}</span> <span class="o">*</span><span class="n">Sem</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>There are two actions defined on semaphores (we’ll go with the classic terminology): <strong>P(Sem s)</strong> and <strong>V(Sem s)</strong>. <strong>P</strong> and <strong>V</strong> are the first letters of two Dutch words <em>proberen</em> (to test) and <em>verhogen</em> (to increment) which, on balance, makes about as much (or as little) sense as any other set of monikers. The inventor of semaphores was <a href="http://www.cs.utexas.edu/users/EWD/">Edsger Dijkstra</a> who was very Dutch.</p>
+
+<ul>
+  <li><strong>P(Sem s)</strong> decrements <strong>s-&gt;value</strong>, and if this is less than zero, the thread is blocked, and will remain so until another thread unblocks it. This is all done atomically.</li>
+  <li><strong>V(Sem s)</strong> increments <strong>s-&gt;value</strong>, and if this is less than or equal to zero, then there is at least one other thread that is blocked because of <strong>s</strong>. Exactly one of these threads is chosen and unblocked. The definition of <strong>V()</strong> does not specify how the thread to unblock is chosen, although most uniprocessor thread packages use a FIFO algorithm.</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">initialize</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">return</span>
+<span class="p">}</span>
+
+<span class="n">P</span><span class="p">(</span><span class="n">Sem</span> <span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">block</span> <span class="n">on</span> <span class="n">semaphore</span>
+    <span class="k">return</span>
+<span class="p">}</span>
+
+<span class="n">V</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">unblock</span> <span class="n">one</span> <span class="n">process</span> <span class="n">or</span> <span class="kr">thread</span> <span class="n">that</span> <span class="n">is</span> <span class="n">blocked</span> <span class="n">on</span> <span class="n">semaphore</span>
+    <span class="k">return</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You should understand these examples to be protected somehow from preemption, so that no other process could execute between the decrementing and testing of the semaphore value in the <strong>P()</strong> call, for instance.</p>
+
+<p>If you consider semaphores carefully, you might decide that they are like mutexes, but they don’t “lose” extra signals. This is a good way to look at them, but not the only way.</p>
+
+<h2 id="implementing-semaphores-using-pthreads">Implementing Semaphores Using pthreads</h2>
+
+<p>Up to this point, we have discussed semaphores in general terms. That’s because you will need to use them in this class in a couple of different contexts where the internal implementation will be different (and possibly hidden). It is critical that you understand the concept of the counting semaphore for this reason. Indeed, on many hardware platforms, there are primitive instructions to make implementation easy and efficient.</p>
+
+<p>The power of semaphores, though, is that they can be implemented relatively simply and (as we’ll see) they can be used to solve a wide variety of syncronization problems in a way that many would characterize as elegant.</p>
+
+<p>In pthreads, the implementation of sempahores is pretty simple as long as your pthreads code adheres to basic thread principles. That is, the code uses threads and thread synchronization in a way that conforms to the fork/join model. We’ll discuss the full pthreads picture with respect to semaphores as well, but to begin, consider the following code:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+        <span class="n">pthread_mutex_t</span> <span class="n">lock</span><span class="p">;</span>
+        <span class="n">pthread_cond_t</span> <span class="n">wait</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">sema</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">pthread_sema_init</span><span class="p">(</span><span class="n">sema</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">count</span><span class="p">;</span>
+        <span class="n">pthread_cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">),</span><span class="nb">NULL</span><span class="p">);</span>
+        <span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">),</span><span class="nb">NULL</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">pthread_sema_P</span><span class="p">(</span><span class="n">sema</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">--</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">),</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">pthread_sema_V</span><span class="p">(</span><span class="n">sema</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+
+        <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">++</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">pthread_cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And that’s it. You could add error checking (e.g. the initial value should never be negative) but that’s the basic implementation.</p>
+
+<p>This basic implementation makes several assumptions about the structure of the code. In particular, it assumes</p>
+
+<ul>
+  <li>no thread is ever cancelled via <em>pthread_cancel()</em></li>
+  <li>the primitive <em>pthread_cond_signal()</em> wakes up exactly one thread among the threads that are blocked on the condition variable.</li>
+  <li>the threaded program is not using Linux signals for interprocess communication</li>
+</ul>
+
+<p>Of these requirements, the latter is the most troubling since Linux signals can be useful in a threaded program. For example, setting a timer signal as a way of implementing timeouts when the program is using sockets is often convenient.</p>
+
+<p>The problem here is that the POSIX specification has changed over the years to make pthread less compatible with the original fork/join model it was intended to implement. The issue with pthread_cancel() is that it adds a new abstraction (cancellation state) to the API that the programmer must consider. In particular, condition variable synchronization primitives are cancellation points where, depending on the thread cancellation state, a thread might be cancelled. In general, cancelling a thread that is blocked in a synchronization primitive is a bad idea. That thread is almost assuredly part of some state update protocol in the program. When the thread is canceled, all of the state in the state-update protocol must be removed and determining this state precisely can be difficult.</p>
+
+<p>For example, in the semaphore code shown above, a thread block in <em>pthread_cond_wait()</em> that is cancelled has decermented the semaphore counter. Cancel is like the thread never existed so the counter value should be incremented. However the increment must be done in a critical section. The cancelled thread will not run. Instead a cancellation handler runs and that handler must run in the critical section which means it must acquire the lock. Is the lock automatically acquired? Is it dropped when the handler completes? You can look up these details, but the short answer is that you should not use cancel unless you are prepared to make your pthread code substantially more complex.</p>
+
+<p>The second issue is that the current pthread specification says that a call to <em>pthread_cond_signal()</em> will wake at least one thread (but possibly more). The exact reason the specification is written this way is not clear, but there is a reasonable explanation.</p>
+
+<p>The primitive <em>pthread_cond_signal()</em> as described in the lecture on condition variables was really designed to implement operating system monitors. In a monitor, after a thread is awakened, it must re-enter the monitor by acquiring the lock that the monitor uses to assure mutual exclusion. For pthreads, the easiest way to do this is to have threads that wake up as a result of a <em>pthread_cond_signal()</em> then call (inside the <em>pthread_cond_wait()</em> code) <em>pthread_mutex_lock()</em> to reacquire the lock they were holding when then blocked. However, in a monitor, this lock is usually the same lock that is used to implement mutual exclusion. As such, there is no guarantee that the thread coming out of <em>pthread_cond_wait()</em> will get the lock when it calls <em>pthread_mutex_lock()</em> to re-enter the monitor. Instead, it may be that a new thread trying to enter the monitor (not coming out of a wait) is given the lock and allowed to enter the mutual exclusion region. If this thread changes the test predicate state and then leaves the mutual exclusion region and <strong>then</strong> the thread that was awakened re-enters the monitor, the state will not be the state that was present when the thread was signalled.</p>
+
+<p>Thus when calling <em>pthread_cond_wait()</em> in a monitor, the thread must re-test the state of the predicate it used to decide to call <em>pthread_cond_wait()</em>. If that state remains unchanged (i.e. the thread should not proceed) it should call <em>pthread_cond_wait()</em> again (say in a <em>while</em> loop).</p>
+
+<p>The problem is that there are ways to use condition variables in the context of a fork/join model that do not suffer from this possibilty. Again, if <em>pthread_cond_signal()</em> wakes exactly one thread (as most threaded programs assume) then the semaphore code shown above is incorrect if the P() primitive uses a while loop. The reason is that the semaphore counter is counting the number of blocked threads and the use of mutual exclusion assures that the counter state and the number of sleeping threads is synchronized if <em>pthread_cond_signal()</em> wakes exactly one thread.</p>
+
+<p>It seems that because the intent was to implement monitors, however, the specification designers took the opportunity to allow <em>pthread_cond_signal()</em> and <em>pthread_cond_wait()</em> to include the possibility that</p>
+
+<ul>
+  <li>threads can wake up randomly form <em>pthread_cond_wait()</em></li>
+  <li>a call to <em>pthread_cond_signal()</em> will wake one or more threads</li>
+</ul>
+
+<p>This decision making is unfortunate because it introduces considerable complexity into what were relatively simple synchronization primitives. Further, it is unlikely that any truly sane implementation of pthreads will intentinally take advantage of this part of the specification. That is, these strange behaviors will occur when non-thread like events occur (cancel, fork, Linux signals, etc.) Indeed, if <em>pthread_cond_signal()</em> were always to wake 2 threads (which is allowed in the specification) it is almost certainly the case that many programs using condition varaibles would need to be rewritten.</p>
+
+<p>Be that as it may, it is possible to write the semaphore code in a slightly more complex way to work with these unfortunate semantics in the pthreads specification. Consider the following code:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt; stdlib.h &gt;
+#include &lt; unistd.h &gt;
+#include &lt; stdio.h &gt;
+</span>
+<span class="cp">#include &lt; pthread.h &gt;
+</span>
+<span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+        <span class="n">pthread_mutex_t</span> <span class="n">lock</span><span class="p">;</span>
+        <span class="n">pthread_cond_t</span> <span class="n">wait</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">waiters</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">sema</span><span class="p">;</span>
+
+<span class="n">sema</span> <span class="o">*</span><span class="nf">InitSem</span><span class="p">(</span><span class="kt">int</span> <span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>       
+        <span class="n">sema</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">sema</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">sema</span><span class="p">));</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">count</span><span class="p">;</span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">waiters</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">pthread_cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">),</span><span class="nb">NULL</span><span class="p">);</span>
+        <span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">),</span><span class="nb">NULL</span><span class="p">);</span>
+
+        <span class="k">return</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">P</span><span class="p">(</span><span class="n">sema</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">--</span><span class="p">;</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="cm">/*
+                 * maintain semaphore invariant
+                 */</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">waiters</span> <span class="o">&lt;</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="n">s</span><span class="o">-&gt;</span><span class="n">waiters</span><span class="o">++</span><span class="p">;</span>
+                        <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">),</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+                        <span class="n">s</span><span class="o">-&gt;</span><span class="n">waiters</span><span class="o">--</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+
+        <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">V</span><span class="p">(</span><span class="n">sema</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+
+        <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">++</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+                <span class="n">pthread_cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This code relies on the invariant that the absolute value of the semaphore’s value must be equal to the number of waiting threads when the value itself is less than zero. The code for <em>V()</em> does not change (it still calls <em>pthread_cond_signal()</em>. However, the code for <em>P()</em> now uses a counter (updated inside the critical section) to record how many threads are waiting on the condition variable. If a thread wakes up, it re-tests both the semaphore value and the invariant to determine whether it should proceed or it has been awakened spuriously and need to block again.</p>
+
+<p>To test that this works, try changing the call to <em>pthread_cond_signal()</em> to <em>pthread_cond_broadcast()</em> which wakes up all threads. The semaphore primitive still work correctly (although they are much slower when there are many threads calling <em>P()</em>.</p>
+
+<h2 id="types-of-synchronization-problems">Types of Synchronization Problems</h2>
+
+<p>By now, you’ve see three types of synchronization mechanisms:</p>
+
+<ul>
+  <li><strong>locks</strong> (implemented at pthread_mutex_* under pthreads)</li>
+  <li><strong>condition variables</strong> (implemented as pthread_cond_* under pthreads)</li>
+  <li><strong>semaphores</strong></li>
+</ul>
+
+<p>It turns out that that these mechanisms are essentially equivalent in terms of their “power.” The <em>power</em> of a a language primitive is usually measured by the number of different programming challenges that a particular primitive can address. In the case of these synchronization mechanisms, each one can be used to implement the others (with some assumptions about how variables are shared and the atomicity of memory read and write instructions).</p>
+
+<p>Much of the research that went into the design of these primitives centered on how “elegantly” they solved different synchronization problems that appear to be common to many asynchronous systems. In addition to the <em>bounded buffer</em> problem, there are a few others.</p>
+
+<h2 id="the-client-trader-example-revisited">The Client-Trader Example Revisited</h2>
+
+<p>Take a look at the code for the <a href="https://www.gaeblog.com/assets/market-semaphore.c">Client-Trader simulation written for semaphores</a>. Study it for a minute. You should notice two features when comparing it to the <a href="https://www.gaeblog.com/assets/market4.c">Client-Trader code written for condition variables</a> discussed in the <a href="http://www.cs.ucsb.edu/~rich/class/cs170/notes/CondVar/index.html">lecture on Condition Variables</a>.</p>
+
+<ul>
+  <li>the client thread and trader thread are <strong>MUCH</strong> simpler</li>
+  <li>the initialization of the semaphores in the constructor routines is <strong>REALLY</strong> important</li>
+</ul>
+
+<p>Let’s look at these features a little more closely. Here is the client and trader thread code with all of the comments removed to show how compact it is:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="nf">ClientThread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">client_arg</span> <span class="o">*</span><span class="n">ca</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">client_arg</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">next</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">order</span> <span class="o">*</span><span class="n">order</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">stock_id</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">quantity</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">action</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">now</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">stock_id</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">RAND</span><span class="p">()</span> <span class="o">*</span> <span class="n">ca</span><span class="o">-&gt;</span><span class="n">max_stock_id</span><span class="p">);</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">RAND</span><span class="p">()</span> <span class="o">*</span> <span class="n">ca</span><span class="o">-&gt;</span><span class="n">max_quantity</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">RAND</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* 0 =&gt; buy */</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="cm">/* 1 =&gt; sell */</span>
+        <span class="p">}</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">InitOrder</span><span class="p">(</span><span class="n">stock_id</span><span class="p">,</span><span class="n">quantity</span><span class="p">,</span><span class="n">action</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">order</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">"no space for order</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+         <span class="o">**</span><span class="n">P</span><span class="p">(</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">full</span><span class="p">);</span>
+        <span class="n">P</span><span class="p">(</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="o">**</span> 
+        <span class="n">next</span> <span class="o">=</span> <span class="p">(</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">CTimer</span><span class="p">();</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%10.0f client %d: "</span><span class="p">,</span><span class="n">now</span><span class="p">,</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"queued stock %d, for %d, %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+                <span class="n">order</span><span class="o">-&gt;</span><span class="n">stock_id</span><span class="p">,</span>
+                <span class="n">order</span><span class="o">-&gt;</span><span class="n">quantity</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">order</span><span class="o">-&gt;</span><span class="n">action</span> <span class="o">?</span> <span class="s">"SELL"</span> <span class="o">:</span> <span class="s">"BUY"</span><span class="p">));</span> 
+        <span class="p">}</span>
+        <span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">orders</span><span class="p">[</span><span class="n">next</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">;</span>
+        <span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+         <span class="o">**</span><span class="n">V</span><span class="p">(</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">);</span>
+        <span class="n">V</span><span class="p">(</span><span class="n">ca</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span>
+        <span class="n">P</span><span class="p">(</span><span class="n">order</span><span class="o">-&gt;</span><span class="n">fulfilled</span><span class="p">);</span><span class="o">**</span> 
+        <span class="n">FreeOrder</span><span class="p">(</span><span class="n">order</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">TraderThread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">trader_arg</span> <span class="o">*</span><span class="n">ta</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">trader_arg</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">order</span> <span class="o">*</span><span class="n">order</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">tail</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">now</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">next</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">stock</span> <span class="o">*</span><span class="n">stock</span><span class="p">;</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+         <span class="o">**</span><span class="n">P</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">);</span><span class="o">**</span> 
+        <span class="k">if</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+             <span class="o">**</span><span class="n">V</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">);</span><span class="o">**</span> 
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+         <span class="o">**</span><span class="n">P</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="o">**</span> 
+        <span class="n">next</span> <span class="o">=</span> <span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">tail</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">orders</span><span class="p">[</span><span class="n">next</span><span class="p">];</span>
+        <span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">tail</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+         <span class="o">**</span><span class="n">V</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">full</span><span class="p">);</span>
+        <span class="n">V</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">order_que</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="o">**</span> 
+        <span class="n">stock</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">market</span><span class="o">-&gt;</span><span class="n">stocks</span><span class="p">[</span><span class="n">order</span><span class="o">-&gt;</span><span class="n">stock_id</span><span class="p">]);</span>
+         <span class="o">**</span><span class="n">P</span><span class="p">(</span><span class="n">stock</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="o">**</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">order</span><span class="o">-&gt;</span><span class="n">action</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* BUY */</span>
+            <span class="n">stock</span><span class="o">-&gt;</span><span class="n">quantity</span> <span class="o">-=</span> <span class="n">order</span><span class="o">-&gt;</span><span class="n">quantity</span><span class="p">;</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">stock</span><span class="o">-&gt;</span><span class="n">quantity</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">stock</span><span class="o">-&gt;</span><span class="n">quantity</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">stock</span><span class="o">-&gt;</span><span class="n">quantity</span> <span class="o">+=</span> <span class="n">order</span><span class="o">-&gt;</span><span class="n">quantity</span><span class="p">;</span>
+        <span class="p">}</span>
+         <span class="o">**</span><span class="n">V</span><span class="p">(</span><span class="n">stock</span><span class="o">-&gt;</span><span class="n">mutex</span><span class="p">);</span><span class="o">**</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">CTimer</span><span class="p">();</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%10.0f trader: %d "</span><span class="p">,</span><span class="n">now</span><span class="p">,</span><span class="n">ta</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"fulfilled stock %d for %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+                <span class="n">order</span><span class="o">-&gt;</span><span class="n">stock_id</span><span class="p">,</span>
+                <span class="n">order</span><span class="o">-&gt;</span><span class="n">quantity</span><span class="p">);</span>
+        <span class="p">}</span>
+         <span class="o">**</span><span class="n">V</span><span class="p">(</span><span class="n">order</span><span class="o">-&gt;</span><span class="n">fulfilled</span><span class="p">);</span><span class="o">**</span> 
+    <span class="p">}</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Simpler, no? Notice, also, that there are really three different uses of a sempahore in this code:</p>
+
+<ul>
+  <li>to implement a critical section around the shared queue head and tail pointers and the individual stock records</li>
+  <li>to count the number of full and empty slots and syncronize the threads based on this count</li>
+  <li>to send a “wake up” signal to a client from a trader when its order has been fulfilled</li>
+</ul>
+
+<p>Before we discuss these three uses (and it is important that you undertand all three), take a moment to marvel at the magic of the counting semaphore. Look at how much that one primitive replaces in the corresponding <a href="https://www.gaeblog.com/assets/market4.c">pthreads implementation of this code</a>. Really – I think the pthreads implementation is nice, but it is just stunning that so much of the mutex this, wait that, loop here and there just melts away with semaphores. So much so that one wonders why the pthreads specification doesn’t include them as a first class primitive? Perhaps it is because they are easy to implement, but it is still a bit of a mystery.</p>
+
+<p>Okay – having enjoyed that reverie for a moment, it is important to understand that the semaphore primitive in this program is doing three different syncronization jobs <em>entirely alone</em>. You should notice that there are no other suncronization calls in the code (no calls to pthread_mutex_lock() or pthread_cond_wait()) – it is only done with the semaphore.</p>
+
+<h2 id="implementing-mutual-exclusion">Implementing Mutual Exclusion</h2>
+
+<p>One use is to implement mutual exclusion. In the code, the head and tail pointers in the order queue must be updated atomically within a critical section. To implement a “lock” with a counting semaphore (so that code segments can be implemented atomically) on sets the initial value of the semaphore to <em>1</em>. Notice that doing so will allow the first thread that calls <em>P()</em> on the semaphore to proceed but all other calls to <em>P()</em> to block until <em>V()</em> is called. When <em>V()</em> is eventually called, one thread is selected and allowed to proceed.</p>
+
+<p>Notice also that the count in the semaphore records (as a negative number) the number of threads that are blocked. By setting the initial value to <em>1</em>, calling <em>P()</em> to get into a critical section and <em>V()</em> to get out, the value only ever goes back to <em>1</em> when a thread leaves the critical section and there are no threads waiting. That’s exactly the functionality you’d like for mutual exclusion.</p>
+
+<p>Notice in the code that mutual exclusion is needed both to implement the order queue correctly and also to ensure that updates to the stock totals in the market are atomic. In the constructor functions, then, for the order queue and the market, you’d expect to see a semaphore initialized with a value of <em>1</em>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">order_que</span> <span class="o">*</span><span class="nf">InitOrderQue</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">order_que</span> <span class="o">*</span><span class="n">oq</span><span class="p">;</span>
+
+    <span class="n">oq</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">order_que</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">order_que</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">oq</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">oq</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">order_que</span><span class="p">));</span>
+
+    <span class="n">oq</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="cm">/* empty condition burns a slot */</span>
+    <span class="n">oq</span><span class="o">-&gt;</span><span class="n">orders</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">order</span> <span class="o">**</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">order</span> <span class="o">*</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">oq</span><span class="o">-&gt;</span><span class="n">orders</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">oq</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">oq</span><span class="o">-&gt;</span><span class="n">orders</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">size</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">order</span> <span class="o">*</span><span class="p">));</span>
+
+     <span class="o">**</span><span class="n">oq</span><span class="o">-&gt;</span><span class="n">mutex</span> <span class="o">=</span> <span class="n">InitSem</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="o">**</span> 
+    <span class="n">oq</span><span class="o">-&gt;</span><span class="n">full</span> <span class="o">=</span> <span class="n">InitSem</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+    <span class="n">oq</span><span class="o">-&gt;</span><span class="n">empty</span> <span class="o">=</span> <span class="n">InitSem</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">oq</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="n">market</span> <span class="o">*</span><span class="nf">InitMarket</span><span class="p">(</span><span class="kt">int</span> <span class="n">stock_count</span><span class="p">,</span> <span class="kt">int</span> <span class="n">init_quantity</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">market</span> <span class="o">*</span><span class="n">m</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">market</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">market</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">m</span><span class="o">-&gt;</span><span class="n">count</span> <span class="o">=</span> <span class="n">stock_count</span><span class="p">;</span>
+
+    <span class="n">m</span><span class="o">-&gt;</span><span class="n">stocks</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">stock</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">stock_count</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">stock</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m</span><span class="o">-&gt;</span><span class="n">stocks</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">stock_count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">m</span><span class="o">-&gt;</span><span class="n">stocks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">quantity</span> <span class="o">=</span> <span class="n">init_quantity</span><span class="p">;</span>
+         <span class="o">**</span><span class="n">m</span><span class="o">-&gt;</span><span class="n">stocks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">mutex</span> <span class="o">=</span> <span class="n">InitSem</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="o">**</span> 
+    <span class="p">}</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Also you should check that the threads always call <em>P()</em> when the try to enter a critical section and <em>V()</em> when they leave. It may see a little confusing becasue <em>P()</em> and <em>V()</em> are also being called for other syncronization reasons. Be sure you can identify which calls are there for mutual exclusion reasons.</p>
+
+<h2 id="atomic-update-of-a-counter">Atomic Update of a Counter</h2>
+
+<p>The second use of semaphores in the code is to keep track of how many full and empty slots there are in the queue. In the <a href="https://www.gaeblog.com/assets/market4.c">code based on condition variables</a> the client and trader threads test (under a lock) whether the queue is full or empty as needed. Notice that in the semaphore example, neither the client thread nor the trader thread test the head and tail pointers.</p>
+
+<p>Instead, the code uses the ability of the semaphore to implement a simple integer counter atomically.</p>
+
+<p>Client threads use this capability to make progress when the number of full slots is not equal to the size of the buffer. That is, if the count of full slots in the buffer is ever the same as the buffer’s capacity, the client thread should block. Thus, the initial value of the <em>sema *full</em> semaphore in the order queue should be set to the number of available slots. Each time a client thread calls <em>P()</em> on this semaphore, the counter will decremented atomically. If the counter gets decremented to zero, the client thread is put to sleep because there isn’t a slot available: the queue is full. To make this work, then, a trader thread must call <em>V()</em> on the full semaphore every time it takes an order from the queue to indicate to the clients that a new slot is available.</p>
+
+<p>Similarly, a trader thread must block until there is work in the queue. Initially, there is no work so the initial value of the <em>sema *empty</em> semaphore must be zero. When a client puts work in the queue, it must call <em>V()</em> on this semaphore to indicate that new work is present. If one or more trader threads are blocked becaus ethey have called <em>P()</em> one will be selected and unblocked so that it can proceed.</p>
+
+<p>Of equal importance, though, is the notion that exactly one thread is released from the semaphore when a <em>V()</em> call is made <strong>and</strong> that the semaphore keeps track of <em>P()</em> and <em>V()</em> calls in its counter.</p>
+
+<p>For example, when ever a client thread enqueues an order it calls <em>V()</em> on the empty semaphore once, per order. Each call will release exactly one thread from being blocked so there is a one-to-one correspondence between orders and trader threads: each order will get a trader thread.</p>
+
+<p>Notice also that it doesn’t matter whether the trader threads are blocked or not. If all trader threads are busy and a new order arrives, the semaphore will go positive so the next <em>P()</em> call by a trader will immediately release it without blocking.</p>
+
+<p>Contrast this ability to “remember” that a <em>V()</em> call has happened so that the next <em>P()</em> call can proceed with <em>pthread_mutex_lock()</em> and <em>pthread_mutex_unlock()</em>. An unlock does not “store” the notion that an immediate wake up is needed if a lock happens afterwards. Put another way, lock/unlock depends on having a lock happen before an unlock (as in a critical section). Semaphores, however, can be used in cases where it is not possible to guarantee that a <em>P()</em> will always happen before its subsequent <em>V()</em>.</p>
+
+<p>In this case, we don’t know when the threads will run. Imagine, for example, that there are the same number of client threads as there are slots in the buffer and 1 trader thread. It might be that all client threads run and fill the buffer slots before the trader runs. Because the semaphore value of the empty semaphore will be equal to the number of client threads which is also equal to to the number of buffer queue slots, the trader thread will immediately proceed and start fulfilling orders when it runs and calls <em>P()</em> on the empty semaphore.</p>
+
+<h2 id="sending-a-signal">Sending a Signal</h2>
+
+<p>The final use of semaphores in this code is to signal a waiting client thread that the order has been fulfilled. Here, the <em>sema *fulfilled</em> semaphore is initialized to zero indicating that the client thread should not proceed until a trader thread has completed the order. Thus, then the client calls <em>P()</em> on the fulfilled semaphore it knows that the order has been fulfilled when the <em>P()</em> call completes as long as the trader thread has called <em>V()</em> on the semaphore after its completion.</p>
+
+<p>Again, you should convince yourself that the thread execution order between client threads and trader threads does not affect the correctness of the result. Specifically, if a client gets to the <em>P()</em> call on the fulfilled semaphore before the order is fulfilled it will wait until the trader thread’s <em>V()</em> call indicates that it should proceed. Alternatively, if the trader is faster and gets the order filled, calling <em>V()</em> before the client gets to the <em>P()</em> call the client will proceed immediately.</p>
+
+<h2 id="speed-of-the-solution">Speed of the Solution</h2>
+
+<p>Here are the same set of experiments as we discussed in the <a href="../CondVar/index.html">lecture on condition variables</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MossPiglet% ./market-semaphore <span class="nt">-c</span> 1 <span class="nt">-t</span> 1 <span class="nt">-q</span> 1 <span class="nt">-s</span> 1 <span class="nt">-o</span> 100000
+140849.225016 transactions / sec
+
+MossPiglet% ./market-semaphore <span class="nt">-c</span> 1 <span class="nt">-t</span> 1 <span class="nt">-q</span> 10000 <span class="nt">-s</span> 1 <span class="nt">-o</span> 100000
+143667.854678 transactions / sec
+
+MossPiglet% ./market-semaphore <span class="nt">-c</span> 1 <span class="nt">-t</span> 2 <span class="nt">-q</span> 1 <span class="nt">-s</span> 1 <span class="nt">-o</span> 100000
+142093.914085 transactions / sec
+
+MossPiglet% ./market-semaphore <span class="nt">-c</span> 1 <span class="nt">-t</span> 2 <span class="nt">-q</span> 10000 <span class="nt">-s</span> 1 <span class="nt">-o</span> 100000
+133561.460408 transactions / sec
+
+MossPiglet% ./market-semaphore <span class="nt">-c</span> 2 <span class="nt">-t</span> 2 <span class="nt">-q</span> 1 <span class="nt">-s</span> 1 <span class="nt">-o</span> 100000
+118935.758078 transactions / sec
+
+MossPiglet% ./market-semaphore <span class="nt">-c</span> 2 <span class="nt">-t</span> 2 <span class="nt">-q</span> 10000 <span class="nt">-s</span> 1 <span class="nt">-o</span> 100000
+101221.276261 transactions / sec
+
+MossPiglet% ./market-semaphore <span class="nt">-c</span> 100 <span class="nt">-t</span> 100 <span class="nt">-q</span> 100 <span class="nt">-s</span> 1 <span class="nt">-o</span> 10
+55894.243070 transactions / sec
+</code></pre></div></div>
+
+<p>Curiously, the performance is a little slower than that for the <a href="https://www.gaeblog.com/assets/market3.c">market3</a> solution. That’s weird since it is basically doing the same kind of computation and synchronization and there are no cases where the code loops back to retest. However, the code is <strong>MUCH</strong> simpler to understand which makes it easier to maintain. The loss of performance (which would need to be verified over many runs) might be okay in exchange for the simplicity of the solution.</p>
+
+<h2 id="summarizing">Summarizing</h2>
+
+<p>So far, we have studied three types of syncronization problems, all of which are present in the client-trader example: <strong>mutual exclusion</strong>, <strong>atomic counters</strong>, and <strong>signalling</strong>. We’ve also looked through examples of how these problems may be addressed in pthreads using locks, condition variables, and semaphores. If, at this point, you are unclear on these concepts you should go back and review because they are the basis for most (but not all) of what you may encounter.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/Condition-Variables/">Condition Variables</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/Kthreads/">Kthreads</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/Semaphore/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/Semaphore/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#synchronization">Synchronization</a></li>
+<li class="toc-entry toc-h2"><a href="#implementation">Implementation</a></li>
+<li class="toc-entry toc-h2"><a href="#implementing-semaphores-using-pthreads">Implementing Semaphores Using pthreads</a></li>
+<li class="toc-entry toc-h2"><a href="#types-of-synchronization-problems">Types of Synchronization Problems</a></li>
+<li class="toc-entry toc-h2"><a href="#the-client-trader-example-revisited">The Client-Trader Example Revisited</a></li>
+<li class="toc-entry toc-h2"><a href="#implementing-mutual-exclusion">Implementing Mutual Exclusion</a></li>
+<li class="toc-entry toc-h2"><a href="#atomic-update-of-a-counter">Atomic Update of a Counter</a></li>
+<li class="toc-entry toc-h2"><a href="#sending-a-signal">Sending a Signal</a></li>
+<li class="toc-entry toc-h2"><a href="#speed-of-the-solution">Speed of the Solution</a></li>
+<li class="toc-entry toc-h2"><a href="#summarizing">Summarizing</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

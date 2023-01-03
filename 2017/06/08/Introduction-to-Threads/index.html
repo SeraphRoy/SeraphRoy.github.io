@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Introduction to Threads</title>
+    <meta name="description" content="  Introduction          Threads      IntroductionWe’ll spend quite a bit of time in this class discussing the concept of “concurrency” – the notion that inde...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Introduction to Threads | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Introduction to Threads" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction Threads Introduction We’ll spend quite a bit of time in this class discussing the concept of “concurrency” – the notion that independent sets of operations can be occurring at the same time inside the machine when it is executing a program. For example, when a program does I/O (say to a disk), the CPU may be switched that it is able to work on some other task while the I/O is taking place. Operating systems both allow the user to manage concurrency and also (in many cases) exploit concurrency on behalf of the user to improve performance. As a result, concurrency and concurrency management/control will be themes that recur throughout this course. Threads Threads are a programming abstraction that is designed to allow a programmer to control concurrency and asynchrony within a program. In some programming languages, like Java, threads are “first class citizens” in that they are part of the language definition itself. For others, like C and C++, threads are implemented as a library that can be called from a program but otherwise are not considered part of the language specification. Some of the differences between having threads “in the language” and threads “as a library” are often subtle. For example, a C compiler need not take into account thread control while a Java compiler must. However one obvious difference is that in the library case, it is possible to use different thread libraries with the same language. In this class, we’ll be programming in C, and we’ll use both POSIX Threads and a thread library specifically designed for the OS project called Kthreads. Kthreads and POSIX threads are similar in that they are both thread abstractions and they are both implemented as libraries that can be called from a C program. They are different in that POSIX threads requires operating system support to work properly and, thus, can’t be used directly to implement the operating system. In contrast, Kthreads can be implemented without the OS using only the C language compiler and a little bit of the C runtime. For this reason, we can use Kthreads as an abstraction with which to build an operating system (i.e. there is no circular dependence). We’ll study both before the end of the class but we’ll start with POSIX threads since they a standard." />
+<meta property="og:description" content="Introduction Threads Introduction We’ll spend quite a bit of time in this class discussing the concept of “concurrency” – the notion that independent sets of operations can be occurring at the same time inside the machine when it is executing a program. For example, when a program does I/O (say to a disk), the CPU may be switched that it is able to work on some other task while the I/O is taking place. Operating systems both allow the user to manage concurrency and also (in many cases) exploit concurrency on behalf of the user to improve performance. As a result, concurrency and concurrency management/control will be themes that recur throughout this course. Threads Threads are a programming abstraction that is designed to allow a programmer to control concurrency and asynchrony within a program. In some programming languages, like Java, threads are “first class citizens” in that they are part of the language definition itself. For others, like C and C++, threads are implemented as a library that can be called from a program but otherwise are not considered part of the language specification. Some of the differences between having threads “in the language” and threads “as a library” are often subtle. For example, a C compiler need not take into account thread control while a Java compiler must. However one obvious difference is that in the library case, it is possible to use different thread libraries with the same language. In this class, we’ll be programming in C, and we’ll use both POSIX Threads and a thread library specifically designed for the OS project called Kthreads. Kthreads and POSIX threads are similar in that they are both thread abstractions and they are both implemented as libraries that can be called from a C program. They are different in that POSIX threads requires operating system support to work properly and, thus, can’t be used directly to implement the operating system. In contrast, Kthreads can be implemented without the OS using only the C language compiler and a little bit of the C runtime. For this reason, we can use Kthreads as an abstraction with which to build an operating system (i.e. there is no circular dependence). We’ll study both before the end of the class but we’ll start with POSIX threads since they a standard." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T12:06:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Introduction to Threads" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Introduction Threads Introduction We’ll spend quite a bit of time in this class discussing the concept of “concurrency” – the notion that independent sets of operations can be occurring at the same time inside the machine when it is executing a program. For example, when a program does I/O (say to a disk), the CPU may be switched that it is able to work on some other task while the I/O is taking place. Operating systems both allow the user to manage concurrency and also (in many cases) exploit concurrency on behalf of the user to improve performance. As a result, concurrency and concurrency management/control will be themes that recur throughout this course. Threads Threads are a programming abstraction that is designed to allow a programmer to control concurrency and asynchrony within a program. In some programming languages, like Java, threads are “first class citizens” in that they are part of the language definition itself. For others, like C and C++, threads are implemented as a library that can be called from a program but otherwise are not considered part of the language specification. Some of the differences between having threads “in the language” and threads “as a library” are often subtle. For example, a C compiler need not take into account thread control while a Java compiler must. However one obvious difference is that in the library case, it is possible to use different thread libraries with the same language. In this class, we’ll be programming in C, and we’ll use both POSIX Threads and a thread library specifically designed for the OS project called Kthreads. Kthreads and POSIX threads are similar in that they are both thread abstractions and they are both implemented as libraries that can be called from a C program. They are different in that POSIX threads requires operating system support to work properly and, thus, can’t be used directly to implement the operating system. In contrast, Kthreads can be implemented without the OS using only the C language compiler and a little bit of the C runtime. For this reason, we can use Kthreads as an abstraction with which to build an operating system (i.e. there is no circular dependence). We’ll study both before the end of the class but we’ll start with POSIX threads since they a standard.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/"},"@type":"BlogPosting","headline":"Introduction to Threads","dateModified":"2017-06-08T12:06:00+00:00","datePublished":"2017-06-08T12:06:00+00:00","url":"https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Introduction to Threads</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Operating System" title="Category: Operating System" rel="category">Operating System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Thread" title="Tag: Thread" rel="tag">Thread</a-->
+        <a href="/tag/#Thread" title="Tag: Thread" rel="tag">Thread</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a>    <ul>
+      <li><a href="#threads" id="markdown-toc-threads">Threads</a></li>
+      <li><a href="#so-what-is-a-thread" id="markdown-toc-so-what-is-a-thread">So what is a Thread?</a></li>
+    </ul>
+  </li>
+  <li><a href="#threads-versus-processes" id="markdown-toc-threads-versus-processes">Threads versus Processes</a></li>
+  <li><a href="#why-threads" id="markdown-toc-why-threads">Why threads?</a></li>
+  <li><a href="#a-simple-example" id="markdown-toc-a-simple-example">A Simple Example</a>    <ul>
+      <li><a href="#c-code-no-threads" id="markdown-toc-c-code-no-threads">C Code, No threads</a></li>
+      <li><a href="#computing-the-average-using-one-thread" id="markdown-toc-computing-the-average-using-one-thread">Computing the Average using One Thread</a></li>
+      <li><a href="#reading-through-the-code" id="markdown-toc-reading-through-the-code">Reading through the Code</a></li>
+      <li><a href="#creating-a-thread" id="markdown-toc-creating-a-thread">Creating a thread</a></li>
+      <li><a href="#when-does-the-thread-run" id="markdown-toc-when-does-the-thread-run">When does the thread run?</a></li>
+      <li><a href="#waiting-for-the-result" id="markdown-toc-waiting-for-the-result">Waiting for the result</a></li>
+      <li><a href="#computing-the-sum-in-parallel" id="markdown-toc-computing-the-sum-in-parallel">Computing the sum in parallel</a></li>
+    </ul>
+  </li>
+  <li><a href="#synchronization" id="markdown-toc-synchronization">Synchronization</a></li>
+  <li><a href="#how-much-faster-is-it" id="markdown-toc-how-much-faster-is-it">How much faster is it?</a></li>
+  <li><a href="#experimenting-with-these-examples" id="markdown-toc-experimenting-with-these-examples">Experimenting with these examples</a>    <ul>
+      <li><a href="#building-the-examples" id="markdown-toc-building-the-examples">Building the examples</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>We’ll spend quite a bit of time in this class discussing the concept of <em>“concurrency”</em> – the notion that independent sets of operations can be occurring at the same time inside the machine when it is executing a program. For example, when a program does I/O (say to a disk), the CPU may be switched that it is able to work on some other task while the I/O is taking place. Operating systems both allow the user to manage concurrency and also (in many cases) exploit concurrency on behalf of the user to improve performance. As a result, concurrency and concurrency management/control will be themes that recur throughout this course.</p>
+
+<h3 id="threads">Threads</h3>
+
+<p>Threads are a programming abstraction that is designed to allow a programmer to control concurrency and asynchrony within a program. In some programming languages, like Java, threads are “first class citizens” in that they are part of the language definition itself. For others, like C and C++, threads are implemented as a library that can be called from a program but otherwise are not considered part of the language specification.</p>
+
+<p>Some of the differences between having threads “in the language” and threads “as a library” are often subtle. For example, a C compiler need not take into account thread control while a Java compiler must. However one obvious difference is that in the library case, it is possible to use different thread libraries with the same language. In this class, we’ll be programming in C, and we’ll use both <a href="https://computing.llnl.gov/tutorials/pthreads/">POSIX Threads</a> and a thread library specifically designed for the OS project called <em>Kthreads</em>. Kthreads and POSIX threads are similar in that they are both thread abstractions and they are both implemented as libraries that can be called from a C program. They are different in that POSIX threads requires operating system support to work properly and, thus, can’t be used directly to implement the operating system. In contrast, Kthreads can be implemented without the OS using only the C language compiler and a little bit of the C runtime. For this reason, we can use Kthreads as an abstraction with which to build an operating system (i.e. there is no circular dependence).</p>
+
+<p>We’ll study both before the end of the class but we’ll start with POSIX threads since they a standard.</p>
+
+<!--more-->
+
+<h3 id="so-what-is-a-thread">So what is a Thread?</h3>
+
+<p>There are many different kinds of thread abstractions. In this class, we’ll use the typical “OS thread” abstraction that underpins POSIX threads, but particularly for language-defined threads, different definitions are possible.</p>
+
+<p>Abstractly, for our purposes, a thread is three things:</p>
+
+<ul>
+  <li>a <strong>sequential list of instructions</strong> that will be executed</li>
+  <li>a set of <strong>local variables</strong> that “belong” to the thread (thread private)</li>
+  <li>a set of <strong>shared global variables</strong> that all threads can read and write</li>
+</ul>
+
+<p>It is no accident that this definition corresponds roughly to the C language sequential execution model and variable scoping rules. Operating systems are still, for the most part, written in C and thus thread libraries for C are easiest to understand and implement when they conform to C language semantics.</p>
+
+<h1 id="threads-versus-processes">Threads versus Processes</h1>
+
+<p>Recall from your C programming experiences, that your compiled program becomes a “process” when you run it. We’ll discuss processes and what they really are at length, but at this stage, it is enough to know that a C program runs as a process when it is executed on, say, a Linux system.</p>
+
+<p>A C program also defines a sequential list of instructions, local variables, and global variables so you might be asking <em>“What is the difference between a thread and a process?”</em></p>
+
+<p>The answer is “not much” as long as there is only one thread. However, as discussed previously, threads are an abstraction designed to manage concurrency which means it is possible to have multiple threads “running” at the same time. Put another way,</p>
+
+<p><strong>A standard C program when executing is a process with one thread.</strong></p>
+
+<p>However, it is possible (using a thread library) to write a C program that defines multiple threads. That is</p>
+
+<p><strong>A threaded C program, when executing, is a process that contains one or more threads.</strong></p>
+
+<p>Furthermore, these threads are logically independent and thus <em>may</em> be executed concurrently. They don’t have to be (it depends on the implementation) but the abstraction says that the threads are independent.</p>
+
+<h1 id="why-threads">Why threads?</h1>
+
+<p>There are many reasons to program with threads. In the context of this class, there are two important ones:</p>
+
+<ul>
+  <li>They allow you to deal with asynchronous events synchronously and efficiently.</li>
+  <li>They allow you to get parallel performance on a shared-memory multiprocessor.</li>
+</ul>
+
+<p>You’ll find threads to be a big help in writing an operating system.</p>
+
+<h1 id="a-simple-example">A Simple Example</h1>
+
+<p>Before we dive into an anatomical and physiological exploration of POSIX threads, which heretofore will be referred to as <strong>pthreads</strong>, it is probably helpful to walk through a simple example. Pthreads are widely used and their <a href="http://man7.org/linux/man-pages/man7/pthreads.7.html">full interface</a> is somewhat complicated. We’ll eventually discuss much of it, but “the basics” as most easily understood through an example.</p>
+
+<h3 id="c-code-no-threads">C Code, No threads</h3>
+
+<p>To begin with, consider a simple program that computes the average over a set of random numbers. In the following examples we’ll use a Linux-internal random number generator rather than numbers from a file to keep the code easier to read. You might also think that you know what the answer will be ahead of time. For example, if the random number generator generates numbers on the interval (0,1) then you’d expect the average to be 0.5. How true is that statement? Is it affected by the number of numbers in the set? This example can also be used to investigate these kinds of questions but mostly it is designed to introduce the way in which pthreads and C interact.</p>
+
+<p>The basic program generates an array that it fills with random numbers from the interval (0,1). It then sums the values in the array and divides by the number of values (which is passed as an argument from the command line).</p>
+
+<p>Here is the C code. I’ve put a commented version of the code in <a href="https://www.gaeblog.com/assets/avg-nothread.c">avg-nothread.c</a> that also includes argument sanity checks. To improve readability in these notes, however, the in-lined code will remove parts that are good practice but don’t shed light on the use of threads. We’ll also describe how to build and run the examples in this lecture in its last section.</p>
+
+<p>Here is the code</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt; unistd.h &gt;
+#include &lt; stdlib.h &gt;
+#include &lt; stdio.h &gt;
+</span>
+<span class="cm">/*
+ * program to find the average value of a set of random numbers
+ *
+ * usage: avg-nothread count
+ *
+ * where count is the number of random values to generate
+ */</span>
+
+<span class="kt">char</span> <span class="o">*</span><span class="n">Usage</span> <span class="o">=</span> <span class="s">"usage: avg-nothread count"</span><span class="p">;</span>
+
+<span class="cp">#define RAND() (drand48()) </span><span class="cm">/* basic Linux random number generator */</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">sum</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>  <span class="cm">/* count is first argument */</span> 
+
+    <span class="cm">/*
+     * make an array large enough to hold #count# doubles
+     */</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
+
+    <span class="cm">/*
+     * pick a bunch of random numbers
+     */</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">RAND</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"the average over %d random numbers on (0,1) is %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+            <span class="n">count</span><span class="p">,</span> <span class="n">sum</span><span class="o">/</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">count</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>There are a few C language features to note in this simple program. First, it uses the utility function <em>malloc()</em> to allocate dynamically a one-dimensional array to hold the list of random numbers. It also casts the variable <em>count</em> to a double in the print statement since the variable <em>sum</em> is a double.</p>
+
+<p>Now is a good time to take a moment to make sure that you understand each line of the program shown above – <strong>each line.</strong> If there is something you don’t recognize or understand in this code you will want to speak with the instructor or the TAs about brushing up on your C programming skills. This code is about as simple as any C program will be that you will encounter in this class. If it isn’t completely clear to you it will be important to try and brush up because the assignments will depend a working knowledge of C.</p>
+
+<h3 id="computing-the-average-using-one-thread">Computing the Average using One Thread</h3>
+
+<p>The next program performs the same computation, but does so using a single thread rather than in the main body as in the previous program. The full version of this program is available from <a href="https://www.gaeblog.com/assets/avg-1thread.c">avg-1thread.c</a></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt; unistd.h &gt;
+#include &lt; stdlib.h &gt;
+#include &lt; stdio.h &gt;
+</span>
+<span class="cp">#include &lt; pthread.h &gt;
+</span>
+<span class="kt">char</span> <span class="o">*</span><span class="n">Usage</span> <span class="o">=</span> <span class="s">"usage: avg-1thread count"</span><span class="p">;</span>
+
+<span class="cp">#define RAND() (drand48()) </span><span class="cm">/* basic Linux random number generator */</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">arg_struct</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">result_struct</span>
+<span class="p">{</span>
+    <span class="kt">double</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">SumThread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">my_sum</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="n">my_args</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">my_size</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">my_data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="n">result</span><span class="p">;</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"sum thread running</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="n">my_args</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">result_struct</span><span class="p">));</span>
+
+    <span class="n">my_size</span> <span class="o">=</span> <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">my_data</span> <span class="o">=</span> <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">my_args</span><span class="p">);</span>
+
+    <span class="n">my_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">my_size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">my_sum</span> <span class="o">+=</span> <span class="n">my_data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="n">result</span><span class="o">-&gt;</span><span class="n">sum</span> <span class="o">=</span> <span class="n">my_sum</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"sum thread done, returning</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="n">args</span><span class="p">;</span>
+    <span class="n">pthread_t</span> <span class="n">thread_id</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="n">result</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>  <span class="cm">/* count is first argument */</span> 
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">RAND</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span><span class="p">));</span>
+
+    <span class="n">args</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">count</span><span class="p">;</span>
+    <span class="n">args</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"main thread forking sum thread</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">thread_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">SumThread</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">args</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"main thread running after sum thread created, about to call join</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,(</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"main thread joined with sum thread</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"the average over %d random numbers on (0,1) is %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+            <span class="n">count</span><span class="p">,</span> <span class="n">result</span><span class="o">-&gt;</span><span class="n">sum</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">count</span><span class="p">);</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In pseudocode form, the logic is as follows. The <em>main()</em> function does</p>
+<ul>
+  <li>allocate memory for thread arguments</li>
+  <li>fill in thread arguments (marshal the arguments)</li>
+  <li>spawn the thread</li>
+  <li>wait for the thread to complete and get the result (the sum in this example) computed by the thread</li>
+  <li>print out the average
+and the thread executes</li>
+  <li>unmarshal the arguments</li>
+  <li>compute and marshal the sum so it can be returned</li>
+  <li>return the sum and exit</li>
+</ul>
+
+<h3 id="reading-through-the-code">Reading through the Code</h3>
+
+<p>The first thing to notice is that the code that computes the sum is performed in a separate C function called <em>SumThread()</em>. The pthreads standard specifies that threads begin on function boundaries. That is, each thread starts with some function call which, in this example, is <em>SumThread()</em>. This “first” function can call other functions, but it defines the “body” of the thread. We’ll call this first function the “entry point” for the thread.</p>
+
+<p>The second thing to notice are the types in the prototype for the thread entry point:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="n">SumThread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The standard as implemented for Linux specifies that</p>
+
+<ul>
+  <li>the entry point funtion take one argument that is of type <em>(void *)</em></li>
+  <li>the entry point function return a single argument that if of type <em>(void *)</em></li>
+</ul>
+
+<p>This typing specification can cause some confusion if you are not entirely comfortable with C pointers so it is important to try and understand why it is defined this way. In C, a <em>(void *)</em> pointer is that can legally point to <strong>any</strong> data type. The key is that your program can make the decision about what it points to at run time. That is, a a <em>(void *)</em> tells the compiler that your program will determine the type at run time under program control.</p>
+
+<p>You can use a <em>(void *)</em> pointer to point to any type that is supported by C (e.g. <em>int</em>,<em>double</em>,<em>char</em>, etc.) but it is most useful when it is used to point to a structure.</p>
+
+<p>A structure is a way for you to define your own composite data type. In a pthreads program, the assumption that the API designers make is that you will define your own data type for the input parameters to a thread and also one for the return values. This way you can pass what ever arguments you like to your threads and have them return arbitrary values.</p>
+
+<p>In this example, we define two structures</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// data type definition for arguments passed to thread</span>
+<span class="k">struct</span> <span class="n">arg_struct</span>
+<span class="p">{</span>
+        <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
+        <span class="kt">double</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// data type definition for results passed back from threads</span>
+
+<span class="k">struct</span> <span class="n">result_struct</span>
+<span class="p">{</span>
+        <span class="kt">double</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>The argument structure allows the code that spawns the thread to pass it two arguments: the size of the array of values and a pointer to the array. The thread passes back a single value: the sum.</p>
+
+<p>Notice that the thread entry point function converts its one argument to a pointer to the argument data structure. The data type for <em>my_args</em> is</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="n">my_args</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>and the body of the thread assigns the <em>arg</em> pointer passed as an argument to <em>my_args</em> via a C language cast.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_args</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>You can think of the thread as receiving a message with its initial arguments in it as its only parameter. This message comes in a generic “package” with the type <em>(void *)</em> and it is the thread’s job to unpack the message into a structure that it understands. This process is called “unmarshaling” which refers to the process of translating a set of data types from a generic tranport form to one that can be processed locally. Thus the line shown above in which the <em>(void *)</em> is cast to a <em>(struct arg_struct *)</em> is the thread “unmarshaling” its arguments.</p>
+
+<p>Similarly, when the thread has finished computing the sum, it needs a data structure to pass back to a thread that is waiting for the result. The code calls <em>malloc()</em> to allocate the memory necessary to transmit the results once the thread has completed:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">result_struct</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>and when the sum is computed, the thread loads the sum into the result structure:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">result</span><span class="o">-&gt;</span><span class="n">sum</span> <span class="o">=</span> <span class="n">my_sum</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The marshaling into a <em>(void *)</em> of the <em>(struct result_struct *)</em> takes place directly in the return call</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">result</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>From the <em>my_args</em> variable, the thread can then access the <em>size</em> value and the <em>data</em> pointer that points to the array of numbers. Notice that the very next thing the thread does is to call <em>free()</em> on the <em>arg</em> pointer. In a C program it is essential that you keep track of how memory is allocated and freed. Good practive is to free memory as soon as you know the memory is no longer needed. In this example, the code that creates this thread in the <em>main()</em> function calls <em>malloc</em> to allocate the memory that is needed to hold the argument structure.</p>
+
+<p>Notice that the thread has called <em>malloc()</em> to create a result variable to pass back the sum. It must be the case that the <em>main()</em> thread calls <em>free()</em> on the result structure it gets back from the thread. Look for the <em>free()</em> call in the <em>main()</em> routine to see where this takes place.</p>
+
+<h3 id="creating-a-thread">Creating a thread</h3>
+
+<p>The <em>main()</em> function creates an argument structure, spawns the thread, waits for it to complete, and uses the result that the thread passes back to print the average.</p>
+
+<p>Creating and marshaling the arguments for the thread:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span><span class="p">));</span>
+<span class="n">args</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">count</span><span class="p">;</span>
+<span class="n">args</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The thread that computes the sum is created by the <em>pthread_create()</em> call in the <em>main()</em> function.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">err</span> <span class="o">=</span> <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">thread_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">SumThread</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">args</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The <em>pthread_create()</em> call takes four arguments and returns a single result. The arguments are</p>
+
+<ul>
+  <li>a pointer to a variable of type <em>pthread_t</em> (as an out parameter)</li>
+  <li>a pointer to a structure indicating how to schedule the thread (NULL means use the default scheduler)</li>
+  <li>the name of the entry point function</li>
+  <li>a single pointer to the arguments as a <em>(void *)</em></li>
+</ul>
+
+<p>The return value is an error code, with zero indicating success. If the return value is zero, the variable pointed to by the first argument will contain the thread identifier necessary to interact with the thread (see <em>pthread_join()</em> below).</p>
+
+<h3 id="when-does-the-thread-run">When does the thread run?</h3>
+
+<p>Logically, the thread begins executing as soon as the call to <em>pthread_create()</em> completes. However it is up to the implementation as to when the thread is actually scheduled. For example, some implementations will allow the spawning thread to continue executing “for a while” before the spawned threads begin running. However, from a logical perspective, the newly created thread and the thread that created it are running “in parallel.”</p>
+
+<p>Notice also that the <em>main()</em> function is acting like a thread even though it wasn’t spawned via <em>pthread_create()</em>. Under Linux, the program that begins executing before any threads are spawned is, itself, a thread. The logical abstraction is that Linux “spawned” this first thread for you. That is, when using pthreads, the function <em>main()</em> behaves as if it has been spawned by Linux. It is a little different since it takes two arguments, but for thread scheduling purposes, it behaves like a thread otherwise. We’ll call this thread “the main thread” from now on to indicate that it is the “first” thread that gets created when the program begins to run.</p>
+
+<p>Thus the main thread in this example spawns a single thread to compute the sum and waits for this thread to complete before proceeding.</p>
+
+<h3 id="waiting-for-the-result">Waiting for the result</h3>
+
+<p>After the main thread spawns the thread to compute the sum, it immediately calls</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">err</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,(</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The first argument to this call is the identifier (filled in by the call to <em>pthread_create()</em> when the thread was created. The second argument is an out parameter of type <em>(void **)</em>. That is, <em>pthread_join()</em> takes a pointer to a <em>(void *)</em> so that it can return the <em>(void *)</em> pointer passed back from the thread on exit.</p>
+
+<p>This “pointer to a pointer” parameter passing method often confuses those new to pthreads. The function <em>pthread_join()</em> needs a way to pass back a <em>(void *)</em> pointer and it can’t use the return value. In C, the way that a function passes back a pointer through an out parameter is to take a pointer to that kind of pointer as a parameter. Notice that the type of <em>result</em> is <em>(struct result_struct *)</em>. My using the <em>&amp;</em> operator, the parameter passed is the address of result (which is a pointer) and that “pointer to a pointer” is cast as a <em>(void **)</em>.</p>
+
+<p>Like with <em>pthread_create()</em>, <em>pthread_join()</em> returns an integer which is zero on success and non zero when an error occurs.</p>
+
+<p>Here is the output</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./avg-1thread 100000
+main thread forking <span class="nb">sum </span>thread
+main thread running after <span class="nb">sum </span>thread created, about to call <span class="nb">join
+sum </span>thread running
+<span class="nb">sum </span>thread <span class="k">done</span>, returning
+main thread joined with <span class="nb">sum </span>thread
+the average over 100000 random numbers on <span class="o">(</span>0,1<span class="o">)</span> is 0.499644
+</code></pre></div></div>
+
+<p>Notice that the main thread continues to run after the Sum thread is spawned. Then it blocks in <em>pthread_join()</em> waiting for the su thread to finish. Then the sum thread runs and finishes. When it exits, the call to <em>pthread_join()</em> unblocks and the main thread completes.</p>
+
+<h3 id="computing-the-sum-in-parallel">Computing the sum in parallel</h3>
+
+<p>The previous example is a little contrived in that there is no real advantage (and probably a very small performance penalty) in spawning a single thread to compute the sum. That is, the first non-threaded example does exaxtly what the single threaded example does only without the extra work for marshaling and unmarshaling the arguments and spawninga and joining. You might ask, then, “why use threads at all?”</p>
+
+<p>The answers is that it is possible to compute some things in parallel using threads. In this example, we can modify the sum thread so that it works on a subregion of the array. The main thread can spawn multiple subregions (which are computed in parallel) and then sum the sums that come back to get the full sum. The following example code does this parallel computation of the sums.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt; unistd.h &gt;
+#include &lt; stdlib.h &gt;
+#include &lt; stdio.h &gt;
+</span>
+<span class="cp">#include &lt; pthread.h &gt;
+</span>
+<span class="kt">char</span> <span class="o">*</span><span class="n">Usage</span> <span class="o">=</span> <span class="s">"usage: avg-manythread count threads"</span><span class="p">;</span>
+
+<span class="cp">#define RAND() (drand48()) </span><span class="cm">/* basic Linux random number generator */</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">arg_struct</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">starting_i</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">result_struct</span>
+<span class="p">{</span>
+    <span class="kt">double</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">SumThread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">my_sum</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="n">my_args</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">my_size</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">my_data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="n">result</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">my_start</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">my_end</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">my_id</span><span class="p">;</span>
+
+    <span class="n">my_args</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">result_struct</span><span class="p">));</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"sum thread %d running, starting at %d for %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+        <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">starting_i</span><span class="p">,</span>
+        <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="n">my_id</span> <span class="o">=</span> <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">;</span>
+    <span class="n">my_size</span> <span class="o">=</span> <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">my_data</span> <span class="o">=</span> <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+    <span class="n">my_start</span> <span class="o">=</span> <span class="n">my_args</span><span class="o">-&gt;</span><span class="n">starting_i</span><span class="p">;</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">my_args</span><span class="p">);</span>
+
+    <span class="n">my_end</span> <span class="o">=</span> <span class="n">my_start</span> <span class="o">+</span> <span class="n">my_size</span><span class="p">;</span>
+
+    <span class="n">my_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">my_start</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">my_end</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">my_sum</span> <span class="o">+=</span> <span class="n">my_data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="n">result</span><span class="o">-&gt;</span><span class="n">sum</span> <span class="o">=</span> <span class="n">my_sum</span><span class="p">;</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"sum thread %d returning</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+        <span class="n">my_id</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">t</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">sum</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">threads</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="n">args</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">result_struct</span> <span class="o">*</span><span class="n">result</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
+    <span class="n">pthread_t</span> <span class="o">*</span><span class="n">thread_ids</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">range_size</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>  <span class="cm">/* count is first argument */</span> 
+
+    <span class="n">threads</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span> <span class="cm">/* thread count is second arg */</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">RAND</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">thread_ids</span> <span class="o">=</span> <span class="p">(</span><span class="n">pthread_t</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">pthread_t</span><span class="p">)</span><span class="o">*</span><span class="n">threads</span><span class="p">);</span>
+
+    <span class="n">range_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">count</span> <span class="o">/</span> <span class="n">threads</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(((</span><span class="n">range_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">threads</span><span class="p">)</span> <span class="o">==</span> <span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">range_size</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"main thread about to create %d sum threads</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+            <span class="n">threads</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">threads</span><span class="p">;</span> <span class="n">t</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">arg_struct</span><span class="p">));</span>
+        <span class="n">args</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">args</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">range_size</span><span class="p">;</span>
+        <span class="n">args</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+        <span class="n">args</span><span class="o">-&gt;</span><span class="n">starting_i</span> <span class="o">=</span> <span class="n">index</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">starting_i</span> <span class="o">+</span> <span class="n">args</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">args</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">count</span> <span class="o">-</span> <span class="n">args</span><span class="o">-&gt;</span><span class="n">starting_i</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"main thread creating sum thread %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+            <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">thread_ids</span><span class="p">[</span><span class="n">t</span><span class="p">]),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">SumThread</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">args</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"main thread has created sum thread %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+            <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="n">range_size</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">threads</span><span class="p">;</span> <span class="n">t</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"main thread about to join with sum thread %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="n">thread_ids</span><span class="p">[</span><span class="n">t</span><span class="p">],(</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"main thread joined with sum thread %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">result</span><span class="o">-&gt;</span><span class="n">sum</span><span class="p">;</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"the average over %d random numbers on (0,1) is %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+            <span class="n">count</span><span class="p">,</span> <span class="n">sum</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">count</span><span class="p">);</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">thread_ids</span><span class="p">);</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In this example, each thread is given a starting index into the array and a range it needs to cover. It sums the values in that range and returns the partial sum in the result result structure.</p>
+
+<p>The main thread spawns each thread one at a time in a loop, giving each its own argument structure. Notice that the argument structure is filled in with the starting index where that thread is supposed to start and the range of values it needs to cover.</p>
+
+<p>Aftre the main thread spawns all of the sum threads, it goes into another loop and joins with them, one-at-a-time, in the roder that they were spawned.</p>
+
+<p>Here is a a sample output from this multi-threaded program:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MossPiglet% ./avg-manythread 100000 5
+main thread about to create 5 <span class="nb">sum </span>threads
+main thread creating <span class="nb">sum </span>thread 1
+main thread has created <span class="nb">sum </span>thread 1
+main thread creating <span class="nb">sum </span>thread 2
+main thread has created <span class="nb">sum </span>thread 2
+main thread creating <span class="nb">sum </span>thread 3
+main thread has created <span class="nb">sum </span>thread 3
+main thread creating <span class="nb">sum </span>thread 4
+<span class="nb">sum </span>thread 1 running, starting at 0 <span class="k">for </span>20000
+main thread has created <span class="nb">sum </span>thread 4
+<span class="nb">sum </span>thread 2 running, starting at 20000 <span class="k">for </span>20000
+<span class="nb">sum </span>thread 3 running, starting at 40000 <span class="k">for </span>20000
+main thread creating <span class="nb">sum </span>thread 5
+<span class="nb">sum </span>thread 4 running, starting at 60000 <span class="k">for </span>20000
+<span class="nb">sum </span>thread 1 returning
+main thread has created <span class="nb">sum </span>thread 5
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 1
+<span class="nb">sum </span>thread 5 running, starting at 80000 <span class="k">for </span>20000
+<span class="nb">sum </span>thread 2 returning
+<span class="nb">sum </span>thread 3 returning
+<span class="nb">sum </span>thread 4 returning
+main thread joined with <span class="nb">sum </span>thread 1
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 2
+main thread joined with <span class="nb">sum </span>thread 2
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 3
+<span class="nb">sum </span>thread 5 returning
+main thread joined with <span class="nb">sum </span>thread 3
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 4
+main thread joined with <span class="nb">sum </span>thread 4
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 5
+main thread joined with <span class="nb">sum </span>thread 5
+the average over 100000 random numbers on <span class="o">(</span>0,1<span class="o">)</span> is 0.499644
+</code></pre></div></div>
+
+<p>This output is worth studying for a moment. Notice that the main thread starts 5 threads. The it completes the creation of 3 threads. It calls the create for the 4th thread, but before it prints the “created” message sum thread 1 starts running. Then the message saying that 4 was created prints. Then sum thread 2 and 3 start, and then the main thread creates thread 5.</p>
+
+<p>This order of execution is not guaranteed. In fact, there are many leagl orderings of thread execution that are possible. All that matters is that the main thread not try and access the result from a thread until <strong>after</strong> it has joined with that thread.</p>
+
+<p>This point is important All of the threads are independent and they can run in any order once they are created. They interleave their execution with each other and the main thread (or exencute in paralle if multiple cores are available). However a call to <em>pthread_join()</em> ensures that the calling thread will not proceed until the thread being joined with completes.</p>
+
+<p>It is in this way that the main thread “knows” when each thread has completed computing its partial sum and successfully returned it.</p>
+
+<p>You might wonder “What happens if a sum thread completes before the main thread calls <em>pthread_join()</em>?” In fact, that occurs in this sample execution. Thread 1 returns before the main thread calls <em>pthread_join()</em> on thread 1. The semantics of <em>pthread_join()</em> are that it will immediately unblock if the thread being joined with has already exited. Thus <em>pthread_join()</em></p>
+
+<ul>
+  <li>blocks is the thread being joined with hasn’t yet exited</li>
+  <li>unblocks immediately if the thread being joined with has already exited</li>
+</ul>
+
+<p>Either way, the thread calling <em>pthread_join()</em> is guaranteed that the thread it is joining with has exited and, thus, any work that thread was doing must have been completed.</p>
+
+<h1 id="synchronization">Synchronization</h1>
+
+<p>The functionality of <em>pthread_join()</em> illustrates an important operating systems concept: <strong><font color="green">synchronization</font></strong>.</p>
+
+<p>The term synchronization literally means “at the same time.” However, in a computer science context it means</p>
+
+<p><strong><font color="green">"the state of a concurrent program is consistent across two or more concurrent events."</font></strong></p>
+
+<p>In this example, the main thread “synchronizes” with each of the sum threads using the <em>pthread_join()</em> call. After each call to <em>pthread_join()</em> you, the programmer, know the state of two threads:</p>
+
+<ul>
+  <li>the main thread, which has received the partial sum from the thread whose id is contained in the variable <em>thread_ids[t]</em></li>
+  <li>the sum thread whose id is contained in the variable <em>thread_ids[t]</em> and this state is that the thread has exited after sucessfully computing its partial sum.</li>
+</ul>
+
+<p>Thus the main thread and one of the sum threads “synchronize” before the main thread tries to use the partial sum computed by the sum thread.</p>
+
+<p>Synchronization is an important concept when concurrent and/or asynchronous events must be managed. We’ll discuss syncronization a great deal through this class as it is a critical function of an operating system.</p>
+
+<h1 id="how-much-faster-is-it">How much faster is it?</h1>
+
+<p>You can experiment with these last two example codes to see how much of an improvement threading and parallelism make in terms of the performance of the code. On my laptop. Running these codes with the Linux time command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">time</span> ./avg-1thread 100000000
+main thread forking <span class="nb">sum </span>thread
+main thread running after <span class="nb">sum </span>thread created, about to call <span class="nb">join
+sum </span>thread running
+<span class="nb">sum </span>thread <span class="k">done</span>, returning
+main thread joined with <span class="nb">sum </span>thread
+the average over 100000000 random numbers on <span class="o">(</span>0,1<span class="o">)</span> is 0.500023
+
+real    0m1.620s
+user    0m1.419s
+sys 0m0.195s
+</code></pre></div></div>
+
+<p>and</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">time</span> ./avg-manythread 100000000 10
+main thread about to create 10 <span class="nb">sum </span>threads
+main thread creating <span class="nb">sum </span>thread 1
+main thread has created <span class="nb">sum </span>thread 1
+main thread creating <span class="nb">sum </span>thread 2
+<span class="nb">sum </span>thread 1 running, starting at 0 <span class="k">for </span>10000000
+main thread has created <span class="nb">sum </span>thread 2
+<span class="nb">sum </span>thread 2 running, starting at 10000000 <span class="k">for </span>10000000
+main thread creating <span class="nb">sum </span>thread 3
+main thread has created <span class="nb">sum </span>thread 3
+main thread creating <span class="nb">sum </span>thread 4
+main thread has created <span class="nb">sum </span>thread 4
+main thread creating <span class="nb">sum </span>thread 5
+main thread has created <span class="nb">sum </span>thread 5
+main thread creating <span class="nb">sum </span>thread 6
+<span class="nb">sum </span>thread 4 running, starting at 30000000 <span class="k">for </span>10000000
+<span class="nb">sum </span>thread 3 running, starting at 20000000 <span class="k">for </span>10000000
+main thread has created <span class="nb">sum </span>thread 6
+<span class="nb">sum </span>thread 5 running, starting at 40000000 <span class="k">for </span>10000000
+<span class="nb">sum </span>thread 6 running, starting at 50000000 <span class="k">for </span>10000000
+main thread creating <span class="nb">sum </span>thread 7
+main thread has created <span class="nb">sum </span>thread 7
+<span class="nb">sum </span>thread 7 running, starting at 60000000 <span class="k">for </span>10000000
+main thread creating <span class="nb">sum </span>thread 8
+main thread has created <span class="nb">sum </span>thread 8
+main thread creating <span class="nb">sum </span>thread 9
+main thread has created <span class="nb">sum </span>thread 9
+main thread creating <span class="nb">sum </span>thread 10
+main thread has created <span class="nb">sum </span>thread 10
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 1
+<span class="nb">sum </span>thread 8 running, starting at 70000000 <span class="k">for </span>10000000
+<span class="nb">sum </span>thread 9 running, starting at 80000000 <span class="k">for </span>10000000
+<span class="nb">sum </span>thread 10 running, starting at 90000000 <span class="k">for </span>10000000
+<span class="nb">sum </span>thread 1 returning
+main thread joined with <span class="nb">sum </span>thread 1
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 2
+<span class="nb">sum </span>thread 5 returning
+<span class="nb">sum </span>thread 3 returning
+<span class="nb">sum </span>thread 4 returning
+<span class="nb">sum </span>thread 6 returning
+<span class="nb">sum </span>thread 8 returning
+<span class="nb">sum </span>thread 7 returning
+<span class="nb">sum </span>thread 2 returning
+main thread joined with <span class="nb">sum </span>thread 2
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 3
+main thread joined with <span class="nb">sum </span>thread 3
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 4
+main thread joined with <span class="nb">sum </span>thread 4
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 5
+main thread joined with <span class="nb">sum </span>thread 5
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 6
+main thread joined with <span class="nb">sum </span>thread 6
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 7
+main thread joined with <span class="nb">sum </span>thread 7
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 8
+main thread joined with <span class="nb">sum </span>thread 8
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 9
+<span class="nb">sum </span>thread 9 returning
+main thread joined with <span class="nb">sum </span>thread 9
+main thread about to <span class="nb">join </span>with <span class="nb">sum </span>thread 10
+<span class="nb">sum </span>thread 10 returning
+main thread joined with <span class="nb">sum </span>thread 10
+the average over 100000000 random numbers on <span class="o">(</span>0,1<span class="o">)</span> is 0.500023
+
+real    0m1.437s
+user    0m1.501s
+sys 0m0.207s
+</code></pre></div></div>
+
+<p>That’s right – using 10 threads only speeds it up with 0.2 seconds. Can you figure out why?</p>
+
+<h1 id="experimenting-with-these-examples">Experimenting with these examples</h1>
+
+<p>Many of the lectures in this class (like this one) include coding examples that are intended to illustrate some of the concepts that the lecture hopes to get across. In this case, the concepts are</p>
+
+<ul>
+  <li>threads as a programming abstraction for dealing with concurrency and parallelism,</li>
+  <li>basic thread creation and synchronization in pthreads</li>
+  <li>concurrency in the thread runtime</li>
+</ul>
+
+<p>If you don’t understand these three concepts yet, that’s okay – there are a couple of ways to proceed.</p>
+
+<p>First, you should go back an reread the lecture notes from beginning to end. The notes that I provide are intended to be read sequentially and not skimmed when you are trying to learn the concepts. This type of writing differs from other forms with which you might be familiar. It is, however, important to understand that it is by design. Each section of the notes leads to the next thus simply dropping into the middle or (more probably) looking at the bullet points and the examples won’t likely yield a satisfactory explanation.</p>
+
+<p>Secondly, the code exmaples are intended to serve as a vehicle for your own personal experimentation. That is, you can build, modify, and run these codes as a way of fiamilarizing yourself with some of the details that you might not have understood from the lecture notes.</p>
+
+<p>For example, you might suspect that the reason the speed up using 10 threads over 1 thread in the previous examples is due to the <em>printf()</em> statements. Both of the last two codes include print statements to show how the threads interleave their execution (the third concept the lecture covers). You might suspect that the small difference in time is because the programs spend time printing messages and the message printing is much slower than the computation time.</p>
+
+<p>To test this theory, you can make copies of these programs, comment out or remove the print statements, and rerun the timing experiments. Does it make the program faster? By how much?</p>
+
+<h3 id="building-the-examples">Building the examples</h3>
+
+<p>In the notes, I include code fragments that won’t necessarily execute properly if you cut and paste them directly from the test. That’s because the working code is often too long to display properly in a classroom lecture format. Instead, I’ve provided commented, working versions of the code at</p>
+
+<p><a href="http://www.cs.ucsb.edu/~rich/class/cs170/notes/IntroThreads/example">http://www.cs.ucsb.edu/~rich/class/cs170/notes/IntroThreads/example</a></p>
+
+<p>In this directory you will find</p>
+
+<ul>
+  <li>one or more C program files</li>
+  <li>possibly one or more C head header files</li>
+  <li>a makefile</li>
+  <li>a README.md file</li>
+</ul>
+
+<p>You can copy the files from this location.</p>
+
+<p>I’ve also made the examples available on <a href="github.com">github</a>. If you haven’t used github before, it is a public code repository that promotes code sharing using the <a href="http://en.wikipedia.org/wiki/Git_(software)">git</a> source code control system. Git has many interesting features that are designed to allow distributed sets of developers to collaborate. One such feature allows you to “clone” a repository so that you can work with it on your own. To get a copy fo the examples from this class, log into a CSIL machine and type</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/richwolski/cs170-lecture-examples.git
+</code></pre></div></div>
+
+<p>This command will create a subdirectory called cs170-lecture-examples. In it you’ll see several subdirectories. For this lecture, the code is in the “IntroThreads” subdirectory.</p>
+
+<p>To build the programs type</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>cs170-lecture-examples/IntroThreads
+make
+</code></pre></div></div>
+
+<p>If all has gone well, you’ll build the three programs this lecture discusses. You should look at the code in these progras as well. In the lecture notes, I’ve removed many of the error checks that good C and Linux programs should have.</p>
+
+<p>You can make modifications to these programs. To rebuild them simply run the “make” command again and it will invoke the C compiler for you. The use of the make command is trivial for these specific examples (you can run gcc manually with little trouble). When we get to some of the assignments, however, it will be important to use make since the build environment is substantially more complex.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/first-post/">First post</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/Race-Conditions/">Race Conditions</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/Introduction-to-Threads/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#introduction">Introduction</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#threads">Threads</a></li>
+<li class="toc-entry toc-h3"><a href="#so-what-is-a-thread">So what is a Thread?</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#threads-versus-processes">Threads versus Processes</a></li>
+<li class="toc-entry toc-h1"><a href="#why-threads">Why threads?</a></li>
+<li class="toc-entry toc-h1"><a href="#a-simple-example">A Simple Example</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#c-code-no-threads">C Code, No threads</a></li>
+<li class="toc-entry toc-h3"><a href="#computing-the-average-using-one-thread">Computing the Average using One Thread</a></li>
+<li class="toc-entry toc-h3"><a href="#reading-through-the-code">Reading through the Code</a></li>
+<li class="toc-entry toc-h3"><a href="#creating-a-thread">Creating a thread</a></li>
+<li class="toc-entry toc-h3"><a href="#when-does-the-thread-run">When does the thread run?</a></li>
+<li class="toc-entry toc-h3"><a href="#waiting-for-the-result">Waiting for the result</a></li>
+<li class="toc-entry toc-h3"><a href="#computing-the-sum-in-parallel">Computing the sum in parallel</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#synchronization">Synchronization</a></li>
+<li class="toc-entry toc-h1"><a href="#how-much-faster-is-it">How much faster is it?</a></li>
+<li class="toc-entry toc-h1"><a href="#experimenting-with-these-examples">Experimenting with these examples</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#building-the-examples">Building the examples</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

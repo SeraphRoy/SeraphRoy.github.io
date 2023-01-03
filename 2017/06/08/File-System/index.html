@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>File System</title>
+    <meta name="description" content="  The Unix File System          What is a Unix file?      Problem: disks are organized as collections of “blocks”      What should the kernal do?      The Un...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/File-System/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>File System | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="File System" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The Unix File System What is a Unix file? Problem: disks are organized as collections of “blocks” What should the kernal do? The Unix File System I’m not particularly fond of Chapters 11 and 12 in S &amp; G, so I’m augmenting them with musings concerning the Unix file system. The primary reference is “The Design of the Unix Operating System” by Maurice Bach, Chapter 4, but almost any book on Unix internals will contain this information. What is a Unix file? abstraction: sequential stream of bytes system calls: read(), write(), open(), close(), seek() Problem: disks are organized as collections of “blocks” a disk address is some kind of tuple track/sector cylinder/platter/sector all Unix disk-drivers translate disk addresses to logical block numbers (1..n) through the block driver interface you can request block “k” and the driver will convert that to a track/sector tuple. What should the kernal do? The kernel must be able to translate user-process system calls (which refer to a file as a sequence of bytes) to logical block numbers which are then translated into disk addresses by the individual disk driver." />
+<meta property="og:description" content="The Unix File System What is a Unix file? Problem: disks are organized as collections of “blocks” What should the kernal do? The Unix File System I’m not particularly fond of Chapters 11 and 12 in S &amp; G, so I’m augmenting them with musings concerning the Unix file system. The primary reference is “The Design of the Unix Operating System” by Maurice Bach, Chapter 4, but almost any book on Unix internals will contain this information. What is a Unix file? abstraction: sequential stream of bytes system calls: read(), write(), open(), close(), seek() Problem: disks are organized as collections of “blocks” a disk address is some kind of tuple track/sector cylinder/platter/sector all Unix disk-drivers translate disk addresses to logical block numbers (1..n) through the block driver interface you can request block “k” and the driver will convert that to a track/sector tuple. What should the kernal do? The kernel must be able to translate user-process system calls (which refer to a file as a sequence of bytes) to logical block numbers which are then translated into disk addresses by the individual disk driver." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/File-System/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/File-System/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T15:54:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="File System" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"The Unix File System What is a Unix file? Problem: disks are organized as collections of “blocks” What should the kernal do? The Unix File System I’m not particularly fond of Chapters 11 and 12 in S &amp; G, so I’m augmenting them with musings concerning the Unix file system. The primary reference is “The Design of the Unix Operating System” by Maurice Bach, Chapter 4, but almost any book on Unix internals will contain this information. What is a Unix file? abstraction: sequential stream of bytes system calls: read(), write(), open(), close(), seek() Problem: disks are organized as collections of “blocks” a disk address is some kind of tuple track/sector cylinder/platter/sector all Unix disk-drivers translate disk addresses to logical block numbers (1..n) through the block driver interface you can request block “k” and the driver will convert that to a track/sector tuple. What should the kernal do? The kernel must be able to translate user-process system calls (which refer to a file as a sequence of bytes) to logical block numbers which are then translated into disk addresses by the individual disk driver.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/File-System/"},"@type":"BlogPosting","headline":"File System","dateModified":"2017-06-08T15:54:00+00:00","datePublished":"2017-06-08T15:54:00+00:00","url":"https://www.gaeblog.com/2017/06/08/File-System/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>File System</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Operating System" title="Category: Operating System" rel="category">Operating System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#File+System" title="Tag: File System" rel="tag">File System</a-->
+        <a href="/tag/#File System" title="Tag: File System" rel="tag">File System</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#the-unix-file-system" id="markdown-toc-the-unix-file-system">The Unix File System</a>    <ul>
+      <li><a href="#what-is-a-unix-file" id="markdown-toc-what-is-a-unix-file">What is a Unix file?</a></li>
+      <li><a href="#problem-disks-are-organized-as-collections-of-blocks" id="markdown-toc-problem-disks-are-organized-as-collections-of-blocks">Problem: disks are organized as collections of “blocks”</a></li>
+      <li><a href="#what-should-the-kernal-do" id="markdown-toc-what-should-the-kernal-do">What should the kernal do?</a></li>
+      <li><a href="#the-inode" id="markdown-toc-the-inode">The inode</a></li>
+      <li><a href="#the-file-system" id="markdown-toc-the-file-system">The file system</a></li>
+      <li><a href="#directories-path-names-and-mount-points" id="markdown-toc-directories-path-names-and-mount-points">Directories, Path Names, and Mount Points</a></li>
+      <li><a href="#the-buffer-cache" id="markdown-toc-the-buffer-cache">The Buffer Cache</a></li>
+      <li><a href="#file-decsriptors-open-file-table-inode-table" id="markdown-toc-file-decsriptors-open-file-table-inode-table">File Decsriptors, Open File Table, Inode Table</a></li>
+      <li><a href="#summary" id="markdown-toc-summary">Summary</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="the-unix-file-system">The Unix File System</h1>
+
+<p>I’m not particularly fond of Chapters 11 and 12 in S &amp; G, so I’m augmenting them with musings concerning the Unix file system. The primary reference is “The Design of the Unix Operating System” by Maurice Bach, Chapter 4, but almost any book on Unix internals will contain this information.</p>
+
+<h3 id="what-is-a-unix-file">What is a Unix file?</h3>
+
+<ul>
+  <li>abstraction: sequential stream of bytes</li>
+  <li>system calls: read(), write(), open(), close(), seek()</li>
+</ul>
+
+<h3 id="problem-disks-are-organized-as-collections-of-blocks">Problem: disks are organized as collections of “blocks”</h3>
+
+<ul>
+  <li>a disk address is some kind of tuple
+    <ul>
+      <li>track/sector</li>
+      <li>cylinder/platter/sector</li>
+    </ul>
+  </li>
+  <li>all Unix disk-drivers translate disk addresses to logical block numbers (1..n)</li>
+  <li>through the block driver interface you can request block “k” and the driver 
+will convert that to a track/sector tuple.</li>
+</ul>
+
+<h3 id="what-should-the-kernal-do">What should the kernal do?</h3>
+
+<ul>
+  <li>The kernel must be able to translate user-process system calls (which 
+refer to a file as a sequence of bytes) to logical block numbers which
+are then translated into disk addresses by the individual disk driver.</li>
+</ul>
+
+<!--more-->
+
+<h3 id="the-inode">The inode</h3>
+
+<ul>
+  <li>maps individual byte addresses relative to the beginning of the file
+     to logical block numbers for a particular disk</li>
+  <li>holds permission information for the file, whether the file
+     is a regular file, a directory, a “special” file, and the
+     current file size</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |     block #                  |
+    --------------------------------
+    |  permissions, ownership,     |
+    |  current file size, file     |
+    |  type                        |
+    --------------------------------
+</code></pre></div></div>
+<ul>
+  <li>blocks are a single, fixed size</li>
+  <li>table index corresponds to logical position in the file,</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                    block offset in file
+    --------------------------------
+    |     block 34                 |         0
+    --------------------------------
+    |     block 722                |         1
+    --------------------------------
+    |     block 1072               |         2
+    --------------------------------
+    |     block 6                  |         3
+    --------------------------------
+    |     block 377                |         4
+    --------------------------------
+    |     block 771                |         5
+    --------------------------------
+    |     block 7                  |         6
+    --------------------------------
+    |     block 83                 |         7
+    --------------------------------
+    |     block 212                |         8
+    --------------------------------
+    |     block 433                |         9
+    --------------------------------
+    |     block 812                |         single
+    --------------------------------
+    |     block 96                 |         double
+    --------------------------------
+    |     block 531                |         triple
+    --------------------------------
+    |  permissions, ownership, etc |
+    --------------------------------
+
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>the above example defines a file. 
+  If blocks are 4096 bytes long, the 11033rd byte in the
+  file is found by first calculating the logical offset (in blocks) from 
+  the beginning of the file as</p>
+
+    <p>11033 / 4096 = 2</p>
+
+    <p>At table entry 2 (block offset 2) we find logical disk block number
+  1072.  The byte offset within disk block 1072 is</p>
+
+    <p>11033 % 4096 = 2841</p>
+
+    <p>So given the inode shown above, the 11033rd byte of the file is
+  byte 2841 of block 1072 on the disk from whence this inode is
+  allocated.</p>
+  </li>
+  <li>
+    <p>latter table slots (single, double, triple in the figure)
+     refer to single-, double-, and triple-levels of indirection.</p>
+  </li>
+  <li>
+    <p>the number of direct, single, double, and triple slots in
+     each inode are implementation specific.  However, given these
+     numbers, the block size, and the size of a block number,
+     it is possible to calculate how large the largest file that
+     can be represented is.  For example,</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> assume
+   
+ block number =       4 bytes
+ block size =         4096 bytes
+ # direct blocks =        10
+ # single indirect blocks =   1
+ # double indirect blocks =   1
+ # triple indirect blocks =   1
+
+ implies
+
+ (10) directly accessible blocks +
+ (4096 / 4) single indirectly addressable blocks +
+ (4096 / 4)^2 double indirectly addressable blocks +
+ (4096 / 4)^3 triple indirectly addressable blocks =
+
+  1,074,791,434 addressable blocks * 4096 bytes/block =
+
+  4,402,345,713,664 addressable bytes within a single file
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="the-file-system">The file system</h3>
+
+<ul>
+  <li>a file system consists of a
+    <ul>
+      <li>superblock</li>
+      <li>a collection of inodes</li>
+      <li>a collection of data blocks
+ allocated on a disk</li>
+    </ul>
+  </li>
+  <li>
+    <p>when a file system is configured, the number of inodes that will
+     be available for files and the number of data blocks (presumably
+     the (disk size) - (the number of inodes) - 1 for the superblock) are
+     specified.</p>
+  </li>
+  <li>inodes on disk are
+    <ul>
+      <li>logically contiguous on disk so the inode number (the
+     logical offset from the beginning of the inode region)
+     identifies, uniquely, an inode.</li>
+      <li>marked with a free/used flag</li>
+    </ul>
+  </li>
+  <li>the superblock keeps the starting block address of the
+     inode region and a bit map of free/used data blocks
+    <ul>
+      <li>if the superblock becomes corrupted, however,
+     but the inode region is known, a program can chase
+     all block numbers are re-create the superblock (see fsck)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="directories-path-names-and-mount-points">Directories, Path Names, and Mount Points</h3>
+
+<ul>
+  <li>
+    <p>a directory is a file that contains string-inode number pairs only</p>
+  </li>
+  <li>
+    <p>by knowing the inode number and the file system (identified by
+         the device number on which the file system resides) 
+     in which that inode resides, the kernel can locate the file to 
+     which that inode refers</p>
+  </li>
+  <li>
+    <p>for example, assume that a directory contains the following 5 
+     entries</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  "."    : 147
+  ".."   : 91
+  "cat"  : 133
+  "dog"  : 211
+  "fish" : 12
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> the file "cat" is defined by the 133 inode within the file system
+ in which it resides.  The superblock for that file system
+ contains the starting logical block address for the inode region,
+ so the kernel can translate inode number 133 into a logical
+ disk address which can then be read into memory for access.   
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>a path name is a chain of directory entries or a chain of directory
+     entries followed by a non-directory file.  For example</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> /cs/faculty/rich/cat
+
+ where "cat" is not a directory, refers to four directories: "/", 
+ "/cs", "/cs/faculty" and "/cs/faculty/rich".
+
+ Assume that they are all on the same file system.  Then, each
+ directory has an inode number and "cat" has an inode number.  The
+ kernel maintains a table of mounted file systems that contains
+ the superblock for each, and each "root" inode number.  
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>To find /cs/faculty/rich/cat, the kernel first locates the
+     inode number for “/”, loads the data blocks for that directory into
+     memory, and searches for them linearly looking for the
+     string “cs”.  Say the root directory looks like</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  "."      : 0
+  ".."     : 0
+  "usr"    : 1021
+  "green"  : 777
+  "cs"     : 3355
+  "tmp"    : 23
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>the kernel locates “cs” in the directory and reads out
+     3355 as its inode number.  It then goes back to the file
+     system and reads the file (a directory in this case) corresponding
+     to inode number 3355.
+     The process recurses until a non-directory file is located (the
+     file type is kept in the inode).</p>
+  </li>
+</ul>
+
+<h3 id="the-buffer-cache">The Buffer Cache</h3>
+<ul>
+  <li>inodes and disk blocks are cached in memory</li>
+  <li>doubley-threaded list (hash and link lists)</li>
+  <li>one buffer cache per configured file system</li>
+  <li>hash table is used to look up block numbers</li>
+  <li>free list is used to locate free blocks</li>
+</ul>
+
+<p><img src="https://www.gaeblog.com/assets/File-System-bc.jpg" alt="" /></p>
+
+<ul>
+  <li>when a logical block number is requested from disk the hash is 
+     consulted to determine if a copy is already available</li>
+  <li>while buffer is in use, it is taken off the free list</li>
+  <li>when process is finished with buffer, it is returned to the
+     end of the free list</li>
+  <li>when a new buffer is required it is taken from the beginning
+     of the free list (LRU)</li>
+  <li>if the buffer has been modified, it is scheduled for write-back
+     (dirty bits)</li>
+</ul>
+
+<h3 id="file-decsriptors-open-file-table-inode-table">File Decsriptors, Open File Table, Inode Table</h3>
+<ul>
+  <li>each PCB has a table of file descriptor pointers</li>
+  <li>each file descriptor pointer points to an open file table
+     entry containing
+    <ul>
+      <li>reference count</li>
+      <li>offset</li>
+      <li>inode table index</li>
+    </ul>
+  </li>
+  <li>each inode for an open file is stored in an “in-core” inode table
+     entry with a reference count</li>
+</ul>
+
+<p><img src="https://www.gaeblog.com/assets/File-System-filetable.rich.jpg" alt="" /></p>
+
+<ul>
+  <li>in this example
+    <ul>
+      <li>Proc A has forked Proc B, thereby copying file descriptors</li>
+      <li>reference count on open file table entry is 2 since
+     processes share the offet value</li>
+      <li>both of them are accessing the file A_filename</li>
+      <li>Proc C has opened the file B_filename</li>
+    </ul>
+  </li>
+  <li>if another process had opened A_filename separately, what would
+     happen?
+    <ul>
+      <li>a new open file table entry would be allocated and
+     ref count would be set to 1</li>
+      <li>that entry would point to the inode table entry for
+     A_filename and its ref count would be set to 2</li>
+    </ul>
+  </li>
+  <li>file descriptor your program gets is the index into the
+     per process file descriptor table</li>
+</ul>
+
+<h3 id="summary">Summary</h3>
+
+<ul>
+  <li>a regular Unix file is accessed as a linear list of bytes</li>
+  <li>the inode defines a map from linear byte offsets within the
+     file to logical disk block numbers on a particular disk</li>
+  <li>the disk driver converts logical disk numbers to track/sector
+     disk address tuples</li>
+  <li>an inode “lives” in a file system.  Its number is the logical
+     index from the beginning of the inode region for its home
+     file system</li>
+  <li>a file system consists of
+    <ul>
+      <li>a superblock</li>
+      <li>a contiguous array of inodes</li>
+      <li>a set of data blocks</li>
+    </ul>
+  </li>
+  <li>the superblock is a map for the file system.  It contains
+    <ul>
+      <li>the block address of the inode array</li>
+      <li>the size of the inode array</li>
+      <li>a map of the free data blocks on disk</li>
+    </ul>
+  </li>
+  <li>a directory is a file, built by the kernel, that
+     contains string-inode pairs</li>
+  <li>a path is a chain of directories</li>
+  <li>when a path is traversed, the kernel fetches the inodes for
+     the constituent directories, one-at-a-time, based on the
+     inode numbers that match the directory strings</li>
+  <li>buffer cache caches any disk blocks in front of the disk</li>
+  <li>process accesses file through file descriptors which
+     point to open file table entries which point to inde table
+     entries
+    <ul>
+      <li>one inode table entry for each open file</li>
+      <li>forked processes sharing offet into an open file
+     have file descriptors pointing to same open file table
+     entry</li>
+      <li>multiple processes with the same file open point to
+     separate open file table entries, but these point to
+     the same inode table entry</li>
+    </ul>
+  </li>
+</ul>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/Memory-Management/">Memory Management</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/AWS-Introduction/">AWS Introduction</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/File-System/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/File-System/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#the-unix-file-system">The Unix File System</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#what-is-a-unix-file">What is a Unix file?</a></li>
+<li class="toc-entry toc-h3"><a href="#problem-disks-are-organized-as-collections-of-blocks">Problem: disks are organized as collections of “blocks”</a></li>
+<li class="toc-entry toc-h3"><a href="#what-should-the-kernal-do">What should the kernal do?</a></li>
+<li class="toc-entry toc-h3"><a href="#the-inode">The inode</a></li>
+<li class="toc-entry toc-h3"><a href="#the-file-system">The file system</a></li>
+<li class="toc-entry toc-h3"><a href="#directories-path-names-and-mount-points">Directories, Path Names, and Mount Points</a></li>
+<li class="toc-entry toc-h3"><a href="#the-buffer-cache">The Buffer Cache</a></li>
+<li class="toc-entry toc-h3"><a href="#file-decsriptors-open-file-table-inode-table">File Decsriptors, Open File Table, Inode Table</a></li>
+<li class="toc-entry toc-h3"><a href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

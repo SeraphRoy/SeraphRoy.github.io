@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Python Global Interpreter Lock (GIL)</title>
+    <meta name="description" content="  Introduction  A Performance ExperimentIntroductionIn CPython, the global interpreter lock, or GIL is a mutex that prevents multiple threads from executing ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Python Global Interpreter Lock (GIL) | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Python Global Interpreter Lock (GIL)" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction A Performance Experiment Introduction In CPython, the global interpreter lock, or GIL is a mutex that prevents multiple threads from executing Python bytecodes at once. The lock is necessary mainly because CPython’s memory management is not thread-safe. A Performance Experiment 0 import time 1 import threading 2 import multiprocessing 3 4 NUM = 10000000 5 6 def count(n): 7 while n &gt; 0: 8 ¦ n -= 1 9 10 t1 = threading.Thread(target=count, args=(NUM,)) 11 t2 = threading.Thread(target=count, args=(NUM,)) 12 start = time.time() 13 t1.start() 14 t2.start() 15 t1.join() 16 t2.join() 17 print &quot;multithread:&quot; 18 print time.time() - start 19 20 start = time.time() 21 count(NUM) 22 count(NUM) 23 print &quot;single thread:&quot; 24 print time.time() - start 25 26 p1 = multiprocessing.Process(target=count, args=(NUM,)) 27 p2 = multiprocessing.Process(target=count, args=(NUM,)) 28 start = time.time() 29 p1.start() 30 p2.start() 31 p1.join() 32 p2.join() 33 print &quot;multi process:&quot; 34 print time.time() - start Here’s the output: multithread: 1.70929884911 single thread: 1.03298616409 multi process: 0.507339954376 Why do I get those performance results?" />
+<meta property="og:description" content="Introduction A Performance Experiment Introduction In CPython, the global interpreter lock, or GIL is a mutex that prevents multiple threads from executing Python bytecodes at once. The lock is necessary mainly because CPython’s memory management is not thread-safe. A Performance Experiment 0 import time 1 import threading 2 import multiprocessing 3 4 NUM = 10000000 5 6 def count(n): 7 while n &gt; 0: 8 ¦ n -= 1 9 10 t1 = threading.Thread(target=count, args=(NUM,)) 11 t2 = threading.Thread(target=count, args=(NUM,)) 12 start = time.time() 13 t1.start() 14 t2.start() 15 t1.join() 16 t2.join() 17 print &quot;multithread:&quot; 18 print time.time() - start 19 20 start = time.time() 21 count(NUM) 22 count(NUM) 23 print &quot;single thread:&quot; 24 print time.time() - start 25 26 p1 = multiprocessing.Process(target=count, args=(NUM,)) 27 p2 = multiprocessing.Process(target=count, args=(NUM,)) 28 start = time.time() 29 p1.start() 30 p2.start() 31 p1.join() 32 p2.join() 33 print &quot;multi process:&quot; 34 print time.time() - start Here’s the output: multithread: 1.70929884911 single thread: 1.03298616409 multi process: 0.507339954376 Why do I get those performance results?" />
+<link rel="canonical" href="https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/" />
+<meta property="og:url" content="https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-06-28T14:30:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Python Global Interpreter Lock (GIL)" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Introduction A Performance Experiment Introduction In CPython, the global interpreter lock, or GIL is a mutex that prevents multiple threads from executing Python bytecodes at once. The lock is necessary mainly because CPython’s memory management is not thread-safe. A Performance Experiment 0 import time 1 import threading 2 import multiprocessing 3 4 NUM = 10000000 5 6 def count(n): 7 while n &gt; 0: 8 ¦ n -= 1 9 10 t1 = threading.Thread(target=count, args=(NUM,)) 11 t2 = threading.Thread(target=count, args=(NUM,)) 12 start = time.time() 13 t1.start() 14 t2.start() 15 t1.join() 16 t2.join() 17 print &quot;multithread:&quot; 18 print time.time() - start 19 20 start = time.time() 21 count(NUM) 22 count(NUM) 23 print &quot;single thread:&quot; 24 print time.time() - start 25 26 p1 = multiprocessing.Process(target=count, args=(NUM,)) 27 p2 = multiprocessing.Process(target=count, args=(NUM,)) 28 start = time.time() 29 p1.start() 30 p2.start() 31 p1.join() 32 p2.join() 33 print &quot;multi process:&quot; 34 print time.time() - start Here’s the output: multithread: 1.70929884911 single thread: 1.03298616409 multi process: 0.507339954376 Why do I get those performance results?","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/"},"@type":"BlogPosting","headline":"Python Global Interpreter Lock (GIL)","dateModified":"2018-06-28T14:30:00+00:00","datePublished":"2018-06-28T14:30:00+00:00","url":"https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Python Global Interpreter Lock (GIL)</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-06-28
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Interpreter" title="Category: Interpreter" rel="category">Interpreter</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Interpreter" title="Tag: Interpreter" rel="tag">Interpreter</a-->
+        <a href="/tag/#Interpreter" title="Tag: Interpreter" rel="tag">Interpreter</a>&nbsp;
+    
+        <!--a href="/tag/#GIL" title="Tag: GIL" rel="tag">GIL</a-->
+        <a href="/tag/#GIL" title="Tag: GIL" rel="tag">GIL</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#a-performance-experiment" id="markdown-toc-a-performance-experiment">A Performance Experiment</a></li>
+  <li><a href="#about-python-threads" id="markdown-toc-about-python-threads">About Python Threads</a></li>
+  <li><a href="#gil-behavior" id="markdown-toc-gil-behavior">GIL Behavior</a>    <ul>
+      <li><a href="#singal-handling" id="markdown-toc-singal-handling">Singal Handling</a></li>
+    </ul>
+  </li>
+  <li><a href="#gil-implementation" id="markdown-toc-gil-implementation">GIL Implementation</a></li>
+  <li><a href="#back-to-the-performance-experiment" id="markdown-toc-back-to-the-performance-experiment">Back to the Performance Experiment</a></li>
+  <li><a href="#multicore-gil-contention" id="markdown-toc-multicore-gil-contention">Multicore GIL Contention</a></li>
+</ul>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>In CPython, the global interpreter lock, or GIL is a mutex that prevents multiple threads from executing Python bytecodes at once. The lock is necessary mainly because CPython’s memory management is not thread-safe.</p>
+
+<h1 id="a-performance-experiment">A Performance Experiment</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="mi">0</span> <span class="kn">import</span> <span class="nn">time</span>
+  <span class="mi">1</span> <span class="kn">import</span> <span class="nn">threading</span>
+  <span class="mi">2</span> <span class="kn">import</span> <span class="nn">multiprocessing</span>
+  <span class="mi">3</span>
+  <span class="mi">4</span> <span class="n">NUM</span> <span class="o">=</span> <span class="mi">10000000</span>
+  <span class="mi">5</span>
+  <span class="mi">6</span> <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+  <span class="mi">7</span>    <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="mi">8</span>    <span class="err">¦</span>  <span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
+  <span class="mi">9</span>
+ <span class="mi">10</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">NUM</span><span class="p">,))</span>
+ <span class="mi">11</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">NUM</span><span class="p">,))</span>
+ <span class="mi">12</span> <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+ <span class="mi">13</span> <span class="n">t1</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+ <span class="mi">14</span> <span class="n">t2</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+ <span class="mi">15</span> <span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+ <span class="mi">16</span> <span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+ <span class="mi">17</span> <span class="k">print</span> <span class="s">"multithread:"</span>
+ <span class="mi">18</span> <span class="k">print</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+ <span class="mi">19</span>
+ <span class="mi">20</span> <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+ <span class="mi">21</span> <span class="n">count</span><span class="p">(</span><span class="n">NUM</span><span class="p">)</span>
+ <span class="mi">22</span> <span class="n">count</span><span class="p">(</span><span class="n">NUM</span><span class="p">)</span>
+ <span class="mi">23</span> <span class="k">print</span> <span class="s">"single thread:"</span>
+ <span class="mi">24</span> <span class="k">print</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+ <span class="mi">25</span>
+ <span class="mi">26</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">NUM</span><span class="p">,))</span>
+ <span class="mi">27</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">NUM</span><span class="p">,))</span>
+ <span class="mi">28</span> <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+ <span class="mi">29</span> <span class="n">p1</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+ <span class="mi">30</span> <span class="n">p2</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+ <span class="mi">31</span> <span class="n">p1</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+ <span class="mi">32</span> <span class="n">p2</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+ <span class="mi">33</span> <span class="k">print</span> <span class="s">"multi process:"</span>
+ <span class="mi">34</span> <span class="k">print</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+
+</code></pre></div></div>
+
+<p>Here’s the output:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>multithread:
+1.70929884911
+single thread:
+1.03298616409
+multi process:
+0.507339954376
+</code></pre></div></div>
+
+<p>Why do I get those performance results?</p>
+
+<!--more-->
+
+<h1 id="about-python-threads">About Python Threads</h1>
+
+<p>Python threads are <em>real</em> system threads (pthreads or Windows threads). They are fully managed by host OS including all scheduling/thread switching. Here’s what happens on thread creation</p>
+<ul>
+  <li>Python creates a small data structure containing some interpreter state</li>
+  <li>A new thread (pthread) is launched</li>
+  <li>The thread calls PyEval_CallObject, which is justa C function call that runs whatever Python callable was specified</li>
+</ul>
+
+<p>Each thread has its own interpreter specific data structure (PyThreadState):</p>
+<ul>
+  <li>Current stack frame (for python code)</li>
+  <li>Current recursion depth</li>
+  <li>Thread ID</li>
+  <li>Some per-thread exception information</li>
+  <li>Optional tracing/profiling/debugging hooks</li>
+  <li>It’s just a small C struct</li>
+</ul>
+
+<p>The interpreter has a <em>global variable</em> that simply points to the ThreadState struct of the currently running thread</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PyThreadState</span> <span class="o">*</span><span class="n">_PyThreadState_Current</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>So that operations in the interpreter implicitly depend this variable to know what thread they’re currently working with</p>
+
+<h1 id="gil-behavior">GIL Behavior</h1>
+
+<p>Threads hold the GIL when running; however they release it when blocking for I/O</p>
+
+<p><img src="https://www.gaeblog.com/assets/GIL-IO.png" alt="" /></p>
+
+<p>Basically any time a thread is forced to wait other “ready” threads get their chance to run.</p>
+
+<p>But for CPU-bound threads that never perform any I/O, the interpreter periodically performs a “check”. By default, every 100 interpreter “<strong>ticks</strong>” it does a check.</p>
+
+<p><img src="https://www.gaeblog.com/assets/GIL-CPU.png" alt="" /></p>
+
+<p>The check interval is a global counter that is completely independent of thread scheduling. See <code class="language-plaintext highlighter-rouge">sys.setcheckinterval()</code> and <code class="language-plaintext highlighter-rouge">sys.getcheckinterval</code></p>
+
+<p><img src="https://www.gaeblog.com/assets/GIL-Check.png" alt="" /></p>
+
+<p>What happens during the periodic check?</p>
+<ul>
+  <li>In the <strong>main thread only</strong>, signal handlers will execute if there are any pending signals</li>
+  <li>Release and reacquire the GIL so that multiple CPU-bound threads get to run by briefly releasing the GIL, and other threads get a chance to run.</li>
+</ul>
+
+<p>A <strong>Tick</strong> loosely map to interpreter instruction(s)</p>
+
+<p><img src="https://www.gaeblog.com/assets/GIL-Tick.png" alt="" /></p>
+
+<p>Noted that:</p>
+<ul>
+  <li>Ticks are <strong>not</strong> time-based</li>
+  <li>In fact long operations can block everything</li>
+  <li>ticks are uninterruptible</li>
+</ul>
+
+<h2 id="singal-handling">Singal Handling</h2>
+
+<p>A very common problem encountered with Python thread programming is that threaded programs can no longer be killed with the keyboard interrupt so you have to use <code class="language-plaintext highlighter-rouge">kill -9</code> in a separate window. Why???</p>
+
+<p>If a signal arrives, the interpreter runs the “check” <strong>after every tick</strong> until the main thread runs. Since signal handlers can only run in the main thread, the interpreter quickly acquires/releases the GIL after every tick until it gets scheduled. Because Python has no control over scheduling so it just attempts to thread swithc as fast as possible with the hope that main will run.</p>
+
+<p><img src="https://www.gaeblog.com/assets/GIL-Signal.png" alt="" /></p>
+
+<p>The reason Ctrl-C doesn’t work with threaded programs is that the main thread is opten blocked on an uninterruptible thread-join or lock. Since it’s blocked, it <strong>never gets scheduled</strong> to run any kind of signal handler for it. And as an extra bonus, the interpreter is left in a state where it tries to thread-switch after every tick, so not only can you not interrupt the program, it runs slow as hell!!!</p>
+
+<h1 id="gil-implementation">GIL Implementation</h1>
+
+<p>It is either a POSIX semaphore or a pthreads condition variable. So all interpreter locking is based on <em>signaling</em>.</p>
+
+<h1 id="back-to-the-performance-experiment">Back to the Performance Experiment</h1>
+
+<p>As we saw earlier CPU-bound threads have terrible performances, and two threads is even worse than single thread. The question is: what is the source of that overhead?</p>
+
+<p>Answer: Signaling: After every 100 ticks, the interpreter locks a mutex, signals on a conditional variable/semaphore where another thread is <strong>always</strong> waiting. And because another thread is waiting, extra pthreads processing and system calls get triggered to deliver the signal.</p>
+
+<p><img src="https://www.gaeblog.com/assets/GIL-Measure-1.png" alt="" />
+<img src="https://www.gaeblog.com/assets/GIL-Measure-2.png" alt="" />
+<img src="https://www.gaeblog.com/assets/GIL-Battle.png" alt="" /></p>
+
+<p>What’s happening above is a battle between two competing and incompatible goals:</p>
+<ul>
+  <li>Python - only wants to run single-threaded but doesn’t want anything to do with thread scheduling (up to OS)</li>
+  <li>OS - “Oooh. Multiple cores.” Freely schedules processes/threads to take advantage of as many cores as possible</li>
+</ul>
+
+<h1 id="multicore-gil-contention">Multicore GIL Contention</h1>
+
+<p>Even 1 CPU-bound thread causes problems: it degrades response time of I/O-bound threads</p>
+
+<p><img src="https://www.gaeblog.com/assets/Multicore-GIL-1.png" alt="" />
+<img src="https://www.gaeblog.com/assets/Multicore-GIL-2.png" alt="" /></p>
+
+<p>This scenario is a bizarre sort of “priority inversion” problem: A CPU-bound thread (low priority) is blocking the execution of an I/O-bound thread (high priority). It occurs because the I/O thread can’t wake up fast enough to acquire the GIL before the CPU-bound thread reacquires it. ANd it only happens on multicore…</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/02/24/Introduction-to-Category-Theory/">Introduction to Category Theory</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/">In Searching Counter Examples for Ramsey Number</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2018/06/28/Python-Global-Interpreter-Lock/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h1"><a href="#a-performance-experiment">A Performance Experiment</a></li>
+<li class="toc-entry toc-h1"><a href="#about-python-threads">About Python Threads</a></li>
+<li class="toc-entry toc-h1"><a href="#gil-behavior">GIL Behavior</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#singal-handling">Singal Handling</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#gil-implementation">GIL Implementation</a></li>
+<li class="toc-entry toc-h1"><a href="#back-to-the-performance-experiment">Back to the Performance Experiment</a></li>
+<li class="toc-entry toc-h1"><a href="#multicore-gil-contention">Multicore GIL Contention</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Jekyll Search Solutions</title>
+    <meta name="description" content="  Updates  问题和需求Updates终于我找到了这个。但是这个其实充满了各种bug，比如我提交的这个。里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正所以我现在自己写了我自己的版本。现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概Agolia的我还是先留着吧...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Jekyll Search Solutions | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Jekyll Search Solutions" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Updates 问题和需求 Updates 终于我找到了这个。 但是这个其实充满了各种bug，比如我提交的这个。 里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正 所以我现在自己写了我自己的版本。 现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概 Agolia的我还是先留着吧，毕竟我自己写的也没有特别满意，而且他们也帮我卖广告 了所以就 都保留着想用哪个用哪个吧。。 问题和需求 最近心血来潮想自己在博客上加上搜索功能，因为我用的这个框架的程序员一直不更新就一气之下想着自己写一个算了。 问题在于我就完全没碰过前端，工作也跟写网页一点关系都没有，于是我就google呗，看看有啥 好的在jekyll创建的静态网页有好用的搜索。问题在于，无论google用中文搜索还是英文都没有 一个完美的方案来对应我的需求，见到有别人的博客能实现我的需求 但是好像并没有开源……好吧说了这么多我先列个需求： 方便：最好是一个小插件或者一段js就好，我懒得换主题而且换了的新主题就算搜索功能很好 也不一定别的功能很好 能搜索全文 搜索出来的东西能高亮：这个是最重要的feature，也是我到处怎么找开源也找不到的feature。 意思就是你搜索正文中的东西能把match上的文字以及前后文的一小段都显示出来而且高亮match。 我看到的基本要么只显示title，要么只能显示正文节选。 免费开源：这样我自己也能改样式 API好用 好吧基本上2+3就能排除掉一大箱的google上的选项了，下面说说我的解决方案吧……" />
+<meta property="og:description" content="Updates 问题和需求 Updates 终于我找到了这个。 但是这个其实充满了各种bug，比如我提交的这个。 里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正 所以我现在自己写了我自己的版本。 现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概 Agolia的我还是先留着吧，毕竟我自己写的也没有特别满意，而且他们也帮我卖广告 了所以就 都保留着想用哪个用哪个吧。。 问题和需求 最近心血来潮想自己在博客上加上搜索功能，因为我用的这个框架的程序员一直不更新就一气之下想着自己写一个算了。 问题在于我就完全没碰过前端，工作也跟写网页一点关系都没有，于是我就google呗，看看有啥 好的在jekyll创建的静态网页有好用的搜索。问题在于，无论google用中文搜索还是英文都没有 一个完美的方案来对应我的需求，见到有别人的博客能实现我的需求 但是好像并没有开源……好吧说了这么多我先列个需求： 方便：最好是一个小插件或者一段js就好，我懒得换主题而且换了的新主题就算搜索功能很好 也不一定别的功能很好 能搜索全文 搜索出来的东西能高亮：这个是最重要的feature，也是我到处怎么找开源也找不到的feature。 意思就是你搜索正文中的东西能把match上的文字以及前后文的一小段都显示出来而且高亮match。 我看到的基本要么只显示title，要么只能显示正文节选。 免费开源：这样我自己也能改样式 API好用 好吧基本上2+3就能排除掉一大箱的google上的选项了，下面说说我的解决方案吧……" />
+<link rel="canonical" href="https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/" />
+<meta property="og:url" content="https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-01-20T15:13:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Jekyll Search Solutions" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Updates 问题和需求 Updates 终于我找到了这个。 但是这个其实充满了各种bug，比如我提交的这个。 里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正 所以我现在自己写了我自己的版本。 现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概 Agolia的我还是先留着吧，毕竟我自己写的也没有特别满意，而且他们也帮我卖广告 了所以就 都保留着想用哪个用哪个吧。。 问题和需求 最近心血来潮想自己在博客上加上搜索功能，因为我用的这个框架的程序员一直不更新就一气之下想着自己写一个算了。 问题在于我就完全没碰过前端，工作也跟写网页一点关系都没有，于是我就google呗，看看有啥 好的在jekyll创建的静态网页有好用的搜索。问题在于，无论google用中文搜索还是英文都没有 一个完美的方案来对应我的需求，见到有别人的博客能实现我的需求 但是好像并没有开源……好吧说了这么多我先列个需求： 方便：最好是一个小插件或者一段js就好，我懒得换主题而且换了的新主题就算搜索功能很好 也不一定别的功能很好 能搜索全文 搜索出来的东西能高亮：这个是最重要的feature，也是我到处怎么找开源也找不到的feature。 意思就是你搜索正文中的东西能把match上的文字以及前后文的一小段都显示出来而且高亮match。 我看到的基本要么只显示title，要么只能显示正文节选。 免费开源：这样我自己也能改样式 API好用 好吧基本上2+3就能排除掉一大箱的google上的选项了，下面说说我的解决方案吧……","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/"},"@type":"BlogPosting","headline":"Jekyll Search Solutions","dateModified":"2019-01-20T15:13:00+00:00","datePublished":"2019-01-20T15:13:00+00:00","url":"https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Jekyll Search Solutions</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2019-01-20
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Jekyll" title="Category: Jekyll" rel="category">Jekyll</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Jekyll" title="Tag: Jekyll" rel="tag">Jekyll</a-->
+        <a href="/tag/#Jekyll" title="Tag: Jekyll" rel="tag">Jekyll</a>&nbsp;
+    
+        <!--a href="/tag/#Blog" title="Tag: Blog" rel="tag">Blog</a-->
+        <a href="/tag/#Blog" title="Tag: Blog" rel="tag">Blog</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#updates" id="markdown-toc-updates">Updates</a></li>
+  <li><a href="#问题和需求" id="markdown-toc-问题和需求">问题和需求</a></li>
+  <li><a href="#解决方案暂时" id="markdown-toc-解决方案暂时">解决方案（暂时）</a></li>
+  <li><a href="#总结吐槽" id="markdown-toc-总结吐槽">总结吐槽</a></li>
+</ul>
+
+<h1 id="updates">Updates</h1>
+
+<p>终于我找到了<a href="https://github.com/wzpan/hexo-theme-freemind/blob/master/source/js/search.js">这个</a>。
+但是这个其实充满了各种bug，比如我提交的<a href="https://github.com/wzpan/hexo-theme-freemind/issues/83">这个</a>。
+里面还有很多的bug以及我不满意的地方（不知道为什么能活到现在……），反正
+所以我现在自己写了<a href="https://github.com/SeraphRoy/SimpleBlogSearch">我自己的版本</a>。
+现在的左侧搜索框应该能显示搜索出来的节选高亮了。问题终于解决了（大概</p>
+
+<p>Agolia的我还是先留着吧，毕竟我自己写的也没有特别满意，而且他们也帮我<a href="https://community.algolia.com/jekyll-algolia/themes.html">卖广告</a>
+了所以就
+都保留着想用哪个用哪个吧。。</p>
+
+<h1 id="问题和需求">问题和需求</h1>
+
+<p>最近心血来潮想自己在博客上加上搜索功能，因为我用的这个框架的程序员一直不更新就一气之下想着自己写一个算了。
+问题在于我就完全没碰过前端，工作也跟写网页一点关系都没有，于是我就google呗，看看有啥
+好的在jekyll创建的静态网页有好用的搜索。问题在于，无论google用中文搜索还是英文都没有
+一个完美的方案来对应我的需求，见到有<a href="https://chenkaihua.com/">别人的博客</a>能实现我的需求
+但是好像并没有开源……好吧说了这么多我先列个需求：</p>
+
+<ol>
+  <li>方便：最好是一个小插件或者一段js就好，我懒得换主题而且换了的新主题就算搜索功能很好
+也不一定别的功能很好</li>
+  <li>能搜索全文</li>
+  <li>搜索出来的东西能高亮：这个是最重要的feature，也是我到处怎么找开源也找不到的feature。
+意思就是你搜索正文中的东西能把match上的文字以及前后文的一小段都显示出来而且高亮match。
+我看到的基本要么只显示title，要么只能显示正文节选。</li>
+  <li>免费开源：这样我自己也能改样式</li>
+  <li>API好用</li>
+</ol>
+
+<p>好吧基本上2+3就能排除掉一大箱的google上的选项了，下面说说我的解决方案吧……</p>
+
+<!--more-->
+
+<h1 id="解决方案暂时">解决方案（暂时）</h1>
+
+<p>我用了两套搜索工具，也没说一定要用两套只不过刚好写了两套就都放着呗……</p>
+
+<p>首先是<a href="https://github.com/christian-fei/Simple-Jekyll-Search">这个</a>。使用很简单方便
+github page上也有教程，API也挺好用的，满足了1245，但是3这个点挺麻烦的，要修改它
+本身js的search的function，which is doable但是其实跟我自己重新写一个插件没什么区别了……</p>
+
+<p>然后我专门写了一个单独的page用的<a href="https://community.algolia.com/jekyll-algolia/blog.html">algolia</a>
+链接里面是详细的教程，使用倒是也挺方便的，最主要是能高亮啊啊啊！唯一的问题就是
+它不是开源的，有免费的plan倒是如果你的博客很小倒没所谓，但是不开源的我自己用起来
+也不舒服，毕竟没什么控制权……</p>
+
+<p>以上两种解决方案在我github上都能看到，分别是_includes/algolia.html和_includes/sidebar-search.html
+css和js什么的自己看着搜索就能看到了……代码会跟上面的攻略不一样毕竟这是我自己的博客……</p>
+
+<h1 id="总结吐槽">总结吐槽</h1>
+
+<p>anyway反正就这么先用着了，有更好的方案再说……不得不吐槽网上那些程序员自己写的博客前端
+真是一个比一个坑……博客文章雷同不说…写关于Jekyll博客搜索功能的攻略然而自己博客的搜索
+功能蠢的一B……有些前端的排版还完全不对…其它什么页面404啊搜索只能搜索title啊就不提了真是
+坑爹……还有些写了搜索攻略的但是博客本身就没搜索功能的……</p>
+
+<p>好了发泄了一通，不管怎么说用这两套方案kind of满足我的需求了……最好还是有个开源的
+插件吧algolia替换掉啦…嘛以上</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2019/01/18/Recursive-Programs/">Recursive Programs</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2019/01/20/Recursive-Types/">Recursive Types</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2019/01/20/Jekyll-Search-Solutions/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#updates">Updates</a></li>
+<li class="toc-entry toc-h1"><a href="#问题和需求">问题和需求</a></li>
+<li class="toc-entry toc-h1"><a href="#解决方案暂时">解决方案（暂时）</a></li>
+<li class="toc-entry toc-h1"><a href="#总结吐槽">总结吐槽</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

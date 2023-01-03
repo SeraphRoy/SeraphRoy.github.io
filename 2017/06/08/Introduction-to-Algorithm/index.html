@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Introduction to Algorithm</title>
+    <meta name="description" content="  Some Notes of Introduction to Algorithm          Fiboniacci Number      Order Statistics      Some Notes of Introduction to AlgorithmFiboniacci Number\[\be...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Introduction to Algorithm | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Introduction to Algorithm" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Some Notes of Introduction to Algorithm Fiboniacci Number Order Statistics Some Notes of Introduction to Algorithm Fiboniacci Number [\begin{bmatrix} F_{n+1} &amp; F_{n} F_{n} &amp; F_{n-1} \end{bmatrix} = \begin{bmatrix} 1 &amp; 1 1 &amp; 0 \end{bmatrix}^n] $Running\ Time = \theta(\log_2(n))$ Order Statistics Given n elements in an array, find $k^{th}$ smallest element. Quick Select Expected running time $\theta(n)$ Worse case $\theta(n^2)$ Worse-case linear time order statistics Select(i, n) 1. Divide n elements into [n/5] groups of 5 elements each. Find the median of each group. O(n) 2. Recurrsively select the medium x of the [n/5] group medians. T(n/5) 3. Partition with x as pivot, let k = rank(x). O(n) 4. if i==k then return x if i&lt;k then recurrsively select ith smallest element in left part else then recurrsively select (i-k)th smallest element in upper part" />
+<meta property="og:description" content="Some Notes of Introduction to Algorithm Fiboniacci Number Order Statistics Some Notes of Introduction to Algorithm Fiboniacci Number [\begin{bmatrix} F_{n+1} &amp; F_{n} F_{n} &amp; F_{n-1} \end{bmatrix} = \begin{bmatrix} 1 &amp; 1 1 &amp; 0 \end{bmatrix}^n] $Running\ Time = \theta(\log_2(n))$ Order Statistics Given n elements in an array, find $k^{th}$ smallest element. Quick Select Expected running time $\theta(n)$ Worse case $\theta(n^2)$ Worse-case linear time order statistics Select(i, n) 1. Divide n elements into [n/5] groups of 5 elements each. Find the median of each group. O(n) 2. Recurrsively select the medium x of the [n/5] group medians. T(n/5) 3. Partition with x as pivot, let k = rank(x). O(n) 4. if i==k then return x if i&lt;k then recurrsively select ith smallest element in left part else then recurrsively select (i-k)th smallest element in upper part" />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T19:47:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Introduction to Algorithm" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Some Notes of Introduction to Algorithm Fiboniacci Number Order Statistics Some Notes of Introduction to Algorithm Fiboniacci Number [\\begin{bmatrix} F_{n+1} &amp; F_{n} F_{n} &amp; F_{n-1} \\end{bmatrix} = \\begin{bmatrix} 1 &amp; 1 1 &amp; 0 \\end{bmatrix}^n] $Running\\ Time = \\theta(\\log_2(n))$ Order Statistics Given n elements in an array, find $k^{th}$ smallest element. Quick Select Expected running time $\\theta(n)$ Worse case $\\theta(n^2)$ Worse-case linear time order statistics Select(i, n) 1. Divide n elements into [n/5] groups of 5 elements each. Find the median of each group. O(n) 2. Recurrsively select the medium x of the [n/5] group medians. T(n/5) 3. Partition with x as pivot, let k = rank(x). O(n) 4. if i==k then return x if i&lt;k then recurrsively select ith smallest element in left part else then recurrsively select (i-k)th smallest element in upper part","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/"},"@type":"BlogPosting","headline":"Introduction to Algorithm","dateModified":"2017-06-08T19:47:00+00:00","datePublished":"2017-06-08T19:47:00+00:00","url":"https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Introduction to Algorithm</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Algorithm" title="Category: Algorithm" rel="category">Algorithm</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a-->
+        <a href="/tag/#Algorithm" title="Tag: Algorithm" rel="tag">Algorithm</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#some-notes-of-introduction-to-algorithm" id="markdown-toc-some-notes-of-introduction-to-algorithm">Some Notes of Introduction to Algorithm</a>    <ul>
+      <li><a href="#fiboniacci-number" id="markdown-toc-fiboniacci-number">Fiboniacci Number</a></li>
+      <li><a href="#order-statistics" id="markdown-toc-order-statistics">Order Statistics</a></li>
+      <li><a href="#hash-functions" id="markdown-toc-hash-functions">Hash Functions</a>        <ul>
+          <li><a href="#division-method" id="markdown-toc-division-method">Division Method</a></li>
+          <li><a href="#multiplication-method" id="markdown-toc-multiplication-method">Multiplication Method</a></li>
+          <li><a href="#universal-hashing" id="markdown-toc-universal-hashing">Universal Hashing</a></li>
+          <li><a href="#perfect-hashing" id="markdown-toc-perfect-hashing">Perfect Hashing</a></li>
+        </ul>
+      </li>
+      <li><a href="#augmented-data-structures" id="markdown-toc-augmented-data-structures">Augmented Data Structures</a>        <ul>
+          <li><a href="#dynamic-order-statistics" id="markdown-toc-dynamic-order-statistics">Dynamic Order Statistics</a></li>
+          <li><a href="#interval-tree" id="markdown-toc-interval-tree">Interval Tree</a></li>
+        </ul>
+      </li>
+      <li><a href="#amortized-analysis" id="markdown-toc-amortized-analysis">Amortized Analysis</a>        <ul>
+          <li><a href="#potential-method" id="markdown-toc-potential-method">Potential Method</a></li>
+        </ul>
+      </li>
+      <li><a href="#competitive-analysis" id="markdown-toc-competitive-analysis">Competitive Analysis</a></li>
+      <li><a href="#karp-rabin-algorihm-find-s-in-t" id="markdown-toc-karp-rabin-algorihm-find-s-in-t">Karp-Rabin Algorihm: Find s in t</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="some-notes-of-introduction-to-algorithm">Some Notes of Introduction to Algorithm</h1>
+
+<h2 id="fiboniacci-number">Fiboniacci Number</h2>
+
+\[\begin{bmatrix}
+    F_{n+1} &amp; F_{n} \\
+    F_{n} &amp; F_{n-1} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+    1 &amp; 1 \\
+    1 &amp; 0 \\
+\end{bmatrix}^n\]
+
+<p>$Running\ Time = \theta(\log_2(n))$</p>
+
+<h2 id="order-statistics">Order Statistics</h2>
+
+<p>Given n elements in an array, find $k^{th}$ smallest element.</p>
+
+<ul>
+  <li>Quick Select
+    <ul>
+      <li>Expected running time $\theta(n)$</li>
+      <li>Worse case $\theta(n^2)$</li>
+    </ul>
+  </li>
+  <li>Worse-case linear time order statistics
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Select(i, n)
+1. Divide n elements into [n/5] groups of 5 elements each. Find the median of each
+group. O(n)
+2. Recurrsively select the medium x of the [n/5] group medians. T(n/5)
+3. Partition with x as pivot, let k = rank(x). O(n)
+4. if i==k then return x
+  if i&lt;k then recurrsively select ith smallest element in left part
+  else then recurrsively select (i-k)th smallest element in upper part
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<!--more-->
+
+<h2 id="hash-functions">Hash Functions</h2>
+<h3 id="division-method">Division Method</h3>
+<p>$h(k) = k\ mod\ m$</p>
+
+<p>pick $m$ to be prime and not too close to power of $2$ or $10$.</p>
+
+<h3 id="multiplication-method">Multiplication Method</h3>
+<p>$h(k)$ $=$ $A\cdot k$ $mod$ $2^w$ » $(w - r)$, $A\ odd\land2^{w-1}$ &lt; $A$ &lt; $2^w$</p>
+
+<h3 id="universal-hashing">Universal Hashing</h3>
+<p>Let $u$ be a universe of keys, and let $H$ be a finite colleciton of hash functions
+mapping $U$ to {$0,1,\dots,m-1$}.</p>
+
+<p>$H$ is $universal$ if $\forall x,y\in U,x\ne y$</p>
+
+\[\lvert\{h\in H;h(x)=h(y)\}\rvert=\lvert H\rvert/m\]
+
+<p>i.e. if $h$ is chosen randomly from $H$, the probability of collision between $x$
+and $y$ is $1/m$.</p>
+
+<h3 id="perfect-hashing">Perfect Hashing</h3>
+<p>Given $n$ keys, construct a static hash table of size $m=O(n)$ such that searching
+takes $O(1)$ time in the worst case.</p>
+
+<p>Idea: 2 level scheme with universal hashing at both levels and <em>NO</em> collisions at
+level 2.</p>
+
+<p>if $n_i$ items that hashes to level 1 slot $i$, then use $m_i=n_i^2$ slots in
+the level 2 table $S_i$.</p>
+
+<h2 id="augmented-data-structures">Augmented Data Structures</h2>
+<h3 id="dynamic-order-statistics">Dynamic Order Statistics</h3>
+
+<p>Supports: <code class="language-plaintext highlighter-rouge">Insert</code>, <code class="language-plaintext highlighter-rouge">Delete</code>, <code class="language-plaintext highlighter-rouge">Search(x)</code>, <code class="language-plaintext highlighter-rouge">Select(i)</code>, <code class="language-plaintext highlighter-rouge">Rank(x)</code>.</p>
+
+<p>Idea: use a R-B tree while keeping sizes of the subtree.</p>
+
+<p>$size[x]=size[left(x)]+size[right(x)]+1$</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Select(root, i):
+    k = size[left(x)] + 1 // k = rank(x)
+    if i == k then return x
+    if i &lt; k then return Select(left(x), i)
+    else return Select(right(x), i - k)
+</code></pre></div></div>
+<p>$Running\ Time = \theta(\log_2(n))$</p>
+
+<h3 id="interval-tree">Interval Tree</h3>
+
+<p>Supports: <code class="language-plaintext highlighter-rouge">Intert</code>, <code class="language-plaintext highlighter-rouge">Delete</code>, <code class="language-plaintext highlighter-rouge">Interval-Search</code>: Find an interval in the set that 
+overlaps a given query interval.</p>
+
+<p>Idea: use a R-B tree while keeping the largest value $m$ in the subtree.</p>
+
+\[m[x]=max\{high[int[x]], m[right(x)], m[left(x)]\}\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Interval-Search(i) // finds an interval that overlaps i
+    x = root
+    while x != nil and (low[i] &gt; high[int[x]] or low[int[x]] &gt; high[i]) do // i and int[x] don't overlap
+        if left[x] != nil and low[i] &lt;= m[left[x]] then x = left[x]
+        else x = right[x]
+    return x
+</code></pre></div></div>
+
+<h2 id="amortized-analysis">Amortized Analysis</h2>
+
+<h3 id="potential-method">Potential Method</h3>
+<p>Framework:</p>
+<ul>
+  <li>Start with data structure $D_0$</li>
+  <li>operation $i$ transforms $D_{i-1} \to D_i$</li>
+  <li>cost of the operation is $c_i$</li>
+  <li>Define a potential function:</li>
+</ul>
+
+\[\Phi:\{D_i\}\to\mathbb{R}\ such\ that\ \Phi(D_0)=0\land\Phi(D_i)\geq0\forall i\]
+
+<ul>
+  <li>Amortized cost $\hat{c_i}$ with respect to $\Phi$ is</li>
+</ul>
+
+\[\hat{c_i}=c_i+\Phi(D_i)-\Phi(D_{i-1})\]
+
+<ul>
+  <li>Total amortized cost of n operations is</li>
+</ul>
+
+\[\begin{align}
+\sum_{i=1}^{n}\hat{c_i}&amp;=\sum_{i=1}^{n}(\hat{c_i}+\Phi(D_i)-\Phi(D_{i-1}))\\
+&amp;=\sum_{i=1}^{n}\hat{c_i}+\Phi(D_n)-\Phi(D_0)\\
+&amp;\geq\sum_{i=1}^{n}c_i
+\end{align}\]
+
+<h2 id="competitive-analysis">Competitive Analysis</h2>
+<p>An online algorithm A is $\alpha$-$competitive$ if $\exists k$ such that for any
+sequence of operations $S$,</p>
+
+\[Cost_A(S)\leq\alpha\cdot C_{opt}(S)+k\]
+
+<p>where $C_{opt}(S)$ is the optimal, off-line, “God’s” algorithm.</p>
+
+<h2 id="karp-rabin-algorihm-find-s-in-t">Karp-Rabin Algorihm: Find s in t</h2>
+<p>Rolling Hash ADT:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">r.append(c)</code>: r maintains a string x where $r=h(x)$, add char c to the end of x</li>
+  <li><code class="language-plaintext highlighter-rouge">r.skip()</code>: delete the first char of x. (assume it is c).</li>
+</ul>
+
+<p>Then just use ADT to “roll over” t to find s.</p>
+
+<p><em>Note</em>: If their hashes are equal,
+there is still a probability $\leq 1/\lvert S\rvert$ that they are actual not the
+same string.</p>
+
+<p>To implement ADT: use hash simple hash function $h(k)=k\bmod m$ where $m$ is a random
+prime $\geq\lvert S\rvert$</p>
+
+<p>We can treat $x$ as a multidigit number $u$ in base $a$, where $a$ is just the alphabet
+size.</p>
+
+<p>So:</p>
+<ul>
+  <li>$r()=u\bmod m$</li>
+  <li>$r$ stores $u\bmod m$ and $\lvert x\rvert$, (really $a^{\lvert x\rvert}$), not $u$.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r.append(c)
+    u = u * a + ord(c) mod m 
+      = [(u mod p) * a + ord(c)] mod m
+      = [r() * a + ord(c)] mod m
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r.skip(c) // assume char c is skipped
+    u = [u − ord(c) * (pow(a, |u| - 1) mod p)] mod p
+      = [(u mod p) − ord(c) * (pow(a, |u| - 1) mod p)] mod p
+      = [r() − ord(c) * (pow(a, |u| - 1) mod p)] mod p
+</code></pre></div></div>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/Program-Profiling/">Program Profiling</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/09/Fibonacci-Heap/">Fibonacci Heap</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/Introduction-to-Algorithm/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#some-notes-of-introduction-to-algorithm">Some Notes of Introduction to Algorithm</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#fiboniacci-number">Fiboniacci Number</a></li>
+<li class="toc-entry toc-h2"><a href="#order-statistics">Order Statistics</a></li>
+<li class="toc-entry toc-h2"><a href="#hash-functions">Hash Functions</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#division-method">Division Method</a></li>
+<li class="toc-entry toc-h3"><a href="#multiplication-method">Multiplication Method</a></li>
+<li class="toc-entry toc-h3"><a href="#universal-hashing">Universal Hashing</a></li>
+<li class="toc-entry toc-h3"><a href="#perfect-hashing">Perfect Hashing</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#augmented-data-structures">Augmented Data Structures</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#dynamic-order-statistics">Dynamic Order Statistics</a></li>
+<li class="toc-entry toc-h3"><a href="#interval-tree">Interval Tree</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#amortized-analysis">Amortized Analysis</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#potential-method">Potential Method</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#competitive-analysis">Competitive Analysis</a></li>
+<li class="toc-entry toc-h2"><a href="#karp-rabin-algorihm-find-s-in-t">Karp-Rabin Algorihm: Find s in t</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

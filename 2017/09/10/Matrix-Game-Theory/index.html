@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Matrix Game Theory</title>
+    <meta name="description" content="  Zero Sum Game          Saddle Point      2$\times$2 Game      Matrix Game: Two players, each makes a choice secretly and play simutaneously. And there is p...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Matrix Game Theory | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Matrix Game Theory" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Zero Sum Game Saddle Point 2$\times$2 Game Matrix Game: Two players, each makes a choice secretly and play simutaneously. And there is payoff. Zero Sum Game Saddle Point $(X,Y)$ is a saddle point if entry $x$ is the largest value in column $X$ and smallest value in its row. Thm: All saddle points has the same value and appears as corners of a rectangle. 2$\times$2 Game All examples below are between two players Colin and Ros. Because it is a zero sum game, we only write Rose’s payoff, and Colin’s payoff is just the inverse. Example:   A B A 2 -3 B -1 3 If Colin plays $\frac{2}{3}A,\frac{1}{3}B$: Rose A average payout is $2\times\frac{2}{3}-3\times\frac{1}{3}=\frac{1}{3}$ Rose A average payout is $-1\times\frac{2}{3}+3\times\frac{1}{3}=\frac{1}{3}$ For Colin playing $\frac{2}{3}A,\frac{1}{3}B$ minimizes Rose’s maximum average payout; similarly Rose wants to maximize her minimum average payout. So: [max_{y\in[0,1]}{min{(2y-1(1-y), -3y+3(1-y))}}] So she wants: [2y-1(1-y)=-3y+3(1-y) y=\frac{4}{9}] So the average payout is $2y-(1-y)=\frac{1}{3}$ Note: If there is a saddle point in the game, then it can’t be solved. For a b c d with no dominant row/column: [a&gt;c\iff b\leq d a\leq c \iff b&gt;d] So for Colin whose payout is $x$: [ax+b(1-x)=cx+d(1-x) (a-b-c+d)x = d-b x=\frac{d-b}{a-c+d-b}]" />
+<meta property="og:description" content="Zero Sum Game Saddle Point 2$\times$2 Game Matrix Game: Two players, each makes a choice secretly and play simutaneously. And there is payoff. Zero Sum Game Saddle Point $(X,Y)$ is a saddle point if entry $x$ is the largest value in column $X$ and smallest value in its row. Thm: All saddle points has the same value and appears as corners of a rectangle. 2$\times$2 Game All examples below are between two players Colin and Ros. Because it is a zero sum game, we only write Rose’s payoff, and Colin’s payoff is just the inverse. Example:   A B A 2 -3 B -1 3 If Colin plays $\frac{2}{3}A,\frac{1}{3}B$: Rose A average payout is $2\times\frac{2}{3}-3\times\frac{1}{3}=\frac{1}{3}$ Rose A average payout is $-1\times\frac{2}{3}+3\times\frac{1}{3}=\frac{1}{3}$ For Colin playing $\frac{2}{3}A,\frac{1}{3}B$ minimizes Rose’s maximum average payout; similarly Rose wants to maximize her minimum average payout. So: [max_{y\in[0,1]}{min{(2y-1(1-y), -3y+3(1-y))}}] So she wants: [2y-1(1-y)=-3y+3(1-y) y=\frac{4}{9}] So the average payout is $2y-(1-y)=\frac{1}{3}$ Note: If there is a saddle point in the game, then it can’t be solved. For a b c d with no dominant row/column: [a&gt;c\iff b\leq d a\leq c \iff b&gt;d] So for Colin whose payout is $x$: [ax+b(1-x)=cx+d(1-x) (a-b-c+d)x = d-b x=\frac{d-b}{a-c+d-b}]" />
+<link rel="canonical" href="https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-09-10T15:23:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Matrix Game Theory" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Zero Sum Game Saddle Point 2$\\times$2 Game Matrix Game: Two players, each makes a choice secretly and play simutaneously. And there is payoff. Zero Sum Game Saddle Point $(X,Y)$ is a saddle point if entry $x$ is the largest value in column $X$ and smallest value in its row. Thm: All saddle points has the same value and appears as corners of a rectangle. 2$\\times$2 Game All examples below are between two players Colin and Ros. Because it is a zero sum game, we only write Rose’s payoff, and Colin’s payoff is just the inverse. Example:   A B A 2 -3 B -1 3 If Colin plays $\\frac{2}{3}A,\\frac{1}{3}B$: Rose A average payout is $2\\times\\frac{2}{3}-3\\times\\frac{1}{3}=\\frac{1}{3}$ Rose A average payout is $-1\\times\\frac{2}{3}+3\\times\\frac{1}{3}=\\frac{1}{3}$ For Colin playing $\\frac{2}{3}A,\\frac{1}{3}B$ minimizes Rose’s maximum average payout; similarly Rose wants to maximize her minimum average payout. So: [max_{y\\in[0,1]}{min{(2y-1(1-y), -3y+3(1-y))}}] So she wants: [2y-1(1-y)=-3y+3(1-y) y=\\frac{4}{9}] So the average payout is $2y-(1-y)=\\frac{1}{3}$ Note: If there is a saddle point in the game, then it can’t be solved. For a b c d with no dominant row/column: [a&gt;c\\iff b\\leq d a\\leq c \\iff b&gt;d] So for Colin whose payout is $x$: [ax+b(1-x)=cx+d(1-x) (a-b-c+d)x = d-b x=\\frac{d-b}{a-c+d-b}]","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/"},"@type":"BlogPosting","headline":"Matrix Game Theory","dateModified":"2017-09-10T15:23:00+00:00","datePublished":"2017-09-10T15:23:00+00:00","url":"https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Matrix Game Theory</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-09-10
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Game Theory" title="Category: Game Theory" rel="category">Game Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Game+Theory" title="Tag: Game Theory" rel="tag">Game Theory</a-->
+        <a href="/tag/#Game Theory" title="Tag: Game Theory" rel="tag">Game Theory</a>&nbsp;
+    
+        <!--a href="/tag/#Math" title="Tag: Math" rel="tag">Math</a-->
+        <a href="/tag/#Math" title="Tag: Math" rel="tag">Math</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#zero-sum-game" id="markdown-toc-zero-sum-game">Zero Sum Game</a>    <ul>
+      <li><a href="#saddle-point" id="markdown-toc-saddle-point">Saddle Point</a></li>
+      <li><a href="#2times2-game" id="markdown-toc-2times2-game">2$\times$2 Game</a></li>
+      <li><a href="#mtimes-n-zero-sum-game" id="markdown-toc-mtimes-n-zero-sum-game">$m\times n$ Zero Sum Game</a>        <ul>
+          <li><a href="#some-other-lemma-and-prop" id="markdown-toc-some-other-lemma-and-prop">Some Other Lemma and Prop</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#non-zero-sum-game" id="markdown-toc-non-zero-sum-game">Non-zero Sum Game</a>    <ul>
+      <li><a href="#mix-strategy" id="markdown-toc-mix-strategy">Mix Strategy</a></li>
+      <li><a href="#definitions-axioms-and-nashs-theorm" id="markdown-toc-definitions-axioms-and-nashs-theorm">Definitions, Axioms, and Nash’s Theorm</a>        <ul>
+          <li><a href="#nashs-theorm" id="markdown-toc-nashs-theorm">Nash’s Theorm</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Matrix Game</strong>: Two players, each makes a choice secretly and play simutaneously. And there is payoff.</p>
+
+<h1 id="zero-sum-game">Zero Sum Game</h1>
+
+<h2 id="saddle-point">Saddle Point</h2>
+
+<p>$(X,Y)$ is a saddle point if entry $x$ is the largest value in column $X$ and smallest value in its row.</p>
+
+<p><strong>Thm</strong>: All saddle points has the same value and appears as corners of a rectangle.</p>
+
+<h2 id="2times2-game">2$\times$2 Game</h2>
+
+<p>All examples below are between two players Colin and Ros. Because it is a <em>zero sum game</em>, we only write <strong>Rose’s</strong> payoff, and Colin’s payoff is just the inverse.</p>
+
+<p><strong>Example</strong>:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <td>A</td>
+      <td>2</td>
+      <td>-3</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>-1</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If Colin plays $\frac{2}{3}A,\frac{1}{3}B$:
+Rose A average payout is $2\times\frac{2}{3}-3\times\frac{1}{3}=\frac{1}{3}$
+Rose A average payout is $-1\times\frac{2}{3}+3\times\frac{1}{3}=\frac{1}{3}$</p>
+
+<p>For Colin playing $\frac{2}{3}A,\frac{1}{3}B$ minimizes Rose’s maximum average payout; similarly Rose wants to maximize her minimum average payout. So:</p>
+
+\[max_{y\in[0,1]}\{min\{(2y-1(1-y), -3y+3(1-y))\}\}\]
+
+<p>So she wants:</p>
+
+\[2y-1(1-y)=-3y+3(1-y)\\
+y=\frac{4}{9}\]
+
+<p>So the average payout is $2y-(1-y)=\frac{1}{3}$</p>
+
+<p><strong>Note</strong>: If there is a saddle point in the game, then it can’t be solved.</p>
+
+<p>For</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>a</td>
+      <td>b</td>
+    </tr>
+    <tr>
+      <td>c</td>
+      <td>d</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>with no dominant row/column:</p>
+
+\[a&gt;c\iff b\leq d\\
+a\leq c \iff b&gt;d\]
+
+<p>So for Colin whose payout is $x$:</p>
+
+\[ax+b(1-x)=cx+d(1-x)\\
+(a-b-c+d)x = d-b\\
+x=\frac{d-b}{a-c+d-b}\]
+
+<!--more-->
+
+<h2 id="mtimes-n-zero-sum-game">$m\times n$ Zero Sum Game</h2>
+
+<p><strong>Von Neumann’s Minimax Thm</strong>: Every $m\times n$ game has a solution. Each player has a distribution of their choices such that Rose’s average minimum payout is maximized, and Colin’s maximum average payout is minimized, and two payouts are the same.</p>
+
+<p>The proof is omitted not because I am lazy but for exercise (fact!). ¯_(ツ)_/¯</p>
+
+<h3 id="some-other-lemma-and-prop">Some Other Lemma and Prop</h3>
+
+<p>Let $A$ be a $m\times n$ matrix. $P$ is the payout vector for Rose, and $q$ is for column</p>
+
+\[\begin{align}
+P &amp;= \begin{bmatrix}
+p_{1} \\
+p_{2} \\
+\vdots \\
+p_{m}
+\end{bmatrix}
+\end{align}
+\in[0,1]^m\ s.t.\ \sum_{i=1}^mp_i=1\\
+P^TA=[p^TA_1,p^TA_2,\dots,p^TA_n]\ s.t.\ i^{th}\ entry\ is\ Rose's\ average\ payoff\ when\ Colin\ plays\ i^{th}\ strategy.\\\]
+
+\[\begin{align}
+Aq &amp;= \begin{bmatrix}
+A_{1}q \\
+A_{2}q \\
+\vdots \\
+A_{m}q
+\end{bmatrix}
+\end{align}\\
+r=maximin=max(min(p^TA_i))\ (for\ Rose)\\
+c=minimax=min(max(Aq))\ (for\ Colin)\]
+
+<p><strong>Lemma</strong>:</p>
+
+\[for\ any\ strategy:\ \forall p,q\ s.t.\ p,q\in[0,1]^m,\sum p_i=\sum q_i=q\\
+min_{i=1,2,\dots n}((p^TA)_i)\leq p^TAq\\
+max_{i=1,2,\dots m}((Aq)_i)\geq p^TAq\\
+\implies min(p^TA)\leq max(Aq)\\
+\implies max(min(p^TA))\leq min(max(Aq))\\
+\implies r\leq c\]
+
+<p><strong>Prop</strong>: $p,q$ are strategies for Rose, Colin such that</p>
+
+\[min(p^TA)=max(Aq)=V\\
+Then\\
+If\ p_i&gt;0\implies(Aq)_i=V\\
+If\ q_i&gt;0\implies(p^TA)_i=V\]
+
+<p>So how do we find the minimax\maximin? Use linear programming, which is not interesting at all so we will just skip that.</p>
+
+<h1 id="non-zero-sum-game">Non-zero Sum Game</h1>
+
+<p>All examples below are between two players Colin and Rose, where Colin’s payoff is the column one and Rose’s payoff is the row; i.e. for $(X,Y)$, Colin has $X$ and Rose has $Y$.</p>
+
+<p>Let start with a simple example</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>(-1,-1)</td>
+      <td>(-10, 0)</td>
+    </tr>
+    <tr>
+      <td>(0, -10)</td>
+      <td>(-5, -5)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Obviously, the point (-5, -5) is the pure Nash equilibrium.</p>
+
+<h2 id="mix-strategy">Mix Strategy</h2>
+
+<p>A mix strategy is just a vector of probability of strategy.</p>
+
+<p>If $q$ is a mix strategy for Colin, a best response for Rose is any $p$ with $p_i=0$ if $(Rq)$ is not a max entry.</p>
+
+<p>A <strong>Nash Equilibrium</strong> is a pair $(p,q)$ of mix strategy such that each is a best response for the other.</p>
+
+<p><strong>Thm</strong>: for $2\times2$ game, $(p,q)$ is a Nash Eq if $p^TC$ and $Rq$ have equal entries.</p>
+
+<h2 id="definitions-axioms-and-nashs-theorm">Definitions, Axioms, and Nash’s Theorm</h2>
+
+<p>We know that Nash equilibrium is not necessary global optimal. For the example above, they could have picked (-1, -1), which is better than (-5, -5), but they end up with the worse one. Therefore, we might want someone to pick a position for them, instead of letting them come up with a solution themselves.</p>
+
+<p>Given a game, the God selects a position for R and C that is a “fair”. To be a “fair” decision \((x*,y*)\) the outcome should be:</p>
+<ul>
+  <li><strong>Pareto Optimal</strong>: No $(x,y)$ with \((x,y)\geq(x*,y*)\)</li>
+  <li>\((x*,y*)\) should be at least their maximin strategy with repsect to their own game (or they will just pick the maximin strategy)</li>
+</ul>
+
+<p>We call the numbers in the matrix <strong>utility</strong>, because it is not necessarily be money.</p>
+
+<p>Also, we can map the matrix geometrically, where each payoff is just a point. I won’t show it here, because it should be obvious. After placing all the points, we can draw a polygon by connecting those points. So the boundary on the North-East direction of the convex hull is pareto optimal. If the maximin solution point is inside the convex hull, then the boundary of the convex hull on the North-East direction of the <em>maximin solution</em> (which is a point) is called <strong>negotiation set</strong>.</p>
+
+<p>Then we have the following axioms: Any “fair” decision should be:</p>
+<ol>
+  <li>In negotiation set.</li>
+  <li>If either player’s utilities, say Roses’, is tranformed by $g(x)=mx+n,m&gt;0$, then \((g(x*),y*)\) is a fair decision in the new game.</li>
+  <li>If the payoff polygon is symmetric about the line $x=y$, then \((x*,y*)\) is on this line.</li>
+  <li>Suppose $P$ is a payoff polygon, and a fixed “status quo” point, which could be the maximin or other “fall back” point, $SQ$ is given. Suppose $Q$ is another polygon contained in $P$ where $SQ$, \((x*,y*)\in Q\), then \((x*,y*)\) is the fair decision for $Q$.</li>
+</ol>
+
+<h3 id="nashs-theorm">Nash’s Theorm</h3>
+
+<p><strong>Nash’s Thm</strong>:</p>
+
+<p>There is <em>only one</em> point \((x*,y*)\) that satisfies all of the above axioms.</p>
+
+<p>If $SQ=(x_0,y_0)$, then \((x*,y*)\) maximizes $(x-x_0)(y-y_0)$, or \((x*,y*)=(x_0,y_0)\)</p>
+
+<p>The proof is omitted not because I am lazy but for exercise (fact!). ¯_(ツ)_/¯</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/08/26/Combinatorial-Game-Theory/">Combinatorial Game Theory</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/10/09/Remote-Shell-Session-Setup/">Remote Shell Session Setup: iTerm2+tmux+mosh</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/09/10/Matrix-Game-Theory/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#zero-sum-game">Zero Sum Game</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#saddle-point">Saddle Point</a></li>
+<li class="toc-entry toc-h2"><a href="#2times2-game">2$\times$2 Game</a></li>
+<li class="toc-entry toc-h2"><a href="#mtimes-n-zero-sum-game">$m\times n$ Zero Sum Game</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#some-other-lemma-and-prop">Some Other Lemma and Prop</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#non-zero-sum-game">Non-zero Sum Game</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#mix-strategy">Mix Strategy</a></li>
+<li class="toc-entry toc-h2"><a href="#definitions-axioms-and-nashs-theorm">Definitions, Axioms, and Nash’s Theorm</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#nashs-theorm">Nash’s Theorm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Memory Management</title>
+    <meta name="description" content="  Linking and LoadingThis lecture will attempt to cover the various concepts that are important to the memory management functions that most operating system...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Memory-Management/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Memory Management | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Memory Management" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Linking and Loading This lecture will attempt to cover the various concepts that are important to the memory management functions that most operating systems must perform. Linking and Loading program addresses are logical, machine addresses are physical linking – resolving logical addresses relative to the entire program .o files have logical addresses when multiple .o files are linked, addresses must be altered symbol table contains necessary information Unix utility ld() is the linker loading – the introduction of a program into physical memory logical program addresses must be converted to physical machine addresses When the code is loaded into memory, the compiler generates code so that variables are accessed via offsets from memory locations that are determined when the program boots. For example, consider the fictitious code depicted in the following figure: The local variables A,B, and C are all addressed via the SP register by computing a memory address by adding the contents of the SP to the contents of an offset register (R1 in the figure). Thus, when the program is loaded into memory, the loader “knows” that the stack pointer will start at location 0x7f00000c and it tells the OS to initialize the SP with this value. The call to foo() can been compiled to pus the space for three integers onto the stack and the code accesses the variables indirectly through the SP and individual offsets for each variable. That’s fine for the stack where there is always a machine register that defines the top of the stack. CPUs do not have explicit registers for the other segments in a Linux a.out process image, however. Thus, when accessing global variables, the compiler must either “burn” a register for the start of the data segment (which is costly since there aren’t enough registers as it is) or it must “hard code” addresses (as in the following figure): Again, the compiler has chosen to access memory via indirect addressing, but it does so with address constants to save registers for computation. This work fine when the program is always loaded at the same location in memory the program is the only program in memory However, consider what happens if there are to be two processes in memory at the same time. On this figure, Proc1 has been loaded into the top half of the physical memory and Proc 2 into the bottom half. Presumably the OS is prepared to switch back and forth between the two processes using time slicing and context switching. However notice that if it is physical memory alone, the compiler must “know” where the program will be loaded so that it can adjust the address constants appropriately. The stack pointer isn’t a problem, but the global variables are. Worse, in this scenario, one program can read and update the variables belonging to the other simply by addressing the memory. For example, if Proc 1 executes the instruction sequence LD SP, 0x7f00000C it will suddenly be accessing the stack variables of Proc 2." />
+<meta property="og:description" content="Linking and Loading This lecture will attempt to cover the various concepts that are important to the memory management functions that most operating systems must perform. Linking and Loading program addresses are logical, machine addresses are physical linking – resolving logical addresses relative to the entire program .o files have logical addresses when multiple .o files are linked, addresses must be altered symbol table contains necessary information Unix utility ld() is the linker loading – the introduction of a program into physical memory logical program addresses must be converted to physical machine addresses When the code is loaded into memory, the compiler generates code so that variables are accessed via offsets from memory locations that are determined when the program boots. For example, consider the fictitious code depicted in the following figure: The local variables A,B, and C are all addressed via the SP register by computing a memory address by adding the contents of the SP to the contents of an offset register (R1 in the figure). Thus, when the program is loaded into memory, the loader “knows” that the stack pointer will start at location 0x7f00000c and it tells the OS to initialize the SP with this value. The call to foo() can been compiled to pus the space for three integers onto the stack and the code accesses the variables indirectly through the SP and individual offsets for each variable. That’s fine for the stack where there is always a machine register that defines the top of the stack. CPUs do not have explicit registers for the other segments in a Linux a.out process image, however. Thus, when accessing global variables, the compiler must either “burn” a register for the start of the data segment (which is costly since there aren’t enough registers as it is) or it must “hard code” addresses (as in the following figure): Again, the compiler has chosen to access memory via indirect addressing, but it does so with address constants to save registers for computation. This work fine when the program is always loaded at the same location in memory the program is the only program in memory However, consider what happens if there are to be two processes in memory at the same time. On this figure, Proc1 has been loaded into the top half of the physical memory and Proc 2 into the bottom half. Presumably the OS is prepared to switch back and forth between the two processes using time slicing and context switching. However notice that if it is physical memory alone, the compiler must “know” where the program will be loaded so that it can adjust the address constants appropriately. The stack pointer isn’t a problem, but the global variables are. Worse, in this scenario, one program can read and update the variables belonging to the other simply by addressing the memory. For example, if Proc 1 executes the instruction sequence LD SP, 0x7f00000C it will suddenly be accessing the stack variables of Proc 2." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/Memory-Management/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/Memory-Management/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T15:34:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Memory Management" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Linking and Loading This lecture will attempt to cover the various concepts that are important to the memory management functions that most operating systems must perform. Linking and Loading program addresses are logical, machine addresses are physical linking – resolving logical addresses relative to the entire program .o files have logical addresses when multiple .o files are linked, addresses must be altered symbol table contains necessary information Unix utility ld() is the linker loading – the introduction of a program into physical memory logical program addresses must be converted to physical machine addresses When the code is loaded into memory, the compiler generates code so that variables are accessed via offsets from memory locations that are determined when the program boots. For example, consider the fictitious code depicted in the following figure: The local variables A,B, and C are all addressed via the SP register by computing a memory address by adding the contents of the SP to the contents of an offset register (R1 in the figure). Thus, when the program is loaded into memory, the loader “knows” that the stack pointer will start at location 0x7f00000c and it tells the OS to initialize the SP with this value. The call to foo() can been compiled to pus the space for three integers onto the stack and the code accesses the variables indirectly through the SP and individual offsets for each variable. That’s fine for the stack where there is always a machine register that defines the top of the stack. CPUs do not have explicit registers for the other segments in a Linux a.out process image, however. Thus, when accessing global variables, the compiler must either “burn” a register for the start of the data segment (which is costly since there aren’t enough registers as it is) or it must “hard code” addresses (as in the following figure): Again, the compiler has chosen to access memory via indirect addressing, but it does so with address constants to save registers for computation. This work fine when the program is always loaded at the same location in memory the program is the only program in memory However, consider what happens if there are to be two processes in memory at the same time. On this figure, Proc1 has been loaded into the top half of the physical memory and Proc 2 into the bottom half. Presumably the OS is prepared to switch back and forth between the two processes using time slicing and context switching. However notice that if it is physical memory alone, the compiler must “know” where the program will be loaded so that it can adjust the address constants appropriately. The stack pointer isn’t a problem, but the global variables are. Worse, in this scenario, one program can read and update the variables belonging to the other simply by addressing the memory. For example, if Proc 1 executes the instruction sequence LD SP, 0x7f00000C it will suddenly be accessing the stack variables of Proc 2.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/Memory-Management/"},"@type":"BlogPosting","headline":"Memory Management","dateModified":"2017-06-08T15:34:00+00:00","datePublished":"2017-06-08T15:34:00+00:00","url":"https://www.gaeblog.com/2017/06/08/Memory-Management/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Memory Management</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Operating System" title="Category: Operating System" rel="category">Operating System</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Memory" title="Tag: Memory" rel="tag">Memory</a-->
+        <a href="/tag/#Memory" title="Tag: Memory" rel="tag">Memory</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#linking-and-loading" id="markdown-toc-linking-and-loading">Linking and Loading</a></li>
+  <li><a href="#base-and-bounds" id="markdown-toc-base-and-bounds">Base and Bounds</a></li>
+  <li><a href="#static-versus-dynamic-linking" id="markdown-toc-static-versus-dynamic-linking">Static versus Dynamic Linking</a></li>
+  <li><a href="#memory-partitioning" id="markdown-toc-memory-partitioning">Memory Partitioning</a>    <ul>
+      <li><a href="#internal-fragmentation" id="markdown-toc-internal-fragmentation">Internal Fragmentation</a></li>
+      <li><a href="#variable-memory-partitions" id="markdown-toc-variable-memory-partitions">Variable Memory Partitions</a></li>
+      <li><a href="#external-fragmentation" id="markdown-toc-external-fragmentation">External Fragmentation</a></li>
+      <li><a href="#how-does-it-fit" id="markdown-toc-how-does-it-fit">How Does it Fit?</a></li>
+      <li><a href="#which-is-best" id="markdown-toc-which-is-best">Which is best?</a></li>
+    </ul>
+  </li>
+  <li><a href="#swapping-and-backing-store" id="markdown-toc-swapping-and-backing-store">Swapping and Backing Store</a>    <ul>
+      <li><a href="#compacting-memory" id="markdown-toc-compacting-memory">Compacting Memory</a></li>
+    </ul>
+  </li>
+  <li><a href="#demand-paging" id="markdown-toc-demand-paging">Demand Paging</a>    <ul>
+      <li><a href="#the-page-table-and-address-mapping" id="markdown-toc-the-page-table-and-address-mapping">The Page Table and Address Mapping</a></li>
+      <li><a href="#the-details" id="markdown-toc-the-details">The Details</a></li>
+      <li><a href="#backing-store-disk-block-descriptor-table" id="markdown-toc-backing-store-disk-block-descriptor-table">Backing Store: Disk Block Descriptor Table</a></li>
+      <li><a href="#frame-table" id="markdown-toc-frame-table">Frame Table</a></li>
+      <li><a href="#page-faults" id="markdown-toc-page-faults">Page Faults</a></li>
+    </ul>
+  </li>
+  <li><a href="#initiating-an-address-space" id="markdown-toc-initiating-an-address-space">Initiating an Address Space</a>    <ul>
+      <li><a href="#dirty-pages" id="markdown-toc-dirty-pages">Dirty Pages</a></li>
+      <li><a href="#more-on-freeing-frames" id="markdown-toc-more-on-freeing-frames">More on Freeing Frames</a></li>
+      <li><a href="#identifying-run-sets-and-page-stealing" id="markdown-toc-identifying-run-sets-and-page-stealing">Identifying Run Sets and Page Stealing</a></li>
+    </ul>
+  </li>
+  <li><a href="#the-clock-algorithm" id="markdown-toc-the-clock-algorithm">The Clock Algorithm</a>    <ul>
+      <li><a href="#thrashing" id="markdown-toc-thrashing">Thrashing</a></li>
+      <li><a href="#swapping-and-paging-together" id="markdown-toc-swapping-and-paging-together">Swapping and Paging Together</a></li>
+    </ul>
+  </li>
+  <li><a href="#and-thats-it" id="markdown-toc-and-thats-it">And that’s it.</a>    <ul>
+      <li><a href="#issues-with-demand-paging" id="markdown-toc-issues-with-demand-paging">Issues with Demand Paging</a></li>
+      <li><a href="#segmentation" id="markdown-toc-segmentation">Segmentation</a></li>
+      <li><a href="#hierarchical-page-table" id="markdown-toc-hierarchical-page-table">Hierarchical Page Table</a></li>
+    </ul>
+  </li>
+  <li><a href="#inverted-page-table" id="markdown-toc-inverted-page-table">Inverted Page Table</a></li>
+</ul>
+
+<p>This lecture will attempt to cover the various concepts that are important to the memory management functions that most operating systems must perform.</p>
+
+<h2 id="linking-and-loading">Linking and Loading</h2>
+
+<ul>
+  <li>program addresses are logical, machine addresses are physical</li>
+  <li>linking – resolving logical addresses relative to the entire program
+    <ul>
+      <li>.o files have logical addresses</li>
+      <li>when multiple .o files are linked, addresses must be altered</li>
+      <li>symbol table contains necessary information</li>
+      <li>Unix utility <strong>ld()</strong> is the linker</li>
+    </ul>
+  </li>
+  <li>loading – the introduction of a program into physical memory</li>
+  <li>logical program addresses must be converted to physical machine addresses</li>
+</ul>
+
+<p>When the code is loaded into memory, the compiler generates code so that variables are accessed via offsets from memory locations that are determined when the program boots. For example, consider the fictitious code depicted in the following figure:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig1.png" alt="" /></p>
+
+<p>The local variables <em>A,B, and C</em> are all addressed via the <em>SP</em> register by computing a memory address by adding the contents of the <em>SP</em> to the contents of an offset register (<em>R1</em> in the figure).</p>
+
+<p>Thus, when the program is loaded into memory, the loader “knows” that the stack pointer will start at location <em>0x7f00000c</em> and it tells the OS to initialize the <em>SP</em> with this value. The call to <em>foo()</em> can been compiled to pus the space for three integers onto the stack and the code accesses the variables indirectly through the <em>SP</em> and individual offsets for each variable.</p>
+
+<p>That’s fine for the stack where there is always a machine register that defines the top of the stack. CPUs do not have explicit registers for the other segments in a Linux a.out process image, however. Thus, when accessing global variables, the compiler must either “burn” a register for the start of the data segment (which is costly since there aren’t enough registers as it is) or it must “hard code” addresses (as in the following figure):</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig2.png" alt="" /></p>
+
+<p>Again, the compiler has chosen to access memory via indirect addressing, but it does so with address constants to save registers for computation.</p>
+
+<p>This work fine when</p>
+
+<ul>
+  <li>the program is always loaded at the same location in memory</li>
+  <li>the program is the only program in memory</li>
+</ul>
+
+<p>However, consider what happens if there are to be two processes in memory at the same time.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig3.png" alt="" /></p>
+
+<p>On this figure, <em>Proc1</em> has been loaded into the top half of the physical memory and <em>Proc 2</em> into the bottom half. Presumably the OS is prepared to switch back and forth between the two processes using time slicing and context switching.</p>
+
+<p>However notice that if it is physical memory alone, the compiler must “know” where the program will be loaded so that it can adjust the address constants appropriately. The stack pointer isn’t a problem, but the global variables are.</p>
+
+<p>Worse, in this scenario, one program can read and update the variables belonging to the other simply by addressing the memory. For example, if <em>Proc 1</em> executes the instruction sequence</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LD SP, 0x7f00000C
+</code></pre></div></div>
+
+<p>it will suddenly be accessing the stack variables of <em>Proc 2</em>.</p>
+
+<!--more-->
+
+<h2 id="base-and-bounds">Base and Bounds</h2>
+
+<p>One simple solution to both problems is for the CPU to include “base and bounds” registers that “fence” memory.</p>
+
+<ul>
+  <li>when the program is loaded, a <strong>base register</strong> is set to contain the physical address of where the first logical address of the program will be located in memory</li>
+  <li>a <strong>bounds register</strong> is loaded with the physical address of the last (highest addressed) physical memory location that the program can access</li>
+  <li>all program instructions refer to <em>logical addresses</em></li>
+  <li>whenever an instruction attempts to access a logical memory location, the <em>hardware</em> automatically
+    <ul>
+      <li>adds the logical address to the contents of the <strong>base register</strong> to form the physical address of the access</li>
+      <li>compares the physical address to both the <strong>base register</strong> and the <strong>bounds register</strong></li>
+      <li>if the physical address is less than the base or greater than the bounds an <em>address out of range</em> exception is generated</li>
+      <li>otherwise, the access processed with the new physical address</li>
+    </ul>
+  </li>
+  <li>OS must ensure that base+bounds pairs for different programs do not overlap</li>
+  <li>can also be implemented with a check on the <em>logical</em> bounds (see page 284)</li>
+</ul>
+
+<p>Thus the compiler uses the same address constants for every program it compiles, usually assuming that the program will be loaded at location zero. When the OS loads the program, it sets the <em>base register</em> to the physical address where the program should start and the CPU adds this value to <strong>every</strong> address that the process uses when it is executing.</p>
+
+<p>For example, in the figure, the <em>base</em> register would be loaded with <em>0x3f800006</em> when <em>Proc 2</em> is running. The compiler, however, would compile <em>Proc 2</em> as if it were always loaded at location <em>0x00000000</em> and the CPU adds the contents of the base register to every attempt to access memory before the access takes place.</p>
+
+<p>Notice that when the CPU switches to run <em>Proc 1</em> it must change the <em>base</em> register to contain <em>0x00000000</em> so that the addresses in <em>Proc 1</em> are generated correctly. When the CPU switches back to <em>Proc 2</em> it must reload the correct base address into the <em>base</em> register at context switch time, and so on.</p>
+
+<p>Notice also that it is possible, using this scheme, to switch <em>Proc 1</em> and <em>Proc 2</em> in memory. If, say, <em>Proc 1</em> were written to disk and then <em>Proc 2</em> were written to disk and then <em>Proc 1</em> were read from disk, but this time into memory starting at <em>0x3f800006</em> it would run just fine <strong>as long as the base register were set to <em>0x3f800006</em> every time it runs</strong>.</p>
+
+<p>The limit register is just like the base register except it indicates the largest address that the process can access. Because it isn’t used to compute the address it is sometimes expressed as a length. That is, the <em>limit</em> register contains the maximum offset (from zero) that any address can take on.</p>
+
+<p>When a process issues a request for memory, then, the address that has been generated by the compiler is first checked against the value in the <em>limit</em> register. If the address is larger than the <em>limit</em> value, the address is not allowed (and a protection fault is generated, typically). otherwise, the address is added to the value in the <em>base</em> register and sent to the memory subsystem of the machine.</p>
+
+<p>Because these operations are done in the CPU hardware they can be implemented to run at machine speed. If the instructions necessary to change the <em>base</em> and <em>limit</em> registers are protected instructions, then only the OS can change them and processes are protected from accessing each other’s memory.</p>
+
+<h2 id="static-versus-dynamic-linking">Static versus Dynamic Linking</h2>
+
+<ul>
+  <li>static linking: all addresses are resolved before the program is loaded</li>
+  <li>dynamic linking: addresses are resolved “on demand”</li>
+  <li>when an address exception occurs, the exception handler
+    <ul>
+      <li>checks the logical address to determine if it refers to a routine or variable that must be dynamically linked from the information kept in a “link table”</li>
+      <li>if it is a valid address, the routine is loaded and the memory management state is adjusted</li>
+      <li>for example: bounds registers would be incremented to reflect additional code or variable</li>
+      <li>instruction causing the exception is restarted</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="memory-partitioning">Memory Partitioning</h2>
+
+<p>The idea of loading programs that are <em>relocatable</em> at different locations in memory and using the CPU to implement memory protection is called <em>memory partitioning</em>. In the previous example, the memory is divided into two sections (called partitions). A program can run in each partition and when it does the CPU <em>base</em> and <em>limit</em> registers (set only by the OS) implement memory protection.</p>
+
+<p>This type of memory partitioning scheme is called “fixed” partitioning and it was used in some of the early mainframe computers. When the machine is configured, the administrator (or systems programmer) would set the number of partitions that the machine could use and the OS would schedule processes to use them.</p>
+
+<h3 id="internal-fragmentation">Internal Fragmentation</h3>
+
+<p>Notice, though, that the scheme can be inefficient with respect to memory usage. If all of the processes are the same and they are written to “take up” the size of a memory partition, then memory is fully utilized. However, that almost certainly is never the case. Instead, small processes that do not require all of the memory in the partition to which they are assigned simply leave that memory idle.</p>
+
+<p>In the Linux example shown above, the space between the heap (which grows toward higher memory addresses) and the stack (which grows toward lower memory addresses) is unused memory. If the text segment is loaded at the lowest address in a partition and the initial <em>SP</em> is set to the highest address in the partition when the process is first loaded, any space between the heap and stack boundaries is idle memory. The process may use it, but it is not available to other processes. Thus a process with a small text, data, heap, and stack still takes up a full partition even if it only uses a small fraction of the available memory space.</p>
+
+<p>This problem is called <strong>fragmentation</strong> since the memory is divided into fragments (each of which is contiguous) of “used” and “unused” memory. More specifically, when the partitions are fixed in size, the term <strong>internal fragmentation</strong> is often used to indicate that the fragmentation is internal to the partitions.</p>
+
+<h3 id="variable-memory-partitions">Variable Memory Partitions</h3>
+
+<p>Notice that a partition is an artificial boundary that is determined by the values of the <em>base</em> and <em>limit</em> registers chosen by the OS. For example, if there are only six different values for the <em>base</em> register that the OS will ever choose, the memory will have seven partitions.</p>
+
+<p>It is possible, however, for the OS to choose different values dynamically as memory demand varies. Because the code is relocatable based on the <em>base</em> and <em>limit</em> registers it can vary the partition boundaries possibly reloading a program into a smaller or larger partition.</p>
+
+<p>For example, when the OS boots, if it runs a single process, that process can be given all of memory. If a second process arrives to be scheduled, the OS can</p>
+
+<ul>
+  <li>stop the first process</li>
+  <li>copy all of the processes used memory into half of the memory</li>
+  <li>reset the <em>base</em>, <em>limit</em> and <em>SP</em> to reflect the new memory region</li>
+  <li>load the new process into the memory that has been freed and set its <em>base</em>, <em>limit</em> and <em>SP</em> accordingly</li>
+  <li>start both processes</li>
+</ul>
+
+<p>In practice, this relocating of an existing process is rarely implemented because it is expensive (in terms of overhead) and complex. The process must be stopped and its memory copied. If there is only one CPU in the system, then no other processes can run while this copy takes place. Also notice that the compiler must be very carefully written to not put memory addresses in registers (since some of those addresses, like stack addresses, will change when the process is moved). That is, if the field length shrinks (limit is decremented) the offsets of variables will change. The compiler can ensure that all references are relative to some register that is loaded when the program runs to make the code completely relocatable.</p>
+
+<p>For these reasons the typical implementation would give each process a maximum <em>field length</em> when it was created (usually based on some user input or administrator set parameters). Once a process began executing it would not change its field length. The OS would then assign a <em>base</em> register value when the process runs based on the other processes already running in memory.</p>
+
+<p>For example, consider the three processes that have been loaded into memory as shown in the following figure.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig4.png" alt="" /></p>
+
+<p>In the figure, <em>Proc1</em> occupies the first 100 MB of space in a memory that is 1GB is total size. <em>Proc2</em> occupies the next 200 MB and <em>Proc 3</em> occupies the 500 MB after that. The last 200 MB are free.</p>
+
+<p>When these processes were loaded, the OS chose the <em>base</em> register value for each so that the processes would pack into memory in this way. That is, the <em>base</em> register value for the next process is the sum of the <em>base</em> and <em>limit</em> values of the one before it. If a fourth process were to arrive, the OS would schedule it to the last 200 MB of memory accordingly.</p>
+
+<h3 id="external-fragmentation">External Fragmentation</h3>
+
+<p>Next, consider what happens if <em>Proc2</em> finishes execution.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig5.png" alt="" /></p>
+
+<p>The region freed by <em>Proc2</em> between <em>Proc1</em> and <em>Proc3</em> can now be assigned to a new process as can the free region between the end of <em>Proc3</em> and the end of memory.</p>
+
+<p>Notice, though, that there are 400 MB free but the largest process that can be run is only 200 MB. What happens if a 300 MB process arrives? It cannot be started even though only 60% of the memory is occupied.</p>
+
+<p>This type of fragmentation is often called <strong>external fragmentation</strong> because the wasted space occurs outside of each assigned partition.</p>
+
+<h3 id="how-does-it-fit">How Does it Fit?</h3>
+
+<p>Notice that the OS has a choice when it goes to assign a newly arrived process that does fit. For example, if a new process that requires 100 MB arrives, the OS can either place it in the hole left by <em>Proc2</em> or in the hole between the end of <em>Proc3</em> and the end of memory. Let’s say it chooses the hole left by <em>Proc2</em>:</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig6.png" alt="" /></p>
+
+<p>as shown for <em>Proc4</em>.</p>
+
+<p>So far so good, but now consider what happens if the fifth process to arrive requires 75 MB. In which hole should the OS place this job? Generally, there are three options:</p>
+
+<ul>
+  <li><strong>first-fit:</strong>starting from one end, choose the first partition in which the process will fit,</li>
+  <li><strong>best-fit:</strong>scan the entire list of free partitions and choose the one that exceeds the size of the process by the smallest amount (break ties any way you like)</li>
+  <li><strong>worst-fit:</strong>scan the list of partitions and find the one that exceed the size of the process by the greatest amount (again, break ties in any way)</li>
+</ul>
+
+<p>In this example, if the OS used first-fit (and started from the top of the address space in the figure) it would place the 75 MB job in the hole between the end of <em>Proc4</em> and the beginning of <em>Proc3</em> since that would be the first hole it would come to in the list of holes. If the OS used best-fit, it would make the same decision (since 75 MB fits “better” into 100 MB than 200 MB) and if it used worst-fit it would choose the 200 MB hole between the end of <em>Proc3</em> and the end of memory.</p>
+
+<h3 id="which-is-best">Which is best?</h3>
+
+<p>Which is best? That’s a matter of some debate. There has been a great deal of research looking at this question and, curiously, there isn’t a definitive theoretical result. You can argue it pretty much any way you like. Best-fit tends to maximize the number of small holes. Thus if your job size mix doesn’t include a lot of small jobs, it might not be best. Worst-fit tends to maximize the number of big holes. That sounds like a good thing, but in simulation it tends to do worse that best-fit or first-fit. First-fit is fastest (since you don’t need to scan the entire list of free partitions) and it tends to make the hole size tend toward the average. Generally speaking, in the absence of some specific distribution information about sizes, most implementations choose first-fit due to its simplicity. However that is a rule of thumb and not an axiom and there are other allocation schemes one can consider.</p>
+
+<h2 id="swapping-and-backing-store">Swapping and Backing Store</h2>
+
+<p>Memory is memory and bytes are bytes so as long as the OS can copy memory to disk and back again, it is possible for the OS to run more processes than can fit in memory by “parking” some of them on disk and swapping them for running processes periodically. Notice also that if the processes are relocatable in memory, they need not be swapped back into same region of memory when they are reloaded.</p>
+
+<p>To swap a process out, the OS must</p>
+
+<ul>
+  <li>cause the process to stop (usually by taking it off the run queue during an interrupt)</li>
+  <li>save off all of the processes CPU state (registers, for the most part)</li>
+  <li>find a place on disk to store the memory image of the process and its register state</li>
+  <li>copy the memory that the process occupies to disk</li>
+  <li>add the partition the process occupied to the list of free partitions</li>
+</ul>
+
+<p>In addition, it is nice if the OS zeros out the memory that the process just vacated so that another processes doesn’t get to see its “secrets” if it is loaded to the same region of memory. This zero fill can be done later just before the new process loads as well.</p>
+
+<p>Similarly, to swap a process in, the OS must</p>
+
+<ul>
+  <li>find a free memory partition large-enough to hold the process</li>
+  <li>copy its memory image from disk into the memory partition</li>
+  <li>make sure its saved CPU state is available when the process runs again</li>
+  <li>put the process on the runnable queue</li>
+</ul>
+
+<p>Thus, as a form of slow motion “time slicing” the OS can multiplex the memory by swapping processes to disk. The disk and copy times are long compared to CPU execution speeds. Thus the interaction between the CPU process scheduler and the memory scheduler must be “tuned.” The typical interaction is to allow the in-memory processes to run for some long period while others wait on disk. As the disk processes “age” their priority for memory goes up (although at a slower rate than the aging rate for processes that are waiting for CPU in a CPU timeslicing context). Eventually, when a disk process has waited long enough, an in-memory process is selected for eviction to make room for the in-coming disk process, and so on.</p>
+
+<p>Notice that the first-fit, best-fit, worst-fit situation pertains to the disk as well. The backing store is usually a fixed region of disk space (larger than the size of main memory) that must be partitioned to hold process images while they are waiting to get back into memory.</p>
+
+<p>Modern operating systems such as Linux use swapping (hence the term “swap space” or “swap partition” that you may have heard in conjunction with configuring a Linux system). As we will see, however, they do so in a slightly different way than we have discussed thus far.</p>
+
+<h3 id="compacting-memory">Compacting Memory</h3>
+
+<p>Before machines supported “demand paging” (see below) one use for swapping was to “clean” the memory of external fragmentation. If the OS determined that processes were not being accepted because there were too many holes and the holes, if coalesced, would allow more processes to be admitted, one thing it could do was to swap “all” processes out and then swap them back in again, packed one against the other. This form of “defragmentation” was not popular with interactive users, however, since it meant that the OS would need to stop everything until memory could be compacted.</p>
+
+<p>The notion of physical memory partitioning may seem quaint by modern standards. It is efficient with respect to execution speed, however, since the <em>base</em> and <em>limit</em> register accesses are almost trivial in terms of CPU cycles lost to memory protection. So much so that specialized supercomputers like those <a href="http://en.wikipedia.org/wiki/Cray">built by Cray</a> used this scheme for many years.</p>
+
+<h2 id="demand-paging">Demand Paging</h2>
+
+<p>Modern systems use a different scheme for memory management, however, that is often referred to as “virtual memory” but which is more properly termed <em>demand paging</em>.</p>
+
+<p>The basic idea is pretty simple. Instead of having a single <em>base</em> and <em>limit</em> register for the entire process (thereby requiring the whole process to be in contiguous memory), the CPU supports the notion of a “map” that automatically converts a relocatable address to a physical memory address. Thus, as is the case with memory partitioning, each process is compiled so that its internal addressing is relative to address <em>0x00000000</em> and the hardware maps each address to a physical memory address automatically. In the case of <em>base</em> and <em>limit</em> the mapping is an addition of the value contained in the <em>base</em> base register to the address to provide an address in physical memory.</p>
+
+<p>For demand paging, however, the map is a table in memory that the OS sets up which tells the CPU <em>explicitly</em> where to find a memory reference in physical memory. The OS loads the address of this table into a special CPU register when the process is scheduled and all references to memory made by the process are subjected to the mapping operation by the CPU so that they can be translated into physical addresses.</p>
+
+<p>However, to cut down on the number of entries in the table, individual address are not mapped. Rather, the memory is broken up into <em>pages</em> of a fixed size. All pages are the same size and, for reasons of efficiency, the size needs to be a power of 2.</p>
+
+<h3 id="the-page-table-and-address-mapping">The Page Table and Address Mapping</h3>
+
+<p>The first thing to appreciate about demand paging is the relationship between binary numbers and addresses. An address is really just an offset from zero that refers to a byte in memory that the CPU uses to access that byte.</p>
+
+<p>However, consider the following example address</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0x000002D0
+</code></pre></div></div>
+
+<p>This address is <em>720</em> in decimal. Let’s look at it in binary, though</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0000 0000 0000 0000 0000 0010 1101 0000
+</code></pre></div></div>
+
+<p>So far so good? Okay now think of it this way. Instead of it being the 720th byte in memory, imagine it to be the 208th byte in a 512 byte page that has been mapped to some physical page frame in physical memory. That is, the low-order <em>9 bits</em> in the address give you an offset from the nearest 512 byte frame in the memory space. Put another way, you can think of an address as being an offset from zero or you can break it up into pages that are powers of two in size, in which case</p>
+
+<ul>
+  <li>the lower order bits give you the offset in the page</li>
+  <li>the high order bits give you the page number, in linear order, among all frames</li>
+  <li>the boundary between low-order and high-order is the number of bits necessary to express the page size</li>
+</ul>
+
+<p>thus multiplying the page number by the page size and adding the offset gives you the linear address.</p>
+
+<p>For example, if the page size is 512 bytes, then boundary between page number and offset is defined so that the low-order offset is <em>9 bits</em> since <em>2^9</em> is 512.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>          Page Number        |   Offset
+                             |
+0000 0000 0000 0000 0000 001 | 0 1101 0000
+                             |
+                             |
+</code></pre></div></div>
+
+<p>The left most <em>23 bits</em> in this address give the page number which, in this example, is <em>1</em>. The offset is <em>0xD0</em> which, in decimal, is <em>208</em>. Thus to compute the linear address we can multiply the page number by the page size and add the offset:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Page Number     Page Size   Offset
+----------------------------------
+       1     x     512    +   208     == 720
+</code></pre></div></div>
+
+<p>Why does this matter? Because it allows us to build a table that will map pages of address space to arbitrary pages in physical memory based on page number. An address translation requires the following steps be executed by the CPU <strong>each time an address is referenced by a process</strong>.</p>
+
+<ul>
+  <li>the page number is extracted from the high order bits of the address</li>
+  <li>the number is used as an index into a page table for the process that contains the page number of the page in physical memory</li>
+  <li>the physical page number is multiplied by the page size and added to the offset</li>
+  <li>the CPU uses this new quantity and the physical address</li>
+</ul>
+
+<p>From here on in, we’ll use the terms</p>
+
+<ul>
+  <li><strong>page number</strong> to refer to the page number in the process’ address space</li>
+  <li><strong>frame number</strong> to refer to the page number in physical memory space</li>
+</ul>
+
+<p>The page table maps page numbers to frame numbers. The page number is an index into the table and the entry contains the frame number.</p>
+
+<p>Each entry in the page table actually contains more than the frame number. In particular each page table entry contains</p>
+
+<ul>
+  <li>frame number</li>
+  <li>status bits
+    <ul>
+      <li><strong>valid</strong>: contains valid data, but backing store is consistent</li>
+      <li><strong>modified</strong>: contains valid data and backing store is inconsistent</li>
+      <li><strong>referenced</strong>: used to determine run set (see</li>
+    </ul>
+  </li>
+  <li>protection bits
+    <ul>
+      <li>usually 2 indicating Read and Write permissionsbelow)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The page table is a one-dimensional array of page table entries, indexed by page number, containing the following information:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-----------------------------------------------------------------
+| Physical Frame # | valid | modified | referenced | protection |
+-----------------------------------------------------------------
+</code></pre></div></div>
+
+<p>Ignoring these additional bits for a minute, the following figure shows a possible page mapping</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig7.png" alt="" /></p>
+
+<p>The address space on the left is partially mapped to the physical memory on the right. Address <em>720</em> with a 512 byte page size indexes to the second entry (counting from zero) in the page table. This entry contains frame number 2 which, when multiplied by the page size and added to the 208 byte offset yields the physical address.</p>
+
+<p>It is important to understand that this address translation is done by the CPU (or more properly by the MMU – memory management unit) on <strong>every</strong> memory access – it cannot be avoided. Thus as long as the OS controls the set up of the page table processes cannot access each other’s memory.</p>
+
+<p>Further, each process needs its own page table. It is possible for processes to share memory, however, if the same frame number is listed in each sharing process’ page table. Notice also that if they were to share memory, they don’t need it to have the same address in their respective memory spaces.</p>
+
+<p>For example, page 7 in process 1 might refer to frame 5 which is being shared with process 2 which has it mapped to page 10. In this example, the 8th entry of process 1’s page table would contain <em>5</em> and the 11th entry in process 2’s page table would also contain <em>5</em> since they are both mapping frame <em>5</em>.</p>
+
+<h3 id="the-details">The Details</h3>
+
+<p>The hardware specifies what the format of this entry is exactly so it will change from platform to platform, but a machine that supports full demand paging will contain these elements. Note also, that the figure is not drawn to scale. The <strong>valid</strong>, <strong>modified</strong>, and <strong>referenced</strong> fields are typically bit fields, and the <strong>protection</strong> field is typically two bits wide.</p>
+
+<p>The <strong>protection field</strong> usually contains two bits that enable four kinds of access:</p>
+
+<ul>
+  <li><strong>none</strong>: no access permitted</li>
+  <li><strong>read only</strong>: process may read but not write</li>
+  <li><strong>write only</strong>: process may write but not read</li>
+  <li><strong>read/write</strong>: process may read and modify the page</li>
+</ul>
+
+<p>We won’t dwell on the protection bits much from here on out. The important thing to know is that when an access that violates the bits that are enabled occurs, the hardware throws a <strong>protection fault</strong> in response. For example, the <strong>read only</strong> bit will be set for all pages in the text segment of a Unix program and a <strong>protection fault</strong> occurs if you try to write those pages. Similarly, a <strong>no access</strong> page may be put between the stack and heap to allow the process to fail gracefully if you over-write either. This page is called a <font color="red">red page</font>.</p>
+
+<p>For what remains, recall that the page number is an index into a table of these entries from which the frame number is recovered.</p>
+
+<h3 id="backing-store-disk-block-descriptor-table">Backing Store: Disk Block Descriptor Table</h3>
+
+<p>Notice that the OS can use disk as a backing store to page frames out of physical memory. However, because processes usually exhibit spatial locality, only a subset of pages out of a process’ full page set need to be present most of the time. Thus, the OS can “park” individual pages that haven’t been accessed in a while on disk.</p>
+
+<p>To figure out where the data resides on disk, the system maintains a second table, also indexed by page number, that contains the following entries.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-------------------------------------------------
+| swap device # | disk block # | swap file type |
+-------------------------------------------------
+</code></pre></div></div>
+
+<p>Don’t worry about the type. Just notice that what the kernel is doing here is storing the disk location where the backing store for a given page is located. Logically, these two entries are part of the sample table entry. they are typically implemented as separate tables, however, since the hardware will want pages tables to look a certain way, but backing store descriptors are completely up to the OS to define.</p>
+
+<h3 id="frame-table">Frame Table</h3>
+
+<p>The system also maintains a table of records that describe what each frame of memory is currently storing. In each record, the kernel stores</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--------------------------------------------------
+| ref count | swap device # | disk block # | PTE |
+--------------------------------------------------
+</code></pre></div></div>
+
+<p>for each frame in the system. There are also some other fields that have to to with allocating and freeing frames but we won’t go into the details. Suffice to say that the OS need to be able to sweep through the frames that are currently occupied in memory every once and a while and knowing where the frame is paged on memory is handy.</p>
+
+<p>In summary,</p>
+
+<ul>
+  <li>each page in a program must be loaded into a memory frame before the CPU can access it</li>
+  <li>each page in a program has a “shadow” copy on the swap device at some disk block number.</li>
+  <li><strong><font color="green">when a page is loaded into a frame</font></strong>
+    <ul>
+      <li>a free frame is allocated (not described yet)</li>
+      <li>the page is fetched from the disk block location</li>
+      <li>the page table entry is updated with the frame number</li>
+      <li>the valid bit is set to indicate that the in-memory copy is valid with respect to the copy on disk</li>
+      <li>the disk block address from the block descriptor table for the process is copied into the frame table entry for the frame</li>
+      <li>a pointer to the page table entry is put in the frame table entry</li>
+      <li>the reference count for the frame is incremented</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Note that the frame table is shared among all processes executing at the same time. The OS uses it to identify when frames are free and, when they are not free, which page table entry corresponds to the page that occupies a Frame. For example, the following figure shows two processes that each have their first three pages mapped to frames.</p>
+
+<p><img src="https://www.gaeblog.com/assets/Memory-Management-fig8.png" alt="" /></p>
+
+<p>Each frame table entry for memory indicates which page table entry corresponds to the mapped page in the frame.</p>
+
+<p>Notice also that, in this example, the OS has allocated pages to frames such that there are no shared frames. It is possible, however, for processes to share memory under this scheme by having different pages mapped to the same frame. In this case, the frame table requires a list of page table entries for the page tables that map the frame (not shown in the figure).</p>
+
+<h3 id="page-faults">Page Faults</h3>
+
+<p>We now have enough information to understand exactly what a <strong>page fault</strong> is. Every time the CPU issues a memory reference (sends an address across the address bus)</p>
+
+<ul>
+  <li>the hardware masks off the <em>page #</em> and indexes into the <strong>page table</strong> for the process</li>
+  <li>the <strong>valid</strong> bit in the <strong>page table entry</strong> for the page is checked (by hardware)</li>
+  <li>if the <strong>valid</strong> bit is set, the <strong>frame number</strong> for the physical frame is retrieved, multiplied by the page size, and added to the offset in the address to form the physical address. <em>No <strong>page fault</strong> is generated</em>.</li>
+  <li>if the <strong>valid</strong> bit is not set, the CPU throws <strong>page fault exception</strong> that the operating system must catch.</li>
+  <li>the <strong>page fault exception</strong> handler must
+    <ul>
+      <li>allocate a free frame</li>
+      <li>fetch the page from the location specified in the <strong>disk block descriptor table</strong> and load it into the frame</li>
+      <li>update the frame table entry (as described above)</li>
+      <li>update the page table entry (as described above)</li>
+      <li><em>restart the process</em> so that it reissues the faulting instruction</li>
+    </ul>
+  </li>
+</ul>
+
+<p>In the previous figure, the entries marked <em>X</em> in the page table are not valid entries. In the page table entry itself, the <strong>valid bit</strong> would be set to zero to indicate that the entry does not contain a valid mapping.</p>
+
+<p>When the CPU does the address translation, and it goes to fetch the frame number from the page table entry, it check the valid bit. If the valid bit is clear, the CPU throws a page fault which traps into the OS. The OS must fine a free frame, load the frame with the data from the address space into the frame, and restart the process at the place where the fault occurred, load the frame with the data from the address space into the frame, and restart the process at the place where the fault occurred.</p>
+
+<h2 id="initiating-an-address-space">Initiating an Address Space</h2>
+
+<p>Okay – at this point, you should be able to visualize how a program address space is initiated (although we haven’t talked about all of the mechanisms in detail yet). To start a program, the OS must</p>
+
+<ul>
+  <li>allocate <strong>swap space</strong>: space on the backing store that can hold images of the pages in memory</li>
+  <li>allocate a <strong>page table</strong> for all of the pages a program might use. This table must be contiguous since the hardware indexes into it.</li>
+  <li>allocate a <strong>disk block descriptor table</strong> to hold the backing store information</li>
+  <li>copy each page of the program into the <strong>swap space</strong> noting the disk block and swap device number of the page in the appropriate <strong>disk block descriptor table</strong> entry</li>
+  <li>set all of the <strong>valid</strong> bits in the page table to be zero</li>
+  <li>run the program</li>
+</ul>
+
+<p>The very first fetch of an instruction will cause a <strong>page fault</strong> to occur since it will be attempting to read page 0. Since the <strong>valid</strong> bit is clear, the OS will take a <strong>page fault exception</strong> immediately, go to the <strong>disk block descriptor</strong> entry for page 0, find the disk block number, get a free frame, load the page into the frame, update the frame table entry with the pointer to the page table entry, update the page table entry with the frame number, set the <strong>valid</strong> bit to 1, and restart the faulting instruction. When the programs runs onto page 1, or jump to another page, it will be faulted in accordingly.</p>
+
+<p>The only two pieces you are missing, before understanding exactly how this works concern how frames are allocated and deallocated, and how swap space (backing store) is managed. We won’t discuss these two issues in detail since they vary considerably from system to system. Each OS includes a swap space manager that can allocate and deallocate frame sized regions of disk space from the swap partition. Most OSs also maintain an internal “cache” of pages that have been used recently but are not allocated to a process. This page cache gets searched (efficiently) before the OS goes to disk to get a page.</p>
+
+<h3 id="dirty-pages">Dirty Pages</h3>
+
+<p>So far, we have discussed how frames are allocated and freed without much regard to what happens when the in-memory copy is written, making it inconsistent with the disk copy. When a program modifies a variable (either a global variable, a variable on the heap, or a variable on the stack) the page must be in a frame, and the <strong>valid</strong> bit must be set (or a <strong>page fault</strong> will occur), and when the modification occurs, the hardware sets the <strong>modified</strong> bit in the <strong>page table entry</strong> to indicate that the in-memory copy is now different (and more current) than the disk copy. It does NOT go out to disk at that time and update the disk copy. Why? Because your program is constantly modifying variables. If you had to way for a page to be flushed to disk, every time you made a simple assignment statement in your program, your program would be very very slow.</p>
+
+<p>The term “dirty” is sometimes used to refer to a page that has been modified in memory, and the <strong>modified</strong> bit is occasionally termed “the dirty bit.” Notice that a dirty page is always more current than the backing store copy. Thus, to “clean” a page, the copy that is in memory must be “flushed” back to backing store, updating the backing store copy to make it consistent with the memory copy.</p>
+
+<h3 id="more-on-freeing-frames">More on Freeing Frames</h3>
+
+<p>What happens when a <strong>page fault</strong> occurs, but there are no free frames? The OS cannot simply steal a frame from a running program. Or can it?</p>
+
+<p>What would happen if the OS, when confronted with no free frames, simply chose a frame that was being used by a program, cleared the <strong>valid</strong> in the program’s <strong>page table entry</strong> and allocated the frame to the new program? If the program that originally owned the frame were using it, it would immediately take a page fault (as soon as it ran again) and the OS would <em>steal</em> another frame. It turns out that this condition occurs (in a slightly different form) and it is called <em>thrashing</em>. We’ll discuss that in a minute, but the remarkable thing to notice here is that the OS can simply steal frames that are in use from other programs and those programs will continue to run (albeit more slowly since they are page faulting a great deal).</p>
+
+<p>What actually happens has to do with locality of page references. It turns out that a large number of studies show that program access “sets” of pages for a good long while before they move on to other “sets.” The set of pages that a program is bashing through repeatedly at any given time is called the programs <strong>run set</strong>. Very few programs have <strong>run sets</strong> that include all of the pages in the program. As a result, a program will fault in a <strong>run set</strong> and then stay within that set for a period of time before transitioning to another <strong>run set</strong>. Many studies have exposed this phenomenon and almost all VM systems exploit it. The idea, then, is to try and get the OS to <em>steal</em> frames from running programs that are no longer part of a <strong>run set</strong>. Since they aren’t part of a <strong>run set</strong> the program from which the frames are stolen will not immediately fault them back in.</p>
+
+<h3 id="identifying-run-sets-and-page-stealing">Identifying Run Sets and Page Stealing</h3>
+
+<p>How, then, can the OS determine a program’s run set? The common methodology uses the <strong>referenced</strong> bit the <strong>page table entry</strong> that we have not heretofore discussed and a another special thread called the <strong>page stealer</strong>. Could I make this up? I ask you.</p>
+
+<p>Here is the deal. First, every time a reference is made to a page (with read or write) the hardware sets the <strong>referenced</strong> bit in the page table entry. Every time.</p>
+
+<p>The <strong>page stealer</strong> wakes up every now and then (we’ll talk about when in a minute) and looks through all of the frames in the <strong>frame table</strong>. If the <strong>referenced bit</strong> is set, the <strong>page stealer</strong> assumes that the page has been referenced since the last time it was checked and, thus, is part of some processes <strong>run set</strong>. It clears the bit and moves on. If it comes across a page that has the <strong>referenced</strong> bit clear, the <strong>page stealer</strong> assumes that the has not been referenced recently, is not part of a <strong>run set</strong>, and is eligible to be stolen.</p>
+
+<p>The actual stealing algorithms are widely varied as Unix designers seem to think that the way in which pages are stolen makes a tremendous performance difference. It might, but I’ve never heard of page stealing as being a critical performance issue. Still one methodology that gets discussed a great deal is called the <em>clock algorithm</em>. Again – there are several variants. We’ll just talk about the basics.</p>
+
+<h2 id="the-clock-algorithm">The Clock Algorithm</h2>
+
+<p>If a particular OS uses the clock algorithm for page stealing, the <strong>page stealer</strong> wakes up when one of two events occurs:</p>
+
+<ul>
+  <li>a periodic timer has expired</li>
+  <li>the number of free pages in the system falls below a “low-water mark” indicating that the system is running short of free pages.</li>
+</ul>
+
+<p>Both the timer interval and the low-water mark can be set with the kernel is configured allowing a certain amount of “tuning.”</p>
+
+<p>The <strong>page stealer</strong> then maintains two “hands” – one “hand” points to the last place the <strong>page stealer</strong> looked in the <strong>frame table</strong> when it ran last. The other “hand” points to the last place it started from. When the <strong>page stealer</strong> runs, it sweeps through the <strong>frame table</strong> between where it started last and where it ended last to see if any of the <strong>referenced</strong> bits are set.</p>
+
+<ul>
+  <li>if the <em>reference count</em> is zero, or the <strong>valid</strong> bit is clear, the frame is already free and the page is skipped</li>
+  <li>if the <strong>referenced</strong> bit is set and the <strong>valid</strong> bit is set, the page is part of a <strong>run set</strong>. The <strong>referenced</strong> bit it is cleared and the frame is skipped.</li>
+  <li>otherwise, if the <strong>referenced</strong> bit is clear, <strong>valid</strong> bit is set, but the <strong>modified</strong> bit is clear, the page is clean and can be stolen. The <strong>page stealer</strong> sets the <em>reference count</em> to zero and puts the page on the free list, but it leaves the rest of the page intact. Notice that if the system is implementing page caching, and this page really is part of a <strong>run set</strong> (i.e. the <strong>page stealer</strong> was just a little too eager), a page fault will occur when the page is next referenced, and the <strong>page fault handler</strong> will most likely find the page on the free list. Thus, the cost of being “wrong” about a page being in a <strong>run set</strong> is most likely to be an extra page fault, but not an extra disk access.</li>
+  <li>otherwise if the <strong>referenced</strong> bit is clear, <strong>valid</strong> bit is set, and the <strong>modified</strong> bit is set, the page is not part of a <strong>run set</strong>, but it is dirty. The <strong>page stealer</strong> schedules the frame for cleaning by putting it on the <strong>page out</strong> queue and waking the <strong>page out</strong> thread. It does not steal the page, though, but rather waits until the next pass to see if it is unreferenced and clean before it is stolen.</li>
+</ul>
+
+<p>Here is a brief table summarizing this mess. For each frame between the starting point and the ending point (the two “hands”)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v = 0 or ref cnt = 0       : page is free so skip it
+
+v = 1, r = 1               : page is busy.  clear and skip
+
+v = 1, r = 0, m = 0        : page is clean and unreferenced. steal
+
+v = 1, r = 0, m = 1        : page is dirty and unreferenced
+                             schedule cleaning and skip
+</code></pre></div></div>
+
+<p>Once the <strong>page stealer</strong> has run this algorithm for all of the pages between its start point and end point, it must move these points in the <strong>frame table</strong>. it does so by changing the new start point to be the old end point (wrapping around the end of the <strong>frame table</strong> if need be) and then it walks forward some specified number of frames (again wrapping if needed) clearing the <strong>referenced</strong> bit for each frame. These are the new start and end points (“hands”) for the next time it wakes up.</p>
+
+<p>It is called the clock algorithm because you can think of the <strong>frame table</strong> as being circular (due to the wrap around) and because start and end pointers work their way around the circle.</p>
+
+<p>Variations on this theme include “aging counters” that determine <strong>run set</strong> membership and the way in which dirty pages are handled. I’ll just briefly mention two such variations, but each Unix implementation seems to have its own.</p>
+
+<p>If you think about it for a minute, you can convince yourself that the clock algorithm is an attempt to implement a Least Recently Used (LRU) policy as a way of taking advantage of spatial and temporal locality. The most straight-forward way to implement LRU, though, is to use a time stamp for each reference. The cost, of course, would be in hardware since a time stamp value would need to be written in the <strong>page table entry</strong> each time a reference occurred. Some systems, however, time stamp each page’s examination by the <strong>page stealer</strong> using a counter. Every time the <strong>page stealer</strong> examines a page and find it is a “stealable” state, it bumps a counter and only steals the page after a specified number of examinations.</p>
+
+<p>The other variation has to do with the treatment of dirty pages. SunOS versions 2.X and 3.X (Solaris is essentially SunOS version 4.X and higher) had two low-water marks: one for stealing clean pages and a “oh oh” mode when all stealable pages would be annexed. In the first mode, when the system ran a little short of pages, it would run the clock algorithm as described. If that didn’t free enough pages, or if the free page count got really low, it would block the owners of dirty pages while they were being cleaned to try and get more usable on the free list before things got hot again. Usually, if the kernel found itself this short-handed, the system would thrash.</p>
+
+<h3 id="thrashing">Thrashing</h3>
+
+<p>You’ll notice that demand paging is really a “race” between processes that are touching pages (thereby using valuable page frames) and the <strong>page stealer</strong> that is attempting to keep the frames free. Under normal conditions, the <strong>run set</strong> of each running process is small enough to fit into memory, and the LRU approximation algorithm (e.g. the clock algorithm or one of its variants) is able to correctly identify each <strong>run set</strong>. If enough processes are running to make the <strong>run sets</strong> larger, in total, than the number of physical memory frames, then when a page is stolen, it will immediately fault back in (since it will be part of some <strong>run set</strong>). This condition is termed <em>thrashing</em> and it can be detected by monitoring the page in and page out rates of the system. Try running the Unix utility <code class="language-plaintext highlighter-rouge">vmstat</code> (after consulting the man page for details on its function). Among other valuable pieces of information, it typically includes paging rates. No Unix systems that I know of automatically throttle process creations as a result of paging activity, but the information is typically provided by a utility such as <code class="language-plaintext highlighter-rouge">vmstat</code> so that administrators can determine when thrashing takes place.</p>
+
+<h3 id="swapping-and-paging-together">Swapping and Paging Together</h3>
+
+<p>Okay – at this point you have a fairly clear picture of all of the mechanisms that must interplay in order to make demand paging work. The concept is deceptively simple, but the implementation obviously involves considerable mechanism. One last mechanism we must talk about (and then we are done) is the process known as <em>swapping.</em></p>
+
+<p>As mentioned about in the discussion of the clock algorithm, the kernel maintains a count of free pages with the <strong>frame table</strong> and a low-water mark to indicate when page stealing should occur. A second method that the kernel uses to try and free up frames is to send to the swap device <em>all</em> of the frames associated with a given process, thereby putting them on the free list. Thus, the kernel maintains a <strong>swap out</strong> thread whose job it is to evict an entire job from memory, when there is a memory shortfall.</p>
+
+<p>Again, your mileage may vary, but the basic idea is for the <strong>page stealer</strong> to try and do its work and, after making a complete sweep of memory, if there is still not enough free frames, for the <strong>page stealer</strong> to wake the <strong>swap out</strong> thread. The <strong>swap out</strong> thread chooses a job (based on the size of the job and how long it has run) and goes through its entire page table. It invalidates and frees any pages that have the <strong>valid</strong> bit set, but the <strong>modified</strong> bit clear, it schedules the <strong>valid</strong> and <strong>modified</strong> pages for disk write, and it sets the execution priority of the process to zero (or takes it off the run queue entirely) for a specified period of time. The idea is to pick a large, and old process (one that has received a lot of time already) and “park” it in swap space for a while. By doing so, and freeing all of its frames, the theory goes, a bunch of smaller jobs (which are probably interactive anyway) can get in and run. Also, the free frames might relieve paging pressure so that the unswapped jobs can complete, leaving more memory for the swapped job.</p>
+
+<p>After a suitable interval (OS dependent, of course) the swapped job is put back in the run queue and allowed to fault its pages back in. Sometimes it is given extra time slices as well on the theory that it does not good to let it fault its pages in only to be selected again by the <strong>swap out</strong> thread for swapping.</p>
+
+<h2 id="and-thats-it">And that’s it.</h2>
+
+<p>By way of a short summary, here are the highlights for virtual memory:</p>
+
+<ul>
+  <li>there is <strong>page table entry</strong> for each process page. It contains
+    <ul>
+      <li>a <strong>frame number</strong></li>
+      <li><strong>valid</strong>, <strong>modified</strong>, and <strong>referenced</strong> bits</li>
+    </ul>
+  </li>
+  <li>there is a <strong>block descriptor table entry</strong> for each page in a process that contains
+    <ul>
+      <li>the the swap device number (indicating which swap partition)</li>
+      <li>the block number on this device for the page</li>
+      <li>some type information indicating if the current page is in the original disk image on on the swap partition</li>
+    </ul>
+  </li>
+  <li>there is a <strong>frame table entry</strong> for every physical frame in the system that contains
+    <ul>
+      <li>a reference count for the frame</li>
+      <li>the swap device number for the page contained in the frame</li>
+      <li>the block number for the page in the frame</li>
+      <li>a pointer to the PTE (or list of PTEs) for the page in the frame</li>
+      <li>pointers for the free list/free hash tables</li>
+    </ul>
+  </li>
+  <li>there is an on-core <strong>swap map</strong> that indicates which blocks on the swap devices are free and which ones are busy</li>
+  <li>processes fault pages <em>in</em> by accessing them.
+    <ul>
+      <li>reading or writing a page causes a page fault after which the <strong>valid</strong> bit is set</li>
+      <li>any write to a page that changes its contents from the one in swap space sets the <strong>modified</strong> bit</li>
+      <li>any read or write to a page (causing a page fault or not) sets the <strong>referenced</strong> bit</li>
+      <li>all bit setting is done by hardware, typically</li>
+    </ul>
+  </li>
+  <li>page faults require that frames be allocated</li>
+  <li>frames are deallocated when
+    <ul>
+      <li>the process terminates, giving up its pages</li>
+      <li>the <strong>page stealer</strong> determines that they are not part of a current <strong>run set</strong></li>
+      <li>the <strong>swap out</strong> thread sends an entire process to swap space</li>
+    </ul>
+  </li>
+  <li>pages can be reclaimed from the free list (<strong>page cache</strong>) if they are still valid
+    <ul>
+      <li>data structure like the buffer cache (with a hash table) is employed to make look up faster</li>
+    </ul>
+  </li>
+  <li>when a page is dirty and heading to disk, care must be taken to prevent the process from being scheduled and attempting to access the page. Thus the <strong>page out</strong> thread and the process have a race condition that must be managed.</li>
+</ul>
+
+<h3 id="issues-with-demand-paging">Issues with Demand Paging</h3>
+
+<p>There are a few points of concern for demand paging. First, noticed that in the example we have presented, page-mapped memory <strong>halves</strong> the effective memory bandwidth. Why? Because every time the CPU translates an address it needs to go to memory twice: once for the page table entry and once for the memory access itself.</p>
+
+<p>The solution to this problem is to rely on locality and to add a cache of page table mappings to the CPU called a <strong>translation lookaside buffer</strong> or TLB.</p>
+
+<p>The TLB is usually implemented as a fast associative memory in the CPU or MMU. When the OS successfully maps a page number to a frame number it puts this mapping the TLB. The TLB is checked each time an address translation is performed and if it contains the mapping, the table look up is not performed.</p>
+
+<p>Thus the true performance of the memory system depends on the size of the machine’s TLB and the degree to which the workload displays spatial locality. Notice also that the TLB is per CPU. Thus when a process context switch takes place, it must typically be flushed of entries so that an new process doesn’t get access to the old process’ memory frames.</p>
+
+<p>Secondly, notice that in the example page table memory is not paged. Thus it must be resident and there must be one for each running process. How much memory do the pages tables take up?</p>
+
+<ul>
+  <li>page table can be huge and must be contiguous
+    <ul>
+      <li>512 byte pages =&gt; offset is 9 bits</li>
+      <li>32-bit address =&gt; page number is 23 bits =&gt; 8388608 page table entries</li>
+      <li>if page table entry is an int =&gt; 33554432 (32 MB) page tables</li>
+      <li>each process, then, need a 32MB contiguous region in the kernel =&gt; kernel is at least 32MB in size</li>
+    </ul>
+  </li>
+  <li>larger pages =&gt; more internal fragmentation, but smaller pages tables</li>
+  <li>what if address space is 64 bits?</li>
+</ul>
+
+<h3 id="segmentation">Segmentation</h3>
+
+<p>The first, and oldest way to deal with this issue is to segment the address space so that each segment can have its own (smaller) page table. For example, as long as a process <em>is not</em> allowed to map its entire address space, a Linux process really only need two segments: one for the test, data, and heap and another for the stack. Then, the “top” segment (text, data, heap) have a page table that is big enough to map the largest allowable heap address (the largest address that the process will be able to allocate to the heap). Similarly the bottom segment is for the stack and mapps the lowest address that the stack pointer can take on. If the stack is allow to meet the heap, then there is no savings of page table space but if the stack and heap boundaries are fixed, then the total space can be smaller. Each segment, however, requires its own page table resister which must be set for by the OS and the hardware determines which one to use based on which segment is being accessed.</p>
+
+<p>For example, let’s imagine that we have a 64-bit address space so that a full page table is not possible. If we assume that the page size is still 512 bits, and page table entry is 4 bytes, and there are two segments for the program (a top and bottom segment) and that we believe that largest a stack will ever get is 16 megabytes, but the test+data+heap could be 1 GB, then the sizes look like</p>
+
+<ul>
+  <li>top segment == 2^21 bits of page space x 4 bytes per page table entry == 8 megabytes of page table</li>
+  <li>
+    <p>bottom (or stack) segment == 2^15 bits of page space x 4 bytes per page table entry == 128 kilobytes of page table space</p>
+
+    <h3 id="hierarchical-page-table">Hierarchical Page Table</h3>
+
+    <p><em>another page table</em></p>
+
+    <pre><code class="language--------------------------------------------------------------">| 10 bits top level | 44 bits mid-level | 10 bits of offset |
+-------------------------------------------------------------
+</code></pre>
+
+    <p><em>address</em></p>
+
+    <p>At the next level there are 44 bits of address space which might look like it is a problem, but actually is not if the OS defines a maximum size for test+data+heap and stack. That is, the top level entry points a page table for the text+data+heap that can be at most 44 bits in size, but could be restricted to be less (say 32 bits in size or 4GB). Similarly the last entry in the top level points to the stack’s page table and it could be similarly restricted. By breaking the address space up and not full mapping the regions, you can map a very large address space without having to create a single contiguous page table.</p>
+
+    <p>The disadvantage is that each memory reference must access page table memory multiple times. This process of following a memory reference down through a hierarchical page table is called “walking the page table” and it is a very expensive operation. The hope is that these page table walks are made infrequent by the effectiveness of the TLB.</p>
+
+    <h2 id="inverted-page-table">Inverted Page Table</h2>
+
+    <ul>
+      <li>one physical frame table for all of memory
+        <ul>
+          <li>entry stores pid and logical page number of the page that is mapped there</li>
+          <li>frame table is searched for (pid,page number) pair on each ref</li>
+          <li>offset into frame table gives frame number of physical address when matched (see figure 9.15, page 301)</li>
+        </ul>
+      </li>
+      <li>advantage is that the frame table need only be big enough to map physical memory of machine</li>
+      <li>disadvantage is that table must be searched on every access
+        <ul>
+          <li>hashing</li>
+          <li>better hope the TLB is working</li>
+        </ul>
+      </li>
+      <li>UltraSPARC and PowerPC both support – need I say more?</li>
+    </ul>
+  </li>
+</ul>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/System-Calls/">System Calls</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/File-System/">File System</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/Memory-Management/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/Memory-Management/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#linking-and-loading">Linking and Loading</a></li>
+<li class="toc-entry toc-h2"><a href="#base-and-bounds">Base and Bounds</a></li>
+<li class="toc-entry toc-h2"><a href="#static-versus-dynamic-linking">Static versus Dynamic Linking</a></li>
+<li class="toc-entry toc-h2"><a href="#memory-partitioning">Memory Partitioning</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#internal-fragmentation">Internal Fragmentation</a></li>
+<li class="toc-entry toc-h3"><a href="#variable-memory-partitions">Variable Memory Partitions</a></li>
+<li class="toc-entry toc-h3"><a href="#external-fragmentation">External Fragmentation</a></li>
+<li class="toc-entry toc-h3"><a href="#how-does-it-fit">How Does it Fit?</a></li>
+<li class="toc-entry toc-h3"><a href="#which-is-best">Which is best?</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#swapping-and-backing-store">Swapping and Backing Store</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#compacting-memory">Compacting Memory</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#demand-paging">Demand Paging</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#the-page-table-and-address-mapping">The Page Table and Address Mapping</a></li>
+<li class="toc-entry toc-h3"><a href="#the-details">The Details</a></li>
+<li class="toc-entry toc-h3"><a href="#backing-store-disk-block-descriptor-table">Backing Store: Disk Block Descriptor Table</a></li>
+<li class="toc-entry toc-h3"><a href="#frame-table">Frame Table</a></li>
+<li class="toc-entry toc-h3"><a href="#page-faults">Page Faults</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#initiating-an-address-space">Initiating an Address Space</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#dirty-pages">Dirty Pages</a></li>
+<li class="toc-entry toc-h3"><a href="#more-on-freeing-frames">More on Freeing Frames</a></li>
+<li class="toc-entry toc-h3"><a href="#identifying-run-sets-and-page-stealing">Identifying Run Sets and Page Stealing</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#the-clock-algorithm">The Clock Algorithm</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#thrashing">Thrashing</a></li>
+<li class="toc-entry toc-h3"><a href="#swapping-and-paging-together">Swapping and Paging Together</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#and-thats-it">And that’s it.</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#issues-with-demand-paging">Issues with Demand Paging</a></li>
+<li class="toc-entry toc-h3"><a href="#segmentation">Segmentation</a></li>
+<li class="toc-entry toc-h3"><a href="#hierarchical-page-table">Hierarchical Page Table</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#inverted-page-table">Inverted Page Table</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

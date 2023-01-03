@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Equational Reasoning</title>
+    <meta name="description" content="The main question is, how do we define two programs are equal, and how do we prove it.So for setup we have type $int$, and $k$ which is a $int$, and $e_1+e_2$.">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2018/02/24/Equational-Reasoning/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Equational Reasoning | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Equational Reasoning" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The main question is, how do we define two programs are equal, and how do we prove it. So for setup we have type $int$, and $k$ which is a $int$, and $e_1+e_2$." />
+<meta property="og:description" content="The main question is, how do we define two programs are equal, and how do we prove it. So for setup we have type $int$, and $k$ which is a $int$, and $e_1+e_2$." />
+<link rel="canonical" href="https://www.gaeblog.com/2018/02/24/Equational-Reasoning/" />
+<meta property="og:url" content="https://www.gaeblog.com/2018/02/24/Equational-Reasoning/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-02-24T17:25:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Equational Reasoning" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"The main question is, how do we define two programs are equal, and how do we prove it. So for setup we have type $int$, and $k$ which is a $int$, and $e_1+e_2$.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2018/02/24/Equational-Reasoning/"},"@type":"BlogPosting","headline":"Equational Reasoning","dateModified":"2018-02-24T17:25:00+00:00","datePublished":"2018-02-24T17:25:00+00:00","url":"https://www.gaeblog.com/2018/02/24/Equational-Reasoning/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Equational Reasoning</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-02-24
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Programming Language Theory" title="Category: Programming Language Theory" rel="category">Programming Language Theory</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Programming+Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a-->
+        <a href="/tag/#Programming Languages" title="Tag: Programming Languages" rel="tag">Programming Languages</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#observational-equavalence" id="markdown-toc-observational-equavalence">Observational Equavalence</a></li>
+  <li><a href="#logical-equivalence" id="markdown-toc-logical-equivalence">Logical Equivalence</a>    <ul>
+      <li><a href="#foundamental-theorm-of-logical-relations" id="markdown-toc-foundamental-theorm-of-logical-relations">Foundamental Theorm of Logical Relations</a></li>
+      <li><a href="#closure-under-converse-evalutaion" id="markdown-toc-closure-under-converse-evalutaion">Closure under Converse Evalutaion</a></li>
+      <li><a href="#relationship-to-hereditary-termination" id="markdown-toc-relationship-to-hereditary-termination">Relationship to Hereditary Termination</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>The main question is, how do we define two programs are equal, and how do we prove it.</p>
+
+<p>So for setup we have type $int$, and $k$ which is a $int$, and $e_1+e_2$.</p>
+
+<!--more-->
+
+<h1 id="observational-equavalence">Observational Equavalence</h1>
+
+<p>We say that 2 programs are equal $iff$ you can’t tell them apart, which means:</p>
+
+<ul>
+  <li>For 2 <em>closed</em> programs of type $int$, $e\equiv e’\ iff\ \exists k$ such that \(e\mapsto^*k,e'\mapsto^*k\).
+This is called <strong>Kleeve equivalence</strong>.</li>
+  <li>For \(e,e':\tau,e=^{obs}_\tau e'\ iff\ \forall o:\tau\vdash P:int,P[e]\equiv P[e']\),
+were $P$ is a program context, defined as an expression: \(o:\tau\vdash P:int\), where
+$o$ can said as a “hole”, and $P[e]$ means $[e/o]P$. For example, in $2+(o+1)$, $o$ is type $int$;
+in $2+(o7+1)$, $o$ is type $int\rightarrow int$. To rephrase the rule, it means that
+two programs are equal if we plug them in a larger program $P$, we get the same result.
+This is called <strong>observational equivalence</strong>.</li>
+</ul>
+
+<p>Observational equivalence is characterized by a <em>universal property</em>:</p>
+
+<ul>
+  <li>Observatinoal equivalence is the <em>coarsest consistent congruence</em>.</li>
+</ul>
+
+<p><em>Consistent</em>: \(e\sim_\tau e'\) is <em>consistent</em> $iff\ e\sim_{int}e’$ implies \(e\equiv e'\).
+In other words, it means it implies $\equiv$ at $int$.</p>
+
+<p><em>Congruence</em>: if \(e\sim_{\tau_1} e'\), then \(C[e]\sim_{\tau_2}C[e']\) for any
+context, where context is \(o:\tau_1\vdash C:\tau_2\).</p>
+
+<p><em>Coarsest</em>: if \(e\sim_\tau e'\) by any consistent congruence, then \(e=^{obs}_\tau e'\)</p>
+
+<p>Proof:</p>
+
+<ul>
+  <li>Consistent</li>
+</ul>
+
+<p>We want to show \(if\ e=^{obs}_{int}e',then\ e\equiv e'\), which is obvious by the definition
+of $=^{obs}$, just take $P$ to be $o$ itself. (<strong>identity</strong>)</p>
+
+<ul>
+  <li>Congruence</li>
+</ul>
+
+<p>We want to show \(if\ e=^{obs}_{\tau_1} e'then\ C[e]=^{obs}_{\tau_2}C[e']\).
+\(e=^{obs}_{\tau_1} e'\) means \(\forall P_{o:\tau_1},P[e]\equiv P[e']\).
+\(C[e]=^{obs}_{\tau_2}C[e']\) means \(\forall P'_{o:\tau_2},P'[C[e]]\equiv P'[C[e']]\).
+We take $P$ to be $P’[C/o]$, so $P[e]$ is just $P’[C[e]]$ (<strong>composition</strong>)</p>
+
+<ul>
+  <li>Coarsest</li>
+</ul>
+
+<p>By <em>congruence</em>, we have \(P[e]\sim P[e']\).</p>
+
+<p>By <em>consistency</em>, we have \(P[e]\equiv P[e']\). So we are done.</p>
+
+<p>So we proved the properties of observational equivalence, by how do we prove
+observational equivalence itself in the first place? Afterall, we need to
+show the rule holds <em>for all</em> contexts. The idea is to cutdown contexts that
+you need to consider using types. We need to introduce a new notion below \(=^{log}\)
+to do that, so that we have a rule:</p>
+
+\[e=^{obs}_\tau e'\ iff\ e^{log}_\tau e'\]
+
+<h1 id="logical-equivalence">Logical Equivalence</h1>
+
+<p>It is equivalence defined by <em>logical relations</em>.</p>
+
+<ul>
+  <li>
+\[e=^{log}_{int}e'\ iff\ e\equiv e'\]
+  </li>
+  <li>
+\[e=^{log}_{\tau_1\rightarrow \tau_2}e'\ iff\ \forall e_1,e_1':\tau_1,
+if\ e_1=^{log}_{\tau_1}e_1',then\ ee_1=^{log}_{\tau_2}e'e_1'\]
+  </li>
+</ul>
+
+<p>Thm:</p>
+
+\[e:\tau\ implies\ e=^{obs}_{int}e\]
+
+<p>Proof \(e=^{obs}_\tau e'\ iff\ e^{log}_\tau e'\):</p>
+
+<p>From left to right should be easier because we are coming from $\forall$ to $int$
+and $\tau_1\rightarrow \tau_2$, so we are not gonna do it here.</p>
+
+<p>From right to left:</p>
+
+<p>Because observational equivalence is the <em>coarsest consistent congruence</em>, so we
+only need to show logical equivalence is <strong>a</strong> <em>consistent congruence</em>. Consistency
+comes for free, so we only need congruence.</p>
+
+<p>We want to proof: \(\forall o:\tau_1\vdash C:\tau_2,if\ e=^{log}_{\tau_1}e',then\ 
+C[e]=^{log}_{\tau_2}C[e']\). We need a generalized version of $Thm(v3)$ from
+<a href="/2018/02/17/Basic-Programming-Language-Theory/">here</a>:</p>
+
+<h2 id="foundamental-theorm-of-logical-relations">Foundamental Theorm of Logical Relations</h2>
+
+\[If\ \Gamma\vdash e:\tau,and\ \gamma=^{log}_\Gamma\gamma',
+then\ \hat{\gamma}(e)=^{log}_\tau\hat{\gamma'}(e)\]
+
+<h2 id="closure-under-converse-evalutaion">Closure under Converse Evalutaion</h2>
+
+<p>Lemma:</p>
+
+\[If\ e\mapsto e_0,e_0=^{log}_\tau e',
+then\ e=^{log}_\tau e'\]
+
+<p>where \(\mapsto\) is the transition in dynamics from
+<a href="/2018/02/17/Basic-Programming-Language-Theory/">here</a>.</p>
+
+<p>Then we can proof it by the above therom and lemma, we will just skip it here ;)</p>
+
+<h2 id="relationship-to-hereditary-termination">Relationship to Hereditary Termination</h2>
+
+\[e=^{obs}_\tau e\ iff\ HT_\tau(e)\]
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/22/Cost-Semantics/">Cost Semantics for Parallelism
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/21/imperative-programming/">Imperative Programming - Algol
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/20/Recursive-Types/">Recursive Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2019/01/18/Recursive-Programs/">Recursive Programs
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/09/30/Logical-Equivalence-for-Polymorphic-Types/">Parametricity - Logical Equivalence for Polymorphic Types
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/02/20/Basic-Computational-Type-Theory/">Basic Computational Type Theory</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/02/24/Introduction-to-Category-Theory/">Introduction to Category Theory</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2018/02/24/Equational-Reasoning/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2018/02/24/Equational-Reasoning/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#observational-equavalence">Observational Equavalence</a></li>
+<li class="toc-entry toc-h1"><a href="#logical-equivalence">Logical Equivalence</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#foundamental-theorm-of-logical-relations">Foundamental Theorm of Logical Relations</a></li>
+<li class="toc-entry toc-h2"><a href="#closure-under-converse-evalutaion">Closure under Converse Evalutaion</a></li>
+<li class="toc-entry toc-h2"><a href="#relationship-to-hereditary-termination">Relationship to Hereditary Termination</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

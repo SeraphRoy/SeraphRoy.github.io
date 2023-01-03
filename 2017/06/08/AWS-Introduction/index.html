@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AWS Introduction</title>
+    <meta name="description" content="  Amazon Web ServiceAmazon Web ServiceAmazon provides web-service based access to its infrastructure via two separate but interoperating facilities:  Elastic...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2017/06/08/AWS-Introduction/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>AWS Introduction | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="AWS Introduction" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Amazon Web Service Amazon Web Service Amazon provides web-service based access to its infrastructure via two separate but interoperating facilities: Elastic Compute Cloud (EC2) – virtual machines, network, block storage, identity management Simple storage service (S3) – scalable, eventually consistent object storageIn addition, it also offers a number of higher level services that make use of this infrastructure, such as NoSQL database: DynamoDB SQL database: RDS Data warehousing: Redshift In-memory object caching: Elasticache Archival storage: Glacier Network overlays: VPC Authoritative DNS: Route53 Web caching and CDN: CloudFront Hadoop: Elastic Map Reduce Data stream processing: Kinesis Streaming app support: AppStream Search: CloudSearch Workflow: SWF Bulk email: SES Alerting: SNS Reliable queuing: SQS Media transcoding: ElasticTranscoder Performance monitoring: CloudWatch Web containers: ElasticBeanstalk Image templating: Cloud Formation Application configuration and deployment: OpsWorks Secure key management: CloudHSM logging and auditing: CloudTrail Docker: Container Registry and ServiceAll services are accessible via SOAP, REST, command-line tools (Java), SDKs (Java, PHP, .Net, Python, Ruby, iOS, Android) graphical AWS console." />
+<meta property="og:description" content="Amazon Web Service Amazon Web Service Amazon provides web-service based access to its infrastructure via two separate but interoperating facilities: Elastic Compute Cloud (EC2) – virtual machines, network, block storage, identity management Simple storage service (S3) – scalable, eventually consistent object storageIn addition, it also offers a number of higher level services that make use of this infrastructure, such as NoSQL database: DynamoDB SQL database: RDS Data warehousing: Redshift In-memory object caching: Elasticache Archival storage: Glacier Network overlays: VPC Authoritative DNS: Route53 Web caching and CDN: CloudFront Hadoop: Elastic Map Reduce Data stream processing: Kinesis Streaming app support: AppStream Search: CloudSearch Workflow: SWF Bulk email: SES Alerting: SNS Reliable queuing: SQS Media transcoding: ElasticTranscoder Performance monitoring: CloudWatch Web containers: ElasticBeanstalk Image templating: Cloud Formation Application configuration and deployment: OpsWorks Secure key management: CloudHSM logging and auditing: CloudTrail Docker: Container Registry and ServiceAll services are accessible via SOAP, REST, command-line tools (Java), SDKs (Java, PHP, .Net, Python, Ruby, iOS, Android) graphical AWS console." />
+<link rel="canonical" href="https://www.gaeblog.com/2017/06/08/AWS-Introduction/" />
+<meta property="og:url" content="https://www.gaeblog.com/2017/06/08/AWS-Introduction/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-08T16:41:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AWS Introduction" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"Amazon Web Service Amazon Web Service Amazon provides web-service based access to its infrastructure via two separate but interoperating facilities: Elastic Compute Cloud (EC2) – virtual machines, network, block storage, identity management Simple storage service (S3) – scalable, eventually consistent object storageIn addition, it also offers a number of higher level services that make use of this infrastructure, such as NoSQL database: DynamoDB SQL database: RDS Data warehousing: Redshift In-memory object caching: Elasticache Archival storage: Glacier Network overlays: VPC Authoritative DNS: Route53 Web caching and CDN: CloudFront Hadoop: Elastic Map Reduce Data stream processing: Kinesis Streaming app support: AppStream Search: CloudSearch Workflow: SWF Bulk email: SES Alerting: SNS Reliable queuing: SQS Media transcoding: ElasticTranscoder Performance monitoring: CloudWatch Web containers: ElasticBeanstalk Image templating: Cloud Formation Application configuration and deployment: OpsWorks Secure key management: CloudHSM logging and auditing: CloudTrail Docker: Container Registry and ServiceAll services are accessible via SOAP, REST, command-line tools (Java), SDKs (Java, PHP, .Net, Python, Ruby, iOS, Android) graphical AWS console.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2017/06/08/AWS-Introduction/"},"@type":"BlogPosting","headline":"AWS Introduction","dateModified":"2017-06-08T16:41:00+00:00","datePublished":"2017-06-08T16:41:00+00:00","url":"https://www.gaeblog.com/2017/06/08/AWS-Introduction/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>AWS Introduction</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2017-06-08
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Cloud Computing" title="Category: Cloud Computing" rel="category">Cloud Computing</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#AWS" title="Tag: AWS" rel="tag">AWS</a-->
+        <a href="/tag/#AWS" title="Tag: AWS" rel="tag">AWS</a>&nbsp;
+    
+        <!--a href="/tag/#IaaS" title="Tag: IaaS" rel="tag">IaaS</a-->
+        <a href="/tag/#IaaS" title="Tag: IaaS" rel="tag">IaaS</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#amazon-web-service" id="markdown-toc-amazon-web-service">Amazon Web Service</a></li>
+  <li><a href="#resource-pools" id="markdown-toc-resource-pools">Resource Pools</a></li>
+  <li><a href="#interacting-with-aws" id="markdown-toc-interacting-with-aws">Interacting with AWS</a></li>
+  <li><a href="#ec2" id="markdown-toc-ec2">EC2</a>    <ul>
+      <li><a href="#virtual-machines" id="markdown-toc-virtual-machines">Virtual Machines</a></li>
+      <li><a href="#instances" id="markdown-toc-instances">Instances</a></li>
+      <li><a href="#instance-impermanence" id="markdown-toc-instance-impermanence">Instance Impermanence</a></li>
+      <li><a href="#elastic-block-store-persistent-volumes" id="markdown-toc-elastic-block-store-persistent-volumes">Elastic Block Store: Persistent Volumes</a></li>
+      <li><a href="#completing-the-instance-story" id="markdown-toc-completing-the-instance-story">Completing the Instance Story</a></li>
+      <li><a href="#networking" id="markdown-toc-networking">Networking</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="amazon-web-service">Amazon Web Service</h2>
+
+<p>Amazon provides web-service based access to its infrastructure via two separate but interoperating facilities:</p>
+<ul>
+  <li>Elastic Compute Cloud (EC2) – virtual machines, network, block storage, identity management</li>
+  <li>Simple storage service (S3) – scalable, eventually consistent object storageIn addition, it also offers a number of higher level services that make use of this infrastructure, such as</li>
+  <li>NoSQL database: <a href="http://aws.amazon.com/dynamodb/">DynamoDB</a></li>
+  <li>SQL database: <a href="http://aws.amazon.com/rds/">RDS</a></li>
+  <li>Data warehousing: <a href="http://aws.amazon.com/redshift/">Redshift</a></li>
+  <li>In-memory object caching: <a href="http://aws.amazon.com/elasticache/">Elasticache</a></li>
+  <li>Archival storage: <a href="http://aws.amazon.com/glacier/">Glacier</a></li>
+  <li>Network overlays: <a href="http://aws.amazon.com/vpc/">VPC</a></li>
+  <li>Authoritative DNS: <a href="http://aws.amazon.com/route53/">Route53</a></li>
+  <li>Web caching and CDN: <a href="http://aws.amazon.com/cloudfront/">CloudFront</a></li>
+  <li>Hadoop: <a href="http://aws.amazon.com/elasticmapreduce/">Elastic Map Reduce</a></li>
+  <li>Data stream processing: <a href="http://aws.amazon.com/kinesis/">Kinesis</a></li>
+  <li>Streaming app support: <a href="http://aws.amazon.com/appstream/">AppStream</a></li>
+  <li>Search: <a href="http://aws.amazon.com/cloudsearch/">CloudSearch</a></li>
+  <li>Workflow: <a href="http://aws.amazon.com/swf/">SWF</a></li>
+  <li>Bulk email: <a href="http://aws.amazon.com/ses/">SES</a></li>
+  <li>Alerting: <a href="http://aws.amazon.com/sns/">SNS</a></li>
+  <li>Reliable queuing: <a href="http://aws.amazon.com/sqs">SQS</a></li>
+  <li>Media transcoding: <a href="http://aws.amazon.com/elastictranscoder/">ElasticTranscoder</a></li>
+  <li>Performance monitoring: <a href="http://aws.amazon.com/cloudwatch/">CloudWatch</a></li>
+  <li>Web containers: <a href="http://aws.amazon.com/elasticbeanstalk/">ElasticBeanstalk</a></li>
+  <li>Image templating: <a href="http://aws.amazon.com/cloudformation/">Cloud Formation</a></li>
+  <li>Application configuration and deployment: <a href="http://aws.amazon.com/opsworks/">OpsWorks</a></li>
+  <li>Secure key management: <a href="http://aws.amazon.com/cloudhsm/">CloudHSM</a></li>
+  <li>logging and auditing: <a href="http://aws.amazon.com/cloudtrail/">CloudTrail</a></li>
+  <li>Docker: <a href="https://aws.amazon.com/ecr/">Container Registry</a> and <a href="https://aws.amazon.com/ecs/">Service</a>All services are accessible via SOAP, REST, command-line tools (Java), <a href="http://aws.amazon.com/tools/">SDKs</a> (Java, PHP, .Net, Python, Ruby, iOS, Android) graphical <a href="https://aws.amazon.com/console/?nc1=f_m">AWS console</a>.</li>
+</ul>
+
+<!--more-->
+
+<h2 id="resource-pools">Resource Pools</h2>
+
+<p>AWS implements a pooling model in which resources are partitioned into separate groups, more or less in a hierarchy. Only S3 is global to the entire cloud although the credentials are valid for all AWS services no matter which pool they are in.</p>
+
+<p>The top level designator for AWS is the <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones">region</a>. Each region implements its own namespace. Thus names of cloud objects in one region are not valid in the others. Alternatively, objects that are replicated among regions (e.g. images) have different names.</p>
+
+<p>The current set of regions are:</p>
+
+<ul>
+  <li>ap-northeast-1 – Asia Pacific (Tokyo) Region</li>
+  <li>ap-northeast-2 – Asia Pacific (Seoul) Region</li>
+  <li>ap-southeast-1 – Asia Pacific (Singapore) Region</li>
+  <li>ap-southeast-2 – Asia Pacific (Sydney) Region</li>
+  <li>ap-south-1 – Asia Pacific (Mumbai) Region</li>
+  <li>ca-central-1 – Canada (Central) Region</li>
+  <li>eu-central-1 – EU (Frankfurt) Region</li>
+  <li>eu-west-1 – EU (Ireland) Region</li>
+  <li>eu-west-2 – EU (London) Region</li>
+  <li>sa-east-1 – South America (Sao Paulo) Region</li>
+  <li>us-east-1 – US East (Northern Virginia) Region</li>
+  <li>us-east-2 – US East (Ohio) Region</li>
+  <li>us-west-1 – US West (Northern California) Region</li>
+  <li>us-west-2 – US West (Oregon) RegionEach region contains several availability zones. Resources in separate availability zones should be characterized by independent failure probabilities. For example, a VM running in us-west-2a and one running in us-west-2b should be isolated from each other with respect to datacenter infrastructure failures (e.g. power outtages, network failures, disk failures, etc.)</li>
+</ul>
+
+<h2 id="interacting-with-aws">Interacting with AWS</h2>
+
+<p>Amazon’s preferred method of AWS access is through the AWS console. However doing so makes it difficult to control AWS programatically. Each command has a documented REST and SOAP interface. The <a href="http://aws.amazon.com/documentation/">service documentation</a> contains a link for each service that itself links the API reference. For example, the EC2 documentation is described <a href="http://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html">here.</a></p>
+
+<p>Perhaps the most straight forward way to access AWS, however, is through the <a href="http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html">CLI.</a> AWS consists of many simple primitives rather than a few complex ones. This design choice promotes both performance and robustness in a distributed setting since the coordinated functionality of each primitive is minimized. It makes using AWS tedious, at times, however because many different primitives may be necessary to accomplish a single task. Put another way, the AWS API is designed for scalability more than it is designed for convenience and/or ease-of-use.</p>
+
+<p>The CLI can be accessed, essentially, in two ways that are (more or less) differentiated by the way in which AWS security credentials are checked. Amazon makes available CLI tools that are written in Java and use SOAP. These tools use X.509 certificates to authenticate each request. AWS also supports a number of SDKs (for different languages) that use a secret key to sign REST requests. Euca2ools is a set of wrappers around the Boto SDK for Python that mimics the AWS CLI commands. I’ll use euca2ools in what follows but the syntax should be the same for Amazon’s ec2 tools.</p>
+
+<p>euca2ools requires access to your AWS credentials which are</p>
+
+<ul>
+  <li>an X.509 certificate</li>
+  <li>an X.509 private key</li>
+  <li>an AWS access key</li>
+  <li>an AWS secret keyIt also requires endpoints (URLs) for the tools to contact for different services. Most of the commands allow you to specify these on the command line, but the typical approach is to set them as environment variables.</li>
+</ul>
+
+<p><strong><font color="red">WARNING</font></strong>: You must protect your credentials. If they are stolen or made visible, they provide access to your AWS account.</p>
+
+<p>Here is a sample set of exports for bash that set some of the relevant environment variable. You can source this file in bash and that shell will be able to run euca2ools against AWS.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export REGION=us-west-2
+EUCA_KEY_DIR=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd -P)
+export EC2_URL=http://ec2.$REGION.amazonaws.com
+export S3_URL=http://s3.amazonaws.com
+export TOKEN_URL=http://storagegateway.$REGION.amazonaws.com
+export AWS_AUTO_SCALING_URL=http://autoscaling.$REGION.amazonaws.com
+export AWS_CLOUDWATCH_URL=http://monitoring.$REGION.amazonaws.com
+export AWS_ELB_URL=http://elasticloadbalancing.$REGION.amazonaws.com
+export
+EC2_PRIVATE_KEY=${EUCA_KEY_DIR}/XXXXXXXX.pem.txt
+export
+EC2_CERT=${EUCA_KEY_DIR}/YYYYYYYY.pem.txt
+export EC2_ACCOUNT_NUMBER='NNNNNNNN'
+export EC2_ACCESS_KEY='PPPPPPPP'
+export EC2_SECRET_KEY='SSSSSSSS'
+export AWS_ACCESS_KEY='PPPPPPPP'
+export AWS_SECRET_KEY='SSSSSSSS'
+export AWS_CREDENTIAL_FILE=${EUCA_KEY_DIR}/iamrc
+export EC2_USER_ID='UUUUUUUU'
+</code></pre></div></div>
+
+<p>You’ll need to fill in the strings that are repeated capital letters with the various keys and key files, and cert files, user ID and account number for your account. This information can be obtained from the AWS Management console.</p>
+
+<h2 id="ec2">EC2</h2>
+
+<p>Amazon’s EC2 provides essentially three functionalities:</p>
+<ul>
+  <li>virtual machine provisioning</li>
+  <li>network provisioning (including firewalls)</li>
+  <li>block storage provisioning (persistent volumes)We’ll cover each and then describe how they are managed using euca2ools using the following figure:</li>
+</ul>
+
+<p><img src="https://www.gaeblog.com/assets/AWS-Introduction-ec2.png" alt="" /></p>
+
+<h3 id="virtual-machines">Virtual Machines</h3>
+
+<p>Linux virtual machines, under AWS, are called <em>instances</em>. Each instance consists of a</p>
+<ul>
+  <li>boot record</li>
+  <li>kernel</li>
+  <li>ramdisk</li>
+  <li>image (root file system for Linux)</li>
+  <li>ephemeral disk storageFor windows, it is slightly different in that the kernel and ramdisk are combined, but logically the components needed are equivalent.</li>
+</ul>
+
+<p>Typically, the functionality that is associated with the virtual machine (VM) is defined by the <em>image</em>. For Linux, the image contains a single root file system which usually holds a specific version of a specific distribution (e.g. CentOS 6.4.1, Ubuntu 12.04, etc.) The kernel and ramdisk that are loaded with the image into the instance must be compatible with the image, and the boot record is one that the hypervisor must understand. Amazon installs the kernels, ramdisks, and boot records for the images it makes available publicly. It is also possible for users to upload their own images, and (using a paravirtualized boot loader) their own kernels and ramdisks.</p>
+
+<p>To see what images are available on AWS, set the REGION variable in the file shown above (I’m using us-west-2 in this example) and type</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-describe-images -a
+</code></pre></div></div>
+
+<p>It will take a while but you’ll get back a lengthy listing of the images that are installed and publicly available. Now try</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-describe-images -a | grep ami-f33fa9c3
+</code></pre></div></div>
+
+<p>You should see something that looks like</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IMAGE  ami-f33fa9c3 ubuntu-us-west-2/images/ubuntu-precise-12.04-amd64-server-20130516.manifest.xml 099720109477   available   public  x86_64  machine aki-fc37bacc instance-store paravirtual xen 
+</code></pre></div></div>
+
+<p>From the name, this image (identified by its AMI ID ami-f33fa9c3) is an Ubuntu 12.04 image compiled for 64 bit. Notice that it specifies a kernel ID: aki-fc37bacc. Checking the image catalog with</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-describe-images -a | grep aki-fc37bacc | grep -v ami-
+</code></pre></div></div>
+
+<p>the kernel is a custom kernel (contained in the image’s /boot directory) that is accessed vi PV_GRUB.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IMAGE  aki-fc37bacc
+ec2-public-images-us-west-2/pv-grub-hd0_1.03-x86_64.gz.manifest.xml amazon available    public  x86_64  kernel              instance-store paravirtual  xen 
+</code></pre></div></div>
+
+<h3 id="instances">Instances</h3>
+
+<p>When an instance is instantiated from an image it is booted on a hypervisor and attached to a private network that is protected by a firewall and a NAT (Network Address Translation) gateway. It also need to have some form of external access enabled (typically ssh). Thus running an instance for the first usually time involves</p>
+<ul>
+  <li>booting an instance from an image</li>
+  <li>opening the ssh port in the firewall</li>
+  <li>telling AWS to insert the public key of a public-key/private key pair for sshIn addition, you need to select the “size” of the instance to boot from the set of available <a href="http://aws.amazon.com/ec2/instance-types/">Instance Types.</a> Each type specifies the amount of memory, the number of cores, and the size of the ephemeral disk that the instance will be given when it boots. Thus running an instance boots an image with the resource specified in the instance type, on a private network. Each instance type carries its own hourly charge so you need to be careful about which ones you choose.</li>
+</ul>
+
+<p>To get the instance running, you first need to ask AWS to create an ssh keypair, the public end of which it will inject for you into the instance should you so choose. The command to create a key pair is</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-create-keypair -f keyfile keyname
+</code></pre></div></div>
+
+<p>Where keyfile is the name of a file you want to use to hold the private key and keyname is the name of the key pair. AWS associated the name “keyname” with the public key so that you can refer to it in the launch command as a way of instructing it to inject the public key into the instance. For example, the command</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-create-keypair -f testkey testkey
+</code></pre></div></div>
+
+<p>creates the keypair called “testkey” in AWS and writes the private key into the file testkey in the local directory.</p>
+
+<p>To launch an instance, you must specify (at a minimum) the ami ID and the key name. In addition, you should specify the instance type (there is a default but it may be more expensive than you’d like).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-run-instances ami-f33fa9c3 -k testkey -t m1.small
+</code></pre></div></div>
+
+<p>Launches the Ubuntu image described previously with the testkey keypair as an m1.small instance. When the instance boots, your account will be charged $0.10$ for each hour (or fraction of an hour) it uses.</p>
+
+<p>It takes some time to start an instance. Before the instance is ready, it will show up as having a status of “pending”</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INSTANCE   i-75ade57d  ami-f33fa9c3 ip-172-31-1-172.us-west-2.compute.internal pending testkey 0 m1.small  2014-04-23T20:11:35.000Z    us-west-2c  aki-fc37bacc monitoring-disabled        172.31.1.172    vpc-94ad41f1 subnet-d5467793    instance-store                  paravirtual xen     sg-b07fb3d5 default false
+</code></pre></div></div>
+
+<p>To check its status you must poll the system:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-describe-instances
+</code></pre></div></div>
+
+<p>and wait for the status to become running. When it shows as running the instance is booted and the ssh key has been inserted so that you can log in.</p>
+
+<p>Also notice that the instance has been give an instance ID that begins “i-“: i-75ade57d. You’ll need this ID to reference the instance in other commands. It is always available from describe instances.</p>
+
+<p>However you first need to open the ssh port in the firewall. In this example, because I didn’t specify otherwise, AWS chose the default security group for the instance. Each security group corresponds to a separate, isolated private network with its own firewall and NAT. It is possible to create different security groups (and to give them names) with the euca-create-group command. If you don’t specify a name to the run instance command, however, it will choose the security group with the name “default.”</p>
+
+<p>To open the ssh port in the default security group, run</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-authorize default -P tcp -p 22 -s 0.0.0.0/0
+</code></pre></div></div>
+
+<p>At this point you should be able to ssh into the instance using the private key returned by AWS when you created the keypair.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -i ./testkey ubuntu@ec2-54-187-86-32.us-west-2.compute.amazonaws.com
+</code></pre></div></div>
+
+<p>Notice in the display from describe instances show above that the instance has both an external DNS name (ec2-54-187-86-32.us-west-2.compute.amazonaws.com) and an internal DNA name (ip-172-31-1-172.us-west-2.compute.internal). Only the external one is accessible from outside the firewall (it is NATted to the internal address and name). Also notice that I had to log in as the user “ubuntu.” The key insertion mechanism for this image enables the user ubuntu rather than the user “root” by default. The ubuntu user is sudo enabled, however, so you have root access to this instance.</p>
+
+<p>To terminate the instance (thereby causing AWS to cease charging you) run</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-terminate-instances "i-75ade57d"
+</code></pre></div></div>
+
+<p>You may need the quotes to avoid the shell parsing the “-“ in the ID.</p>
+
+<h3 id="instance-impermanence">Instance Impermanence</h3>
+
+<p>Once of the curious aspects of the AWS cloud model (and, since it has influenced all of the others, we can “cloud computing” in general) is the difference between an instance and a VM in terms of permanence. A VM is intended to function as a “virtual” piece of hardware typically called a “server.” When a VM boots it is analogous to turning the sever on. When it shuts down, the model (typically) is that of turning a server off. The VM is assumed to be permanent (like a server) while it goes through its power up/power down life cycle.</p>
+
+<p>Instances are different in that they are temporary running versions of images (at least, they were in their first incarnation – see below). The designers of AWS believed</p>
+
+<ul>
+  <li>each instance should start from a known state</li>
+  <li>the infrastructure is robust enough to make instance failure rare</li>
+  <li>well written applications need to be prepared for catastrophic instance failureFor these reasons, instances have the property that they always start from the state that their image was in when it was registered with the cloud, and then they are terminated, all of the state changes that were made while they were running are lost.</li>
+</ul>
+
+<p>This property (which is actually quite a useful property when operating at scale) is the biggest source of confusion for most cloud users, especially those familiar with VMs and virtualization. <strong><em>When an “regular” instance is terminated, everything in the instance is deleted permanently</em></strong>. It feel strange because when he instance boots, there is a root file system that is readable and writable and also “ephemeral” disks that are empty but formatted as file systems that appear ready for use. Anything written to the root file system or the other ephemeral partitions while the instance is running is simply lost.</p>
+
+<p>For example, logging into an Ubuntu 12.04 instance run as an m1.small instance type, a df shows</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ubuntu@ip-172-31-7-74:~$ df
+Filesystem     1K-blocks   Used Available Use% Mounted on
+/dev/xvda1      10321208 796228   9000704   9% /
+udev              838184     12    838172   1% /dev
+tmpfs             338516    168    338348   1% /run
+none                5120      0      5120   0% /run/lock
+none              846284      0    846284   0% /run/shm
+/dev/xvda2     153899044 192068 145889352   1% /mnt
+</code></pre></div></div>
+
+<p>The instance type claims that, for an m1.small, the instance gets 1 disk of 160 GB. The Ubuntu distribution is on the 10 GB root file system and the 153 GB partition mounted on /mnt is formatted as an ext4 file system. Any file written to the root file system or the file system mounted on /mnt will be lost when the VM terminates.</p>
+
+<h3 id="elastic-block-store-persistent-volumes">Elastic Block Store: Persistent Volumes</h3>
+
+<p>The ephemeral nature of instances requires that the user take steps to store data that must persist across instance creation and termination in some form of persistent storage. Originally, there was only S3. The model was to load from S3 all data that the instance needed just after it booted (sometimes as part of its /etc/rc processing) and then to explicitly store back to S3 any data that needed to persist after the instance shut down. This load/checkpoint model proved too cumbersome for many to use effectively. Further, it can be time consuming (although not expensive since Amazon does not charge for the bandwidth used between EC2 and S3) as the fetch and put are not differential (although several clever systems were developed to alleviate this last problem).</p>
+
+<p>It is still possible to use S3 as an explicit storage facility for instance persistent data, but Amazon now includes a persistent storage volume facility called the Elastic Block Store (EBS).</p>
+
+<p>EBS volumes are essentially persistent disk partitions that can be created and destroyed dynamically under user control. Because they are logically not part of the instance, they must be attached to an instance before they are used and detached when they are no longer needed. terminating an instance automatically forces a detach.</p>
+
+<p>To create a volume, you must specify the volume size (in GB) and an availability zone for the volume. EBS volumes can only be attached to instances running in the same availability zone.</p>
+
+<p>Returning to the example, I started another instance let Amazon choose an availability zone for my instance start. It chose us-west-2c.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INSTANCE   i-c4c68ecc  ami-f33fa9c3 ec2-54-187-111-144.us-west-2.compute.amazonaws.com ip-172-31-7-74.us-west-2.compute.internal   running testkey 0 m1.small  2014-04-23T23:00:42.000Z    us-west-2c  aki-fc37bacc monitoring-disabled    54.187.111.144  172.31.7.74 vpc-94ad41f1 subnet-d5467793    instance-store              paravirtual xen sg-b07fb3d5 default false
+</code></pre></div></div>
+
+<p>To create a 10 GB volume that this instance can access, then</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-create-volume -s 10 -z us-west-2c
+</code></pre></div></div>
+
+<p>The return message has the status of the volume as creating. Before the volume can be attached its status must go to available.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-describe-volumes
+</code></pre></div></div>
+
+<p>polls the status.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VOLUME vol-7443fb78    10      us-west-2c  available 2014-04-23T23:13:41.660Z  standard
+</code></pre></div></div>
+
+<p>Now it is possible (using the instance ID) to attach the volume. You need to specify the device name in the instance to use (/dev/xvdb in this example – note that in the df AWS has used xvda for its root and ephemeral).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-attach-volume -i i-c4c68ecc -d /dev/xvdb vol-7443fb78
+</code></pre></div></div>
+
+<p>Now poll again to wait until the attachment completes</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VOLUME vol-7443fb78    10      us-west-2c  in-use 2014-04-23T23:13:41.660Z standard    
+ATTACHMENT  vol-7443fb78    i-c4c68ecc  /dev/xvdb   attached 2014-04-24T00:10:13.000Z
+</code></pre></div></div>
+
+<p>At this point it is possible to log into the instance, mount the volume (it will appear in the instance as /dev/xvdb) and to format it as a file system. Once formatted (you only need to do this the first time after the volume has been created) the volume can be mounted as if it were a formatted disk partition.</p>
+
+<p>Before terminating, it is best to unmount the volume. Linux will try and flush the buffer cache and do an unmount as part of the terminate but there is no guarantee that the flush will be complete before the detach forced by AWS takes place. Detaching a mounted volume can cause data corruption so you should unmount before detaching and/or terminating to be safe.</p>
+
+<p>Having done that, however, data in that volume will persist past the termination of a an instance. If you were to write some data into the volume, unmount it, detach it, and terminate the instance. Then start another instance (it can even be from a different image as long as it recognizes the file system you put on the volume when you formatted it) attach the volume and mount it and the data will still be there. The EBS volume behaves like a portable disk that you can “plug” into an instance once it is running.</p>
+
+<p>Note that each EBS volume can be plugged into at most one instance at a time. It is not a file sharing protocol (which is another point of some confusion).</p>
+
+<p>Why?</p>
+
+<p>Returning to the figure, the volume itself is housed in some storage facility within AWS (it is not part of the instance). To access it, disk block requests are encapsulated in network packets and sent across a network link to the network-attached device that is serving the volume. Amazon does not say much about how EBS is implemented. For example, it is not clear whether the EBS block traffic goes over the same network interface that the instance traffic uses. It also isn’t clear whether the packet format is IP. Logically, though, the architecture is analogous to using iSCSI to encapsulate disk block traffic in IP packets.</p>
+
+<p>Thus, the protocol is between a single disk block device and a storage device – EBS is not a file system. In the same way that two machines cannot have the same disk plugged into them, two instance cannot both attach an EBS volume.</p>
+
+<p>However, it is possible to format an EBS volume as a file system and then to use a network file system (within the instances) to share it. One common set up that is used to share an EBS volume is to mount it in an instance and then have the file system exported as a NFS share to other instances.</p>
+
+<h3 id="completing-the-instance-story">Completing the Instance Story</h3>
+
+<p>Just to make things more convenient (and confusing) it is possible to use an EBS volume as the backing storage for an instance. That is, in the original conception of an instance provided above, the storage for the instance is dynamically allocated when the instance is started and and released when the instance terminates. This is now called an “Instance Store” instance. An “EBS-backed Instance” is one in which the root file system containing the image is stored in EBS. In the describe images output, the image is tagged as either being an ebs instance (or not, implying that it is an instance store instance).</p>
+
+<p>The advantage of an EBS-backed instance is that the root file system can be made to persist across instance terminate, but in kind of a funny way. First, for EBS-backed instances it is possible to issue a STOP command. Stopping such an instance also stops AWS’s charging for it but it does tell AWS to reclaim the root file system space. Thus, creating an EBS-backed instance and then stopping it, is like terminating but without the loss of the contents. To get it back, you issue a START command.</p>
+
+<p>If you terminate an EBS-backed volume, the default action is to delete the root volume. You can override this behavior. If you do, the volume will be detached but it will remain available (and you will be charged for its storage). You can mount the volume in another instance (like any other volume) but you can’t restart an instance from it directly.</p>
+
+<p>Instead, to restart from a volume that has persisted past the termination of an instance, you need to take a snapshot of it and register the snapshot as a new image. In effect the snapshot-register operations reconstitute the root file system with the exact contents it has when the instance detached it.</p>
+
+<h3 id="networking">Networking</h3>
+
+<p>The networking model supported by AWS in general, and EC2 in particular, can also a source of some confusion. Each instance must be assigned to a security group. Security groups are created by the user using the create group command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-create-group cs290b -d rich-test-group
+</code></pre></div></div>
+
+<p>Note that the “-d” flag which allows you to add a description of what the group is for is not optional. AWS will assign an internal name to the security group that begins “sg-“ but you can use the name you’ve given the group instead to launch an instance. So a describe groups</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-describe-groups cs290b
+</code></pre></div></div>
+
+<p>takes your name and returns</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GROUP  sg-f64f9a93 932234911131    cs290b  rich-test-group vpc-94ad41f1
+PERMISSION  932234911131    cs290b  ALLOWS  -1          TO CIDR 0.0.0.0/0   egress
+</code></pre></div></div>
+
+<p>Each security group is logically a firewall behind which the instances that are in the group are placed in terms of networking. Thus launching an instance in this group:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-run-instances ami-f33fa9c3 -k testkey -t m1.small -g cs290b
+</code></pre></div></div>
+
+<p>with the “-g” option tells AWS that an instance should be started and the firewall rules for the instance should be those associated with the security group “cs290b.”</p>
+
+<p>In the default configuration (without the use of the AWS VPC facility) each instance gets one network interface on a private network that the security group controls. All instances in the same security group are on the same private network and, thus, can communicate without regard for the security group rules. Instances in other security groups or network connections outside of AWS are subject to the security group’s filewall rules.</p>
+
+<p>To enable ssh (as we did for the default group in the previous example)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>euca-authorize cs290b -P tcp -p 22 -s 0.0.0.0/0
+</code></pre></div></div>
+
+<p>After which, the decribe for the group shows</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GROUP  sg-f64f9a93 932234911131    cs290b  rich-test-group vpc-94ad41f1
+PERMISSION  932234911131    cs290b  ALLOWS  tcp 22  22  FROM CIDR   0.0.0.0/0   ingress
+PERMISSION  932234911131    cs290b  ALLOWS  -1          TO CIDR 0.0.0.0/0   egress
+</code></pre></div></div>
+
+<p>Each instance gets an internal IP address on the private network and an internal DNS name. It also gets an external IP address and external name installed on the firewall/gateway associated with the security group.</p>
+
+<p>When two instances communicate, they should use their internal addresses. If they do not, the traffic will need to traverse some gateway within AWS and doing so affects network performance. For this reason, the DNS that Amazon operates inside AWS uses a split-horizon model in which DNS names resole to their internal addresses from within AWS but the external name will resolve to the external IP address from outside AWS.</p>
+
+<p>Also notice that an instance doesn’t have a way to discover its external IP address or DNS name using normal Linux tools. For example, a call to ifconfig returns the private IP address associated with the instances interface and a DNS lookup on the external name (as described in the previous paragraph) also returns the private IP.</p>
+
+<p>For example, an instance described as</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INSTANCE   i-bfaa7eb7  ami-f33fa9c3 ec2-54-187-63-154.us-west-2.compute.amazonaws.com ip-172-31-24-67.us-west-2.compute.internal   running testkey 0 m1.small  2014-04-25T16:56:45.000Z    us-west-2b  aki-fc37bacc monitoring-disabled    54.187.63.154   172.31.24.67    vpc-94ad41f1 subnet-062a3c72    instance-store                  paravirtual xen     sg-b07fb3d5 default false
+</code></pre></div></div>
+
+<p>yields</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eth0      Link encap:Ethernet  HWaddr 06:95:3e:09:4b:4a  
+          inet addr:172.31.24.67  Bcast:172.31.31.255  Mask:255.255.240.0
+          inet6 addr: fe80::495:3eff:fe09:4b4a/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:281 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:252 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:32703 (32.7 KB)  TX bytes:27826 (27.8 KB)
+          Interrupt:27 
+</code></pre></div></div>
+
+<p>from ifconfig. Notice that the public IP address is not listed.</p>
+
+<p>To resolve this problem, Amazon operates a web service at an unroutable IP address called the <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html#instancedata-data-categories">metadata service.</a> Its address is 169.254.169.254 and a wget from this service will return “metadata” for the instance making the call. One of the entries in the metadata service (among many) is the public IPv4 address that is visible externally.</p>
+
+<p>For example,</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget 169.254.169.254/latest/meta-data/public-ipv4
+</code></pre></div></div>
+
+<p>for the instance described above yields 54.187.63.154.</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/06/08/File-System/">File System</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2017/06/08/SDN-Introduction/">SDN Introduction</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2017/06/08/AWS-Introduction/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2017/06/08/AWS-Introduction/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#amazon-web-service">Amazon Web Service</a></li>
+<li class="toc-entry toc-h2"><a href="#resource-pools">Resource Pools</a></li>
+<li class="toc-entry toc-h2"><a href="#interacting-with-aws">Interacting with AWS</a></li>
+<li class="toc-entry toc-h2"><a href="#ec2">EC2</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#virtual-machines">Virtual Machines</a></li>
+<li class="toc-entry toc-h3"><a href="#instances">Instances</a></li>
+<li class="toc-entry toc-h3"><a href="#instance-impermanence">Instance Impermanence</a></li>
+<li class="toc-entry toc-h3"><a href="#elastic-block-store-persistent-volumes">Elastic Block Store: Persistent Volumes</a></li>
+<li class="toc-entry toc-h3"><a href="#completing-the-instance-story">Completing the Instance Story</a></li>
+<li class="toc-entry toc-h3"><a href="#networking">Networking</a></li>
+</ul>
+</li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

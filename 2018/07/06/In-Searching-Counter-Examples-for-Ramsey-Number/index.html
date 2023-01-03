@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>In Searching Counter Examples for Ramsey Number</title>
+    <meta name="description" content="  What is Ramsey Number?This is a project I did in my undergrad, so I might forget some of the details.Also some of the design choices might seen stupid for ...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/assets/stylesheets/main.css ">
+    <link rel="canonical" href="https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/">
+    <link rel="alternate" type="application/rss+xml" title="Gae Blog" href="https://www.gaeblog.com/assets/feed.xml ">
+
+
+
+    <script>
+    // google analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-100686813-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>In Searching Counter Examples for Ramsey Number | Gae Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="In Searching Counter Examples for Ramsey Number" />
+<meta name="author" content="Yanxi Chen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What is Ramsey Number? This is a project I did in my undergrad, so I might forget some of the details. Also some of the design choices might seen stupid for now, but I am writing them down anyway just for note-taking. The codes on Github. And here is the presentation we have. I assume the readers of this post have basically knowledge of computer science, like graphs, but not necessarily mathematics (I am really bad at mathematics in fact). What is Ramsey Number? According to Wolfram Research, it is to Find the minimum number of guests that must be invited so that at least m will know each other or at least n will not know each other. The solutions are known as Ramsey numbers. To phrase it in Computer Science word, for $R(n,m)$, it is to find a complete graph with minimum vertices such that if we color edges in two colors, there is no monochromatic n-cliques and m-cliques in any edge labelling. A counter example of $R(n,m)$ is basically a graph with a a labeling that contains monochromatic clique(s). How hard is this? Well we know that $R(3,3)=6$, $R(4,4)=18$, and we don’t know anything above $R(4,4)$. For $R(10,10)$, the current bounds are $798$ to $23556$. In the project, we are to design an algorithm/system that make use of basically endless computing power from both super-computers (XSEDE, CondorHTC), and cloud platforms (AWS) to find the largest counter example of $R(10,10)$." />
+<meta property="og:description" content="What is Ramsey Number? This is a project I did in my undergrad, so I might forget some of the details. Also some of the design choices might seen stupid for now, but I am writing them down anyway just for note-taking. The codes on Github. And here is the presentation we have. I assume the readers of this post have basically knowledge of computer science, like graphs, but not necessarily mathematics (I am really bad at mathematics in fact). What is Ramsey Number? According to Wolfram Research, it is to Find the minimum number of guests that must be invited so that at least m will know each other or at least n will not know each other. The solutions are known as Ramsey numbers. To phrase it in Computer Science word, for $R(n,m)$, it is to find a complete graph with minimum vertices such that if we color edges in two colors, there is no monochromatic n-cliques and m-cliques in any edge labelling. A counter example of $R(n,m)$ is basically a graph with a a labeling that contains monochromatic clique(s). How hard is this? Well we know that $R(3,3)=6$, $R(4,4)=18$, and we don’t know anything above $R(4,4)$. For $R(10,10)$, the current bounds are $798$ to $23556$. In the project, we are to design an algorithm/system that make use of basically endless computing power from both super-computers (XSEDE, CondorHTC), and cloud platforms (AWS) to find the largest counter example of $R(10,10)$." />
+<link rel="canonical" href="https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/" />
+<meta property="og:url" content="https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/" />
+<meta property="og:site_name" content="Gae Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-07-06T15:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="In Searching Counter Examples for Ramsey Number" />
+<script type="application/ld+json">
+{"author":{"@type":"Person","name":"Yanxi Chen"},"description":"What is Ramsey Number? This is a project I did in my undergrad, so I might forget some of the details. Also some of the design choices might seen stupid for now, but I am writing them down anyway just for note-taking. The codes on Github. And here is the presentation we have. I assume the readers of this post have basically knowledge of computer science, like graphs, but not necessarily mathematics (I am really bad at mathematics in fact). What is Ramsey Number? According to Wolfram Research, it is to Find the minimum number of guests that must be invited so that at least m will know each other or at least n will not know each other. The solutions are known as Ramsey numbers. To phrase it in Computer Science word, for $R(n,m)$, it is to find a complete graph with minimum vertices such that if we color edges in two colors, there is no monochromatic n-cliques and m-cliques in any edge labelling. A counter example of $R(n,m)$ is basically a graph with a a labeling that contains monochromatic clique(s). How hard is this? Well we know that $R(3,3)=6$, $R(4,4)=18$, and we don’t know anything above $R(4,4)$. For $R(10,10)$, the current bounds are $798$ to $23556$. In the project, we are to design an algorithm/system that make use of basically endless computing power from both super-computers (XSEDE, CondorHTC), and cloud platforms (AWS) to find the largest counter example of $R(10,10)$.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/"},"@type":"BlogPosting","headline":"In Searching Counter Examples for Ramsey Number","dateModified":"2018-07-06T15:00:00+00:00","datePublished":"2018-07-06T15:00:00+00:00","url":"https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Gae Blog</a>
+        <small>Software Engineer@Amazon</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/search/">
+                        
+                            <i class="fa fa-search"></i>Search
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>In Searching Counter Examples for Ramsey Number</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-07-06
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Yanxi Chen
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Cloud Computing" title="Category: Cloud Computing" rel="category">Cloud Computing</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Math" title="Tag: Math" rel="tag">Math</a-->
+        <a href="/tag/#Math" title="Tag: Math" rel="tag">Math</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#what-is-ramsey-number" id="markdown-toc-what-is-ramsey-number">What is Ramsey Number?</a></li>
+  <li><a href="#some-basic-ideas" id="markdown-toc-some-basic-ideas">Some Basic Ideas</a></li>
+  <li><a href="#what-doesnt-work" id="markdown-toc-what-doesnt-work">What Doesn’t Work</a>    <ul>
+      <li><a href="#simulated-annealingstochastic-tunneling" id="markdown-toc-simulated-annealingstochastic-tunneling">Simulated Annealing/Stochastic Tunneling</a></li>
+      <li><a href="#clique-counts-approximation" id="markdown-toc-clique-counts-approximation">Clique Counts Approximation</a></li>
+    </ul>
+  </li>
+  <li><a href="#our-design-and-implementation" id="markdown-toc-our-design-and-implementation">Our Design and Implementation</a>    <ul>
+      <li><a href="#clique-counting" id="markdown-toc-clique-counting">Clique Counting</a></li>
+      <li><a href="#tabu-search" id="markdown-toc-tabu-search">Tabu Search</a></li>
+      <li><a href="#bloom-filter" id="markdown-toc-bloom-filter">Bloom Filter</a></li>
+      <li><a href="#the-main-trick" id="markdown-toc-the-main-trick">The Main Trick</a></li>
+      <li><a href="#server-client-protocol" id="markdown-toc-server-client-protocol">Server-Client Protocol</a></li>
+    </ul>
+  </li>
+  <li><a href="#summary-and-possible-improvements" id="markdown-toc-summary-and-possible-improvements">Summary and Possible Improvements</a></li>
+</ul>
+
+<p>This is a project I did in my undergrad, so I might forget some of the details.
+Also some of the design choices might seen stupid for now, but I am writing them
+down anyway just for note-taking. The codes on <a href="https://github.com/Beokro/r1010">Github</a>.
+And here is the <a href="https://www.gaeblog.com/assets/Ramsey_Presentation.pdf">presentation</a> we have.
+I assume the readers of this post have basically knowledge of computer science,
+like graphs, but not necessarily mathematics (I am really bad at mathematics in fact).</p>
+
+<h1 id="what-is-ramsey-number">What is Ramsey Number?</h1>
+
+<p>According to <a href="http://mathworld.wolfram.com/PartyProblem.html">Wolfram Research</a>,
+it is to <strong>Find the minimum number of guests that must be invited so that at least m
+will know each other or at least n will not know each other. The solutions are
+known as Ramsey numbers.</strong> To phrase it in Computer Science word, for $R(n,m)$,
+it is to find a complete graph with minimum vertices such that if we color edges
+in two colors, there is no monochromatic n-cliques and m-cliques in any edge labelling.
+A counter example of $R(n,m)$ is basically a graph with a a labeling that contains
+monochromatic clique(s).</p>
+
+<p>How hard is this? Well we know that $R(3,3)=6$, $R(4,4)=18$, and we don’t know anything
+above $R(4,4)$. For $R(10,10)$, the current bounds are $798$ to $23556$. In the project,
+we are to design an algorithm/system that make use of basically endless computing
+power from both super-computers (XSEDE, CondorHTC), and cloud platforms (AWS) to
+find the largest counter example of $R(10,10)$.</p>
+
+<!--more-->
+
+<h1 id="some-basic-ideas">Some Basic Ideas</h1>
+
+<p>We didn’t do edge coloring in our implementation. Instead, we split the graph into
+two graphs by the colors of the edges, and count the cliques in both graphs.
+There are various reasons we make this decision, which we’ll talk about later. For
+now just remember the setting that we are dealing with two graphs now.</p>
+
+<p>The basic flow of the algorithm is the following:</p>
+<ul>
+  <li>Start from a random very small graph (like 20 vertices), split it into two, and
+work on this first.
+    <ul>
+      <li>Count the cliques of two graphs. If the sum of the cliques of two graphs is 0,
+ we are done with this graph.</li>
+      <li>If not, we need to “flip” edge(s), namly remove edge(s) from one graph and add
+ it to the other graph. Then count the cliques again. Repeat until the sum is 0.</li>
+    </ul>
+  </li>
+  <li>After we done with a graph, record the number, and add a vertex/vertices to that
+graph to form a new graph, for reason being that the old graph doesn’t have any cliques,
+so adding vertices to that graph is likely to not produce many cliques. And then repeat
+the process.</li>
+</ul>
+
+<p>So there are a few things we need to design/implement, which we’ll talk about later:</p>
+<ul>
+  <li>How do we count cliques?
+    <ul>
+      <li>Well it is a NPC problem so we might just do the dummy method,
+ but infact using a smarter method would help.</li>
+    </ul>
+  </li>
+  <li>How do we choose which edge to flip?
+    <ul>
+      <li>We can do some greedy search like: try one edge,
+ if good (sum of the cliques goes down) then keep the change,
+ if not good then discard the change and try another one, and keep going until the count
+ gets to 0. This won’t get us very far as we will reach some “local minimum”, in which
+ case we’ll need some ways to get out of it.</li>
+    </ul>
+  </li>
+  <li>How do we add vertices to old graph?
+    <ul>
+      <li>We can blindlessly add vertices, or we might want to have some smartness.</li>
+    </ul>
+  </li>
+  <li>How do we make maximum use of those compute power?
+    <ul>
+      <li>This might sound stupid, but
+ because we have many different platforms/computers located all around the world, we’ll
+ need some kind of protocol, and even build a distributed system to make use of them.</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="what-doesnt-work">What Doesn’t Work</h1>
+<p>This section will cover some methods to try to solve some of the above questions
+and doesn’t work quite well for us. It doesn’t mean that it won’t work well in general,
+but just us.</p>
+
+<h2 id="simulated-annealingstochastic-tunneling">Simulated Annealing/Stochastic Tunneling</h2>
+<p>Simulated Annealing(SA), quoted from <a href="https://en.wikipedia.org/wiki/Simulated_annealing">Wikipedia</a>,
+is a probabilistic technique for
+approximating the global optimum of a given function. Here is the pseudocode:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Let s = s0
+- For k = 0 through kmax (exclusive):
+   - T ← temperature(k ∕ kmax)
+   - Pick a random neighbour, snew ← neighbour(s)
+   - If P(E(s), E(snew), T) ≥ random(0, 1):
+      - s ← snew
+- Output: the final state s
+</code></pre></div></div>
+
+<p>And stochastic tunneling (STUN), also quoted from <a href="https://en.wikipedia.org/wiki/Stochastic_tunneling">WIkipedia</a>
+is an approach to global optimization based on the
+Monte Carlo method-sampling of the function to be objective minimized in which the
+function is nonlinearly transformed to allow for easier tunneling among regions
+containing function minima.</p>
+
+<p>Both of the above methods are randomized simulation methods. Here is the major
+drawbacks, due to which we discard them in our final implementation: Setting Parameters.
+The most vaguely described aspect of various simulation/ML algorithms
+in my opinion is how to set the proper parameters. Most of them say something
+like “we pick $k=2,t_0=5,s=100$ for our experiment because they work the best; choose
+your own set of parameter in production”, which equivalently says “choose whatever
+parameters you feel like”. It is quite hard in our case to determine what parameter
+works best for us as the problem size is so large that even parameters themselves
+need to be adjusted during different phases of simulation. There is also something
+called <a href="https://people.eecs.berkeley.edu/~johnw/papers/TCAD-2010-1.pdf">Detrended Fluctuation Analysis (DFA)</a>,
+which is a way to detect if the simulation reaches a local minimum and thus adjust
+the parameter to work better. But the problem is, the algorithm for adjusting parameters
+also needs some parameters to work well…So basically you have to set at least one
+parameter in order to get things working. And to get things working faster, especially
+in such a large problem space, you really have to set parameters well. In our case,
+due to lack of experience, we can’t get things run fast enough, and therefore
+we basically give up for any kinds of randomized simulation algorithm.</p>
+
+<h2 id="clique-counts-approximation">Clique Counts Approximation</h2>
+
+<p>We were also considering to first get an approximation of clique count of 0, after that
+then use the exact clique counting algorithm. The reasoning is that the approximation
+is much much faster than the exact one, which is a NPC problem. But it was just a
+brainstorm and it didn’t actually work well for us, as we found a even smarter
+algorithm.</p>
+
+<h1 id="our-design-and-implementation">Our Design and Implementation</h1>
+
+<p>This section will cover all the design/implementation details in our final product.
+It is splitted into several sections for clarity.</p>
+
+<h2 id="clique-counting">Clique Counting</h2>
+<p>We use the algorithm described <a href="https://arxiv.org/pdf/1403.0734.pdf">here</a>, which
+counts cliques using MapReduce. The idea is basically to split the problem of counting
+a $n-clique$ into a few $(n-1)-clique$ problems and suming them up. The sub-problems
+can be splitted accordingly depending on how many cores/machines we have to do the
+computation. This is much faster than the dummy clique-counting algorithm, as it
+cheats by parallelizing the problem.</p>
+
+<h2 id="tabu-search">Tabu Search</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Tabu_search">Tabu search</a>
+is basically a greedy algorithm for flipping edges, but with an improvement
+of having a history, called tabu list, usually implemented by a linked list, so that it won’t
+search on the same thing twice. Having a history to record
+what its moves are, and when it hits a local minimum, becasue it doesn’t take the steps
+that is used before, it’ll just “back-up” from the local minimum, i.e. accepting
+a move that is worse because it has not choice, and start searching from there.
+Note that the tabu list might have some maximum length, due to 1. memory issue, and 2.
+we might want to revisite the same spot twice in the future.</p>
+
+<p>The original form of tabu search doesn’t work quite well in our case:</p>
+<ul>
+  <li>Our graph is large. To represent a 300 vertices graph needs at least $300x300$ 
+bits matrix, and we might need to store hundreds of them. Memory is an big issue for us
+if we need a large tabu list.</li>
+  <li>Our algorithm will need to be distributed to make the maximum use of the compute power
+we have. So should we have a local tabu list for each worker, in which case the workers
+will not collaborate well, or should we have a global tabu list, in which case memory
+becomes a even larger issue for us. We could in fact use a database for global storage,
+but access data from a disk is too slow.</li>
+</ul>
+
+<p>We solve (we think) the above two issues by using another data structure for storing
+history, described below.</p>
+
+<h2 id="bloom-filter">Bloom Filter</h2>
+
+<p>As you all know, bloom filter is a super space efficient data structure with some
+false positive probability but no false negative, as it only stores bits instead
+of the original data.  In other words in our case,</p>
+<ul>
+  <li>If the bloom filter says the step we take is <strong>not</strong> taken before, then we know that
+for sure (with probability of 1)</li>
+  <li>If it says the step <strong>is</strong> taken before, we know that it is the case for some probability $p$</li>
+</ul>
+
+<p>The important point here is that, the false positive rate $p$, along with the desired
+number of graphs we want to store, can be configured to meet our needs best. For example,
+in our case, we make the maximum number of graphs it can store be 40,000,000, and $p$
+be $1.0E^{-10}$, then we have the memory cost of $228.53MB$. Note that the expected
+number of false positive instnaces is 0.004, which means that even if we use up
+all the spaces of this bloom filter, we are extremely unlikely to have even one
+instance of false positive. Even in the case we have false positive, the assumption
+here is that the problem space is so large that it is ok if we miss a couple steps;
+there are plenty of other steps we can take to make it work.</p>
+
+<h2 id="the-main-trick">The Main Trick</h2>
+
+<p>Not all men are equal, and not all edges are equally likely to be flipped. And moreover,
+we don’t actually need to count $10-cliques$ every time we flip an edge. Here is the
+trick:</p>
+
+<ul>
+  <li>When move to larger problem size
+    <ul>
+      <li>Count 10 cliques once</li>
+      <li>Maintain a Map: {Edges} -&gt; {clique counts}</li>
+    </ul>
+  </li>
+  <li>After the first and only 10-clique count check, we start to flip edges
+    <ul>
+      <li>During flipping, we also maintain the “complement” of the graph $G$, because:
+        <ul>
+          <li>To check $R(m,n)$ is the same to check:
+            <ol>
+              <li>$m-clique$ on $G$</li>
+              <li>$n-clique$ on $G^c$</li>
+            </ol>
+          </li>
+        </ul>
+      </li>
+      <li>When we test if flipping one edge works, we need to update the corresponding
+ {Edges} -&gt; {clique counts} map. We get a list of intersected nodes of that edge
+ and <strong>search for (n-2)-clique</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<p>This is super hard to describe in words for me, so here are the relavent exerted codes.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">updateEdgeToClique</span><span class="o">(</span><span class="nc">Edge</span> <span class="n">edge</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">edgeToClique</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">edge</span><span class="o">);</span>
+    <span class="nc">Edge</span> <span class="n">flip</span> <span class="o">=</span> <span class="n">flip</span><span class="o">(</span><span class="n">edge</span><span class="o">);</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Edge</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">minus</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Edge</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">plus</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">nodesMinus</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">nodesPlus</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="kt">long</span> <span class="n">oldCount</span> <span class="o">=</span> <span class="n">countCliquesSub</span><span class="o">(</span><span class="n">edge</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">minus</span><span class="o">);</span>
+    <span class="kt">long</span> <span class="n">newCount</span> <span class="o">=</span> <span class="n">countCliquesSub</span><span class="o">(</span><span class="n">flip</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">plus</span><span class="o">);</span>
+    <span class="k">for</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="nc">Edge</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">:</span> <span class="n">minus</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">changeEdgeToClique</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="o">-</span><span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="n">nodesMinus</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node1</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">));</span>
+        <span class="n">nodesMinus</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node2</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">));</span>
+        <span class="n">nodesMinus</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node1</span><span class="o">,</span> <span class="n">nodesMinus</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node1</span><span class="o">)</span> <span class="o">+</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="n">nodesMinus</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node2</span><span class="o">,</span> <span class="n">nodesMinus</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node2</span><span class="o">)</span> <span class="o">+</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+    <span class="o">}</span>
+    <span class="k">for</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="nc">Edge</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">:</span> <span class="n">plus</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">changeEdgeToClique</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="n">nodesPlus</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node1</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">));</span>
+        <span class="n">nodesPlus</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node2</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">));</span>
+        <span class="n">nodesPlus</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node1</span><span class="o">,</span> <span class="n">nodesPlus</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node1</span><span class="o">)</span> <span class="o">+</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="n">nodesPlus</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node2</span><span class="o">,</span> <span class="n">nodesPlus</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">node2</span><span class="o">)</span> <span class="o">+</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+    <span class="o">}</span>
+    <span class="k">for</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">:</span> <span class="n">nodesMinus</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+        <span class="nc">Edge</span> <span class="n">temp1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()),</span>
+                              <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()));</span>
+        <span class="nc">Edge</span> <span class="n">temp2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()),</span>
+                              <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()));</span>
+        <span class="n">changeEdgeToClique</span><span class="o">(</span><span class="n">temp1</span><span class="o">,</span> <span class="o">-</span><span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">/</span> <span class="mi">7</span><span class="o">);</span>
+        <span class="n">changeEdgeToClique</span><span class="o">(</span><span class="n">temp2</span><span class="o">,</span> <span class="o">-</span><span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">/</span> <span class="mi">7</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">for</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">:</span> <span class="n">nodesPlus</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+        <span class="nc">Edge</span> <span class="n">temp1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">flip</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()),</span>
+                              <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">flip</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()));</span>
+        <span class="nc">Edge</span> <span class="n">temp2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">flip</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()),</span>
+                              <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">flip</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()));</span>
+        <span class="n">changeEdgeToClique</span><span class="o">(</span><span class="n">temp1</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">/</span> <span class="mi">7</span><span class="o">);</span>
+        <span class="n">changeEdgeToClique</span><span class="o">(</span><span class="n">temp2</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">/</span> <span class="mi">7</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">newCount</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">edgeToClique</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">flip</span><span class="o">,</span> <span class="k">new</span> <span class="nc">AtomicLong</span><span class="o">(</span><span class="n">newCount</span><span class="o">));</span>
+    <span class="o">}</span>
+    <span class="n">current</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">current</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">+</span> <span class="n">newCount</span> <span class="o">-</span> <span class="n">oldCount</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">long</span> <span class="nf">countCliquesSub</span><span class="o">(</span><span class="nc">Edge</span> <span class="n">edge</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">change</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Edge</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="n">edgeToClique</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">currentSize</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">getCurrentSize</span><span class="o">();</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">intersect</span> <span class="o">=</span> <span class="n">getIntersectNodes</span><span class="o">(</span><span class="n">edge</span><span class="o">);</span>
+    <span class="nc">AdjListGraph</span> <span class="n">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AdjListGraph</span><span class="o">();</span>
+    <span class="n">g</span><span class="o">.</span><span class="na">edgeToClique</span> <span class="o">=</span> <span class="n">edgeToClique</span><span class="o">;</span>
+    <span class="nc">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">intersect</span><span class="o">);</span>
+    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">intersect</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">intersect</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="kt">int</span> <span class="n">node1</span> <span class="o">=</span> <span class="n">intersect</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">node2</span> <span class="o">=</span> <span class="n">intersect</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">hasEdge</span><span class="o">(</span><span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="n">node1</span><span class="o">,</span> <span class="n">node2</span><span class="o">)))</span> <span class="o">{</span>
+                <span class="n">g</span><span class="o">.</span><span class="na">addEdge</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">node1</span><span class="o">),</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">node2</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="na">countCliquesOfSize</span><span class="o">(</span><span class="mi">8</span><span class="o">,</span> <span class="n">change</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="nf">getIntersectNodes</span><span class="o">(</span><span class="nc">Edge</span> <span class="n">edge</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">intersect</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;();</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span> <span class="o">&gt;=</span> <span class="n">currentSize</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">currentSize</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">currentSize</span> <span class="o">*</span> <span class="mi">2</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">edge</span><span class="o">.</span><span class="na">node1</span> <span class="o">||</span> <span class="n">i</span> <span class="o">==</span> <span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="nc">Edge</span> <span class="n">test1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">i</span><span class="o">),</span> <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">i</span><span class="o">));</span>
+            <span class="nc">Edge</span> <span class="n">test2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">i</span><span class="o">),</span> <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">i</span><span class="o">));</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">hasEdge</span><span class="o">(</span><span class="n">test1</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">hasEdge</span><span class="o">(</span><span class="n">test2</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">intersect</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">currentSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">edge</span><span class="o">.</span><span class="na">node1</span> <span class="o">||</span> <span class="n">i</span> <span class="o">==</span> <span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="nc">Edge</span> <span class="n">test1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">i</span><span class="o">),</span> <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node1</span><span class="o">,</span> <span class="n">i</span><span class="o">));</span>
+            <span class="nc">Edge</span> <span class="n">test2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Edge</span><span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">i</span><span class="o">),</span> <span class="nc">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="na">node2</span><span class="o">,</span> <span class="n">i</span><span class="o">));</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">hasEdge</span><span class="o">(</span><span class="n">test1</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">hasEdge</span><span class="o">(</span><span class="n">test2</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">intersect</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">intersect</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">changeEdgeToClique</span><span class="o">(</span><span class="nc">Edge</span> <span class="n">edge</span><span class="o">,</span> <span class="kt">long</span> <span class="n">delta</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">delta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">edgeToClique</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">edge</span><span class="o">).</span><span class="na">addAndGet</span><span class="o">(</span><span class="n">delta</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">edgeToClique</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">edge</span><span class="o">).</span><span class="na">get</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">edgeToClique</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">edge</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">edgeToClique</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">edge</span><span class="o">,</span> <span class="k">new</span> <span class="nc">AtomicLong</span><span class="o">());</span>
+        <span class="n">edgeToClique</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">edge</span><span class="o">).</span><span class="na">addAndGet</span><span class="o">(</span><span class="n">delta</span><span class="o">);</span>
+    <span class="o">}</span>
+    
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>And here is a picture illustration:
+<img src="https://www.gaeblog.com/assets/Ramsey_Trick.png" alt="" /></p>
+
+<p>Again all codes are on <a href="https://github.com/Beokro/r1010">Github</a> and here is the
+<a href="https://www.gaeblog.com/assets/Ramsey_Presentation.pdf">presentation</a>.</p>
+
+<h2 id="server-client-protocol">Server-Client Protocol</h2>
+
+<p>In our implementation, this part is nothing really special but a bunch of TCP connections.
+The information exchanged includes:</p>
+<ul>
+  <li>Current graph size</li>
+  <li>Current graph</li>
+  <li>Current clique size</li>
+  <li>The {Edges} -&gt; {clique counts} map</li>
+  <li>Best clique so far.</li>
+</ul>
+
+<p>Basically each worker does thei own search until one of them finds a solution to current
+graph size, and then all of them move on to the next graph size. They are “always” doing searches
+in different graphes because of the global bloom filter we have. The main server
+might be down so we also have a backup server to take care of this.</p>
+
+<p>All in all, the client-server implementation is pretty basic in the sense that they
+are just a bunch of TCP connections, no HTTP, no Raft consensus, no monitoring.</p>
+
+<h1 id="summary-and-possible-improvements">Summary and Possible Improvements</h1>
+<ul>
+  <li>It is better to use more up-to-date technologies :)
+    <ul>
+      <li>Opensource solution for server cluster with consensus by Raft/Paxos</li>
+      <li>Opensource solution for monitoring and visualized search progress</li>
+    </ul>
+  </li>
+  <li>Some other tricks like we can skip to next <em>prime</em> graph size, which I heard is better.</li>
+</ul>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/06/28/Python-Global-Interpreter-Lock/">Python Global Interpreter Lock (GIL)</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/09/09/Polymorphic-Functional-Programming/">Polymorphic Functional Programming</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://www.gaeblog.com/2018/07/06/In-Searching-Counter-Examples-for-Ramsey-Number/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//https-seraphroy-github-io-1.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+             <div class="side content" id="search-div">
+                 <div>
+    <i class="fa fa-search"></i>
+    Search
+</div>
+<div id="site_search">
+    <input type="text" id="search_box" placeholder="Search..." >
+</div>
+<div id="search_results"></div>
+
+<link rel="stylesheet" type="text/css" href="https://www.gaeblog.com/assets/stylesheets/main.css">
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/search.js"></script>
+<script type="text/javascript" src="https://www.gaeblog.com/assets/js/node_modules/simpleblogsearch/index.js"></script>
+
+<script>
+SimpleBlogSearch({
+   searchDataPath: '/assets/search_data.json',
+   dataType: 'json',
+   processDataFunc: function(data){ return data },
+   searchInputID: 'search_box',
+   resultsDivID: 'search_results',
+   resultULClass: 'content-ul search-ul content-side',
+   highlightKeywordClass: 'search_keyword',
+   limit: 4,
+
+});
+</script>
+
+             </div>
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#what-is-ramsey-number">What is Ramsey Number?</a></li>
+<li class="toc-entry toc-h1"><a href="#some-basic-ideas">Some Basic Ideas</a></li>
+<li class="toc-entry toc-h1"><a href="#what-doesnt-work">What Doesn’t Work</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#simulated-annealingstochastic-tunneling">Simulated Annealing/Stochastic Tunneling</a></li>
+<li class="toc-entry toc-h2"><a href="#clique-counts-approximation">Clique Counts Approximation</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#our-design-and-implementation">Our Design and Implementation</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#clique-counting">Clique Counting</a></li>
+<li class="toc-entry toc-h2"><a href="#tabu-search">Tabu Search</a></li>
+<li class="toc-entry toc-h2"><a href="#bloom-filter">Bloom Filter</a></li>
+<li class="toc-entry toc-h2"><a href="#the-main-trick">The Main Trick</a></li>
+<li class="toc-entry toc-h2"><a href="#server-client-protocol">Server-Client Protocol</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#summary-and-possible-improvements">Summary and Possible Improvements</a></li>
+</ul>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/assets/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SeraphRoy" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:royxagain@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/SeraphRoy" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/yanxichen" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /assets/js/main.js " charset="utf-8"></script>
+    <script src=" /assets/js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /assets/js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>
