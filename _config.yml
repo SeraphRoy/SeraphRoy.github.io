@@ -59,6 +59,8 @@ tag_dir: tag/
 # excerpt
 excerpt_separator: "<!--more-->"
 
+repository: SeraphRoy/SeraphRoy.github.io
+
 # paginate
 plugins:
     - jekyll-paginate
