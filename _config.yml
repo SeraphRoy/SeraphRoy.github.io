@@ -16,7 +16,6 @@ url: "https://www.gaeblog.com" # the base hostname & protocol for your site
 permalink: /:year/:month/:day/:title/
 
 # other links
-# twitter_username: gaohaoyang126
 facebook_username: SeraphRoy
 github_username: SeraphRoy
 email: royxagain@gmail.com
