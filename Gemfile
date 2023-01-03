@@ -12,3 +12,4 @@ group :jekyll_plugins do
 end
 
 gem "webrick", "~> 1.7" # https://github.com/jekyll/jekyll/issues/8523
+gem "jekyll-toc"
