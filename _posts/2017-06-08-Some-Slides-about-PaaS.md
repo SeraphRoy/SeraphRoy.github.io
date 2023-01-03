@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 [PaaS]({{site.url}}/assets/Some-Slides-about-PaaS-CS293B_CloudPlatforms.pdf)
 

@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 # An example to start off
 

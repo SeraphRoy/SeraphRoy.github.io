@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 I recently read through the book _Streaming Systems_ so think it would be a good
 idea to write up a summary/thoughts about it. The book is recommended by

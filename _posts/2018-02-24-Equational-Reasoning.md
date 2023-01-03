@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 The main question is, how do we define two programs are equal, and how do we prove it.
 

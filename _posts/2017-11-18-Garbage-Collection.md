@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 # Variable Storage and Lifetime
 

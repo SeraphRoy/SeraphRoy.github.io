@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 Here we will talk about computational interpretations by the example of lax logic.
 Hope from the example we can have sense of how logic and PL are connected.

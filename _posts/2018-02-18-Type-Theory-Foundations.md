@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 We can think of Type Theory as being a catalog of a variety of notions of computation.
 The type structure determines the "programming language features". For example,

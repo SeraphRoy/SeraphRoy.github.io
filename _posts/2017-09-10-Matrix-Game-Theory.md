@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 __Matrix Game__: Two players, each makes a choice secretly and play simutaneously. And there is payoff.
 

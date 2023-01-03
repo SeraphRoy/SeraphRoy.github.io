@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 Cost semantics is to discuss: How long do programs run (abstractly)?
 

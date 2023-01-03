@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 We state "A is true", then "A" is a proposition, and "A is true" as a whole is a judgement.
 

@@ -32,20 +32,6 @@ export default defineConfig({
               author: 'Yanxi Chen',
               date: new Date().toISOString(),
               mathjax: true,
-              body: {
-                type: 'root',
-                children: [
-                  {
-                    type: 'p',
-                    children: [
-                      {
-                        type: 'text',
-                        text: '{:toc}',
-                      }
-                    ]
-                  }
-                ],
-              }
             }
           },
           filename: {
@@ -109,30 +95,11 @@ export default defineConfig({
             isBody: true,
             templates: [
               {
-                name: 'TOC',
-                label: 'TOC',
-                match: {
-                  start: '{:toc',
-                  end: '}',
-                },
-                fields: [
-                  {
-                    // Be sure to call this field `text`
-                    name: 'text',
-                    label: 'Text',
-                    type: 'string',
-                    ui: {
-                      component: 'textarea',
-                    },
-                  },
-                ],
-              },
-              {
                 name: 'More',
                 label: 'More',
                 match: {
-                  start: '<!--more--',
-                  end: '>',
+                  start: '<!--',
+                  end: '-->',
                 },
                 fields: [
                   {

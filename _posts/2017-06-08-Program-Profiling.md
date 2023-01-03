@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 [Profiler]({{site.url}}/assets/Program-Profiling-profiling.pdf)
 

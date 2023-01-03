@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications"
-date: 2019-08-15 15:00
-categories: ['Distributed System'] 
-tags: ['Books', 'Distributed System']
+title: >-
+  Data Encoding and Transmission- Part 2 of Designing Data-Intensive
+  Applications
+date: '2019-08-15T22:00:00.000Z'
+categories:
+  - Distributed System
+tags:
+  - Books
+  - Distributed System
 author: Yanxi Chen
 mathjax: true
 ---
@@ -11,9 +16,11 @@ mathjax: true
 This blog talks about various data encoding methods and their advantages/limitations,
 along with protocols of transmitting them.
 
+
+
 Efficiency is certainly one of the main concerns for various encoding methods. The other
-thing we need to care about is _compatibility_. _Backward compatibility_ means that
-newer code can read data that was written by older code. and _Forward compatibility_
+thing we need to care about is *compatibility*. *Backward compatibility* means that
+newer code can read data that was written by older code. and *Forward compatibility*
 means that older code can read data that was written by newer code. Backward
 compatibility is normally not hard to achieve: as author of the newer code, you know
 the format of data written by older code, and so you can explicitly handle it
@@ -21,28 +28,28 @@ the format of data written by older code, and so you can explicitly handle it
 compatibility can be trickier, because it requires older code to ignore additions
 made by a newer version of the code.
 
-<!--more-->
+<!-- more -->
 
 ## Programming language–specific encodings
 
 Examples `java.io.Serializable` for Java, `pickle` for Python. Problems:
 
-- The encoding is often tied to a particular programming language, and reading the
-data in another language is very difficult. If you store or transmit data in such an
-encoding, you are committing yourself to your current programming language for
-potentially a very long time, and precluding integrating your systems with those of
-other organizations (which may use different languages).
-- In order to restore data in the same object types, the decoding process needs to be
-able to instantiate arbitrary classes. This is frequently a source of security
-problems: if an attacker can get your application to decode an arbitrary byte sequence,
-they can instantiate arbitrary classes, which in turn often allows them to do terrible
-things such as remotely executing arbitrary code.
-- Versioning data is often an afterthought in these libraries: as they are intended
-for quick and easy encoding of data, they often neglect the inconvenient problems of
-forward and backward compatibility.
-- Efficiency (CPU time taken to encode or decode, and the size of the encoded structure)
-is also often an afterthought. For example, Java's built-in serialization is
-notorious for its bad performance and bloated encoding.
+* The encoding is often tied to a particular programming language, and reading the
+  data in another language is very difficult. If you store or transmit data in such an
+  encoding, you are committing yourself to your current programming language for
+  potentially a very long time, and precluding integrating your systems with those of
+  other organizations (which may use different languages).
+* In order to restore data in the same object types, the decoding process needs to be
+  able to instantiate arbitrary classes. This is frequently a source of security
+  problems: if an attacker can get your application to decode an arbitrary byte sequence,
+  they can instantiate arbitrary classes, which in turn often allows them to do terrible
+  things such as remotely executing arbitrary code.
+* Versioning data is often an afterthought in these libraries: as they are intended
+  for quick and easy encoding of data, they often neglect the inconvenient problems of
+  forward and backward compatibility.
+* Efficiency (CPU time taken to encode or decode, and the size of the encoded structure)
+  is also often an afterthought. For example, Java's built-in serialization is
+  notorious for its bad performance and bloated encoding.
 
 For these reasons it's generally a bad idea to use your language's built-in encoding
 for anything other than very transient purpose
@@ -51,29 +58,29 @@ for anything other than very transient purpose
 
 Problems:
 
-- There is a lot of ambiguity around the encoding of numbers. In XML and CSV, you cannot
-distinguish between a number and a string that happens to consist of digits (except
-by referring to an external schema). JSON distinguishes strings and numbers, but it
-doesn't distinguish integers and floating-point numbers, and it doesn't specify a precision.
-This is a problem when dealing with large numbers; for example, integers greater than
-253 cannot be exactly represented in an IEEE 754 double-precision floating- point
-number, so such numbers become inaccurate when parsed in a language that uses
-floating-point numbers (such as JavaScript). An example of numbers larger than 253
-occurs on Twitter, which uses a 64-bit number to identify each tweet. The JSON
-returned by Twitter's API includes tweet IDs twice, once as a JSON number and once
-as a decimal string, to work around the fact that the numbers are not correctly
-parsed by JavaScript applications.
-- JSON and XML have good support for Unicode character strings (i.e., human-readable
-text), but they don't support binary strings (sequences of bytes without a character
-encoding). Binary strings are a useful feature, so people get around this limitation
-by encoding the binary data as text using Base64. The schema is then used to indicate
-that the value should be interpreted as Base64-encoded. This works, but it's somewhat
-hacky and increases the data size by 33%.
-- CSV does not have any schema, so it is up to the application to define the meaning
-of each row and column. If an application change adds a new row or column, you have
-to handle that change manually. CSV is also a quite vague format (what happens if a
-value contains a comma or a newline character?). Although its escaping rules have
-been formally specified, not all parsers implement them correctly.
+* There is a lot of ambiguity around the encoding of numbers. In XML and CSV, you cannot
+  distinguish between a number and a string that happens to consist of digits (except
+  by referring to an external schema). JSON distinguishes strings and numbers, but it
+  doesn't distinguish integers and floating-point numbers, and it doesn't specify a precision.
+  This is a problem when dealing with large numbers; for example, integers greater than
+  253 cannot be exactly represented in an IEEE 754 double-precision floating- point
+  number, so such numbers become inaccurate when parsed in a language that uses
+  floating-point numbers (such as JavaScript). An example of numbers larger than 253
+  occurs on Twitter, which uses a 64-bit number to identify each tweet. The JSON
+  returned by Twitter's API includes tweet IDs twice, once as a JSON number and once
+  as a decimal string, to work around the fact that the numbers are not correctly
+  parsed by JavaScript applications.
+* JSON and XML have good support for Unicode character strings (i.e., human-readable
+  text), but they don't support binary strings (sequences of bytes without a character
+  encoding). Binary strings are a useful feature, so people get around this limitation
+  by encoding the binary data as text using Base64. The schema is then used to indicate
+  that the value should be interpreted as Base64-encoded. This works, but it's somewhat
+  hacky and increases the data size by 33%.
+* CSV does not have any schema, so it is up to the application to define the meaning
+  of each row and column. If an application change adds a new row or column, you have
+  to handle that change manually. CSV is also a quite vague format (what happens if a
+  value contains a comma or a newline character?). Although its escaping rules have
+  been formally specified, not all parsers implement them correctly.
 
 Despite these flaws, JSON, XML, and CSV are good enough for many purposes. It's likely
 that they will remain popular, especially as data interchange formats (i.e., for
@@ -88,22 +95,22 @@ outweighs most other concerns.
 
 MessagePack is a binary encoding for JSON. Here is an example:
 
-![]({{site.url}}/assets/MessagePack-1.png)
+![]({{site.url}}/assets/MessagePack-1.png "")
 
-![]({{site.url}}/assets/MessagePack-2.png)
+![]({{site.url}}/assets/MessagePack-2.png "")
 
 1. The first byte, 0x83, indicates that what follows is an object (top four bits =
-0x80) with three fields (bottom four bits = 0x03). (In case you're wondering what
-happens if an object has more than 15 fields, so that the number of fields doesn't
-fit in four bits, it then gets a different type indicator, and the number of fields
-is encoded in two or four bytes.)
+   0x80) with three fields (bottom four bits = 0x03). (In case you're wondering what
+   happens if an object has more than 15 fields, so that the number of fields doesn't
+   fit in four bits, it then gets a different type indicator, and the number of fields
+   is encoded in two or four bytes.)
 2. The second byte, 0xa8, indicates that what follows is a string (top four bits =
-0xa0) that is eight bytes long (bottom four bits = 0x08).
+   0xa0) that is eight bytes long (bottom four bits = 0x08).
 3. The next eight bytes are the field name "userName" in ASCII. Since the length was
-indicated previously, there's no need for any marker to tell us where the string
-ends (or any escaping).
+   indicated previously, there's no need for any marker to tell us where the string
+   ends (or any escaping).
 4. The next seven bytes encode the six-letter string value Martin with a prefix 0xa6,
-and so on.
+   and so on.
 
 The binary encoding is 66 bytes long, which is only a little less than the 81 bytes
 taken by the textual JSON encoding (with whitespace removed). All the binary encodings
@@ -120,11 +127,11 @@ Both Thrift and Protocol Buffers require a schema for any data that is encoded.
 To encode the data above in Thrift, you would describe the schema in the Thrift
 interface definition language (IDL) like this:
 
-![]({{site.url}}/assets/Thrift-1.png)
+![]({{site.url}}/assets/Thrift-1.png "")
 
 The equivalent schema definition for Protocol Buffers looks very similar:
 
-![]({{site.url}}/assets/Protobuf-1.png)
+![]({{site.url}}/assets/Protobuf-1.png "")
 
 Thrift and Protocol Buffers each come with a code generation tool that takes a schema
 definition like the ones shown here, and produces classes that implement the schema
@@ -134,7 +141,7 @@ to encode or decode records of the schema.
 Confusingly, Thrift has two different binary encoding formats, called BinaryProtocol
 and CompactProtocol, respectively. Let's look at BinaryProtocol first.
 
-![]({{site.url}}/assets/Thrift-2.png)
+![]({{site.url}}/assets/Thrift-2.png "")
 
 Similarly to MessagePack, each field has a type annotation (to indicate whether it is
 a string, integer, list, etc.) and, where required, a length indication (length of a
@@ -156,14 +163,14 @@ there are still more bytes to come. This means numbers between –64 and 63 are 
 in one byte, numbers between –8192 and 8191 are encoded in two bytes, etc.
 Bigger numbers use more bytes.
 
-![]({{site.url}}/assets/Thrift-3.png)
+![]({{site.url}}/assets/Thrift-3.png "")
 
 Finally, Protocol Buffers (which has only one binary encoding format) encodes the same
 data as shown in Figure 4-4. It does the bit packing slightly differently, but is
 otherwise very similar to Thrift's CompactProtocol. Protocol Buffers fits the same
 record in 33 bytes.
 
-![]({{site.url}}/assets/Protobuf-2.png)
+![]({{site.url}}/assets/Protobuf-2.png "")
 
 #### Compatibility
 
@@ -207,15 +214,15 @@ JSON) that is more easily machine-readable.
 
 Our example schema, written in Avro IDL, might look like this:
 
-![]({{site.url}}/assets/Avro-1.png)
+![]({{site.url}}/assets/Avro-1.png "")
 
 The equivalent JSON representation of that schema is as follows:
 
-![]({{site.url}}/assets/Avro-2.png)
+![]({{site.url}}/assets/Avro-2.png "")
 
 Here is the breakdown of the encoded byte sequence:
 
-![]({{site.url}}/assets/Avro-3.png)
+![]({{site.url}}/assets/Avro-3.png "")
 
 First of all, notice that there are no tag numbers in the schema.
 
@@ -252,7 +259,7 @@ reader's schema side by side and translating the data from the writer's schema
 into the reader's schema. The Avro specification defines exactly how this resolution
 works, and it is illustrated below.
 
-![]({{site.url}}/assets/Avro-4.png)
+![]({{site.url}}/assets/Avro-4.png "")
 
 For example, it's no problem if the writer's schema and the reader's schema have
 their fields in a different order, because the schema resolution matches up the fields
@@ -286,24 +293,22 @@ much bigger than the encoded data, making all the space savings from the binary 
 
 The answer depends on the context in which Avro is being used. To give a few examples:
 
-- Large file with lots of records: A common use for Avro—especially in the context of
-Hadoop—is for storing a large file containing millions of records, all encoded with
-the same schema. In this case, the writer of that file can just include the writer's
-schema once at the beginning of the file. Avro specifies a file format
-(object container files) to do this.
-
-- Database with individually written records: In a database, different records may be
-written at different points in time using different writer's schemas—you cannot
-assume that all the records will have the same schema. The simplest solution is to
-include a version number at the beginning of every encoded record, and to keep a list
-of schema versions in your database. A reader can fetch a record, extract the version
-number, and then fetch the writer's schema for that version number from the database.
-Using that writer's schema, it can decode the rest of the record. (Espresso works this way, for example.)
-
-- Sending records over a network connection: When two processes are communicating over
-a bidirectional network connec‐ tion, they can negotiate the schema version on
-connection setup and then use that schema for the lifetime of the connection.
-The Avro RPC protocol works like this.
+* Large file with lots of records: A common use for Avro—especially in the context of
+  Hadoop—is for storing a large file containing millions of records, all encoded with
+  the same schema. In this case, the writer of that file can just include the writer's
+  schema once at the beginning of the file. Avro specifies a file format
+  (object container files) to do this.
+* Database with individually written records: In a database, different records may be
+  written at different points in time using different writer's schemas—you cannot
+  assume that all the records will have the same schema. The simplest solution is to
+  include a version number at the beginning of every encoded record, and to keep a list
+  of schema versions in your database. A reader can fetch a record, extract the version
+  number, and then fetch the writer's schema for that version number from the database.
+  Using that writer's schema, it can decode the rest of the record. (Espresso works this way, for example.)
+* Sending records over a network connection: When two processes are communicating over
+  a bidirectional network connec‐ tion, they can negotiate the schema version on
+  connection setup and then use that schema for the lifetime of the connection.
+  The Avro RPC protocol works like this.
 
 ### Dynamically generated Schemas
 
@@ -358,7 +363,7 @@ Avro library and look at the data in the same way as you could look at a JSON fi
 The file is self-describing since it includes all the necessary metadata.
 
 This property is especially useful in conjunction with dynamically typed data processing
-languages like Apache Pig [26]. In Pig, you can just open some Avro files, start
+languages like Apache Pig \[26]. In Pig, you can just open some Avro files, start
 analyzing them, and write derived datasets to output files in Avro format without
 even thinking about schemas.
 

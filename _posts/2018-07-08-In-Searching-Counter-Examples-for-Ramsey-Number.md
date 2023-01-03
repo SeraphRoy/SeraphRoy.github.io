@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 This is a project I did in my undergrad, so I might forget some of the details.
 Also some of the design choices might seen stupid for now, but I am writing them

@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 This lecture will attempt to cover the various concepts that are important to the memory management functions that most operating systems must perform.
 

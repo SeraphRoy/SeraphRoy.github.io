@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 These notes will attempt to describe how operating systems virtualization (henceforth to be termed ``virtualization'') is implemented. There are essentially two approaches in use today: hardware assisted virtualization and paravirtualization. We'll discuss them in terms of their most prevalent open source examples: KVM and Xen.
 

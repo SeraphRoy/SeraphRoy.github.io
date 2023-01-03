@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 [Anchor-The Rapid Rise of Containers in Production]({{site.url}}/assets/Some-Slides-about-Containers-UCSB-nurmi.pdf)
 

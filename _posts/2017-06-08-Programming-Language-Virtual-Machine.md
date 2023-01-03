@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 [Virtual Machine]({{site.url}}/assets/Programming-Language-Virtual-Machine-vm.pdf)
 

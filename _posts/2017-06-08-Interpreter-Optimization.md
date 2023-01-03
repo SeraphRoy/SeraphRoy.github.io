@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 [Interpreter]({{site.url}}/assets/Interpreter-Optimization-interp.pdf)
 

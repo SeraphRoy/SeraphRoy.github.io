@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 We can think of category theory as a generalized set theory, where in set theory
 we have sets and $\in$, but in category theory we have objects and arrows, where

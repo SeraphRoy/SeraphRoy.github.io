@@ -8,8 +8,6 @@ author: Yanxi Chen
 mathjax: true
 ---
 
-* content
-{:toc}
 
 [Dynamic Compilation Part1-3]({{site.url}}/assets/Dynamic-Compilation-dyncomp.pdf)
 
