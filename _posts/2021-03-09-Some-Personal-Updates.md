@@ -1,11 +1,9 @@
 ---
 title: Some personal updates
-layout: post
 date: 2021-03-09 10:00
 categories:
 - Random
 tags: []
-author: Yanxi Chen
 mathjax: true
 ---
 

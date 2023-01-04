@@ -1,5 +1,4 @@
 ---
-layout: post
 title: >-
   Data Encoding and Transmission- Part 2 of Designing Data-Intensive
   Applications
@@ -9,7 +8,6 @@ categories:
 tags:
   - Books
   - Distributed System
-author: Yanxi Chen
 mathjax: true
 ---
 

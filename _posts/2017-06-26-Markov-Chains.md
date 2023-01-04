@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Markov Chains"
 date: 2017-06-26 16:51
 categories: Statistics
 tags: Statistics
-author: Yanxi Chen
 mathjax: true
 ---
 

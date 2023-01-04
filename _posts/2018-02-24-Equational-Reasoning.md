@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Equational Reasoning"
 date: 2018-02-24 17:25
 categories: ['Programming Language Theory'] 
 tags: ['Programming Languages']
-author: Yanxi Chen
 mathjax: true
 ---
 

@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Parametricity - Logical Equivalence for Polymorphic Types"
 date: 2018-09-30 17:25
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

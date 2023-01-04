@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Streaming Systems"
 date: 2019-07-24 10:25
 categories: ['Distributed System'] 
 tags: ['Books', 'Distributed System']
-author: Yanxi Chen
 mathjax: true
 ---
 

@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Imperative Programming - Algol"
 date: 2019-01-21 19:58
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Introduction to Algorithm"
 date: 2017-06-08 19:47
 categories: Algorithm
 tags: Algorithm
-author: Yanxi Chen
 mathjax: true
 ---
 

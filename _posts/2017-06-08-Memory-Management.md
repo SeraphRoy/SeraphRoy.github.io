@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Memory Management"
 date: 2017-06-08 15:34
 categories: ['Operating System']
 tags: Memory
-author: Yanxi Chen
 mathjax: true
 ---
 

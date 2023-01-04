@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Interpreter Optimization"
 date: 2017-06-08 17:37
 categories: Interpreter
 tags: Interpreter Slides
-author: Yanxi Chen
 mathjax: true
 ---
 

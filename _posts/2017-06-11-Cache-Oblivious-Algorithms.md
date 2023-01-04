@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Cache Oblivious Algorithms"
 date: 2017-06-11 10:41
 categories: Algorithm
 tags: Algorithm
-author: Yanxi Chen
 mathjax: true
 ---
 

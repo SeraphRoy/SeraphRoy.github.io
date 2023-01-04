@@ -1,10 +1,8 @@
 ---
-layout: post
 title: Program Profiling
 date: 2017-06-08 17:44
 categories: Profiler
 tags: Profiler Slides
-author: Yanxi Chen
 mathjax: true
 ---
 

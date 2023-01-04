@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "File System"
 date: 2017-06-08 15:54
 categories: ['Operating System']
 tags: ['File System']
-author: Yanxi Chen
 mathjax: true
 ---
 

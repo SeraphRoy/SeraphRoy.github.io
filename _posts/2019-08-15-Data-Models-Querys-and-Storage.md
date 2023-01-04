@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications"
 date: 2019-08-15 10:00
 categories: ['Distributed System'] 
 tags: ['Books', 'Distributed System']
-author: Yanxi Chen
 mathjax: true
 ---
 

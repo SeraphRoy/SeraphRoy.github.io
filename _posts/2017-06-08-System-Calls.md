@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "System Calls"
 date: 2017-06-08 15:16
 categories: ['Operating System']
 tags: Syscall
-author: Yanxi Chen
 mathjax: true
 ---
 

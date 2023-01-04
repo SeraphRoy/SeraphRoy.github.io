@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Introduction to Category Theory"
 date: 2018-02-24 21:45
 categories: ['Category Theory'] 
 tags: ['Category Theory', 'Math']
-author: Yanxi Chen
 mathjax: true
 ---
 

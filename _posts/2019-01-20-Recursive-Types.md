@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Recursive Types"
 date: 2019-01-20 20:25
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

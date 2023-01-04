@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Fibonacci Heap"
 date: 2017-06-09 10:05
 categories: Algorithm
 tags: Algorithm
-author: Yanxi Chen
 mathjax: true
 ---
 

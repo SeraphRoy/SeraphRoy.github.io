@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Type Theory Foundations"
 date: 2018-02-19 23:00
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

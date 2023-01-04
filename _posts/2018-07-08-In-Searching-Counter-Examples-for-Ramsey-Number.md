@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "In Searching Counter Examples for Ramsey Number"
 date: 2018-07-06 15:00
 categories: ['Cloud Computing']
 tags: ['Math']
-author: Yanxi Chen
 mathjax: true
 ---
 

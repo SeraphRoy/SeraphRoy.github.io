@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Basic Computational Type Theory"
 date: 2018-02-20 20:00
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

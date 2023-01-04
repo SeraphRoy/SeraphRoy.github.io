@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Dynamic Compilation"
 date: 2017-06-08 17:40
 categories: Compiler
 tags: Compiler Slides
-author: Yanxi Chen
 mathjax: true
 ---
 

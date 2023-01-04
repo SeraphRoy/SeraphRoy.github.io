@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Python Global Interpreter Lock (GIL)"
 date: 2018-06-28 14:30
 categories: ['Interpreter']
 tags: ['Interpreter', GIL]
-author: Yanxi Chen
 mathjax: true
 ---
 

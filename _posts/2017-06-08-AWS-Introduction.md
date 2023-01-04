@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "AWS Introduction"
 date: 2017-06-08 16:41
 categories: ['Cloud Computing']
 tags: ['AWS', 'IaaS']
-author: Yanxi Chen
 mathjax: true
 ---
 

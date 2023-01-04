@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Jekyll Search Solutions"
 date: 2019-01-20 15:13
 categories: ['Jekyll'] 
 tags: ['Jekyll', 'Blog']
-author: Yanxi Chen
 mathjax: true
 ---
 

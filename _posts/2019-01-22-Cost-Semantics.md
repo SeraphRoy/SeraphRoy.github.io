@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Cost Semantics for Parallelism"
 date: 2019-01-22 20:00
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

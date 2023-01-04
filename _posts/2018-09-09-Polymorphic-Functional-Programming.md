@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Polymorphic Functional Programming"
 date: 2018-09-09 17:25
 categories: ['Programming Language Theory', 'Type Theory'] 
 tags: ['Programming Languages', 'Type Theory']
-author: Yanxi Chen
 mathjax: true
 ---
 

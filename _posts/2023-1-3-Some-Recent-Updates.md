@@ -1,10 +1,8 @@
 ---
-layout: post
 title: Some Recent Updates
 date: '2023-01-03T23:22:34.993Z'
 categories:
   - Random
-author: Yanxi Chen
 mathjax: true
 ---
 

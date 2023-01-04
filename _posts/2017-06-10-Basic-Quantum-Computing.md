@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Basic Quantum Computing"
 date: 2017-06-10 10:05
 categories: Algorithm
 tags: Algorithm Quantum
-author: Yanxi Chen
 mathjax: true
 ---
 

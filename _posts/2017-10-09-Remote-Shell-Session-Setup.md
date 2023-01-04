@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Remote Shell Session Setup: iTerm2+tmux+mosh"
 date: 2017-10-09 15:45
 categories: ['Random']
 tags: Mosh iTerm tmux
-author: Yanxi Chen
 mathjax: true
 ---
 

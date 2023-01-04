@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Programming Language Virtual Machine"
 date: 2017-06-08 17:27
 categories: ['Programming Languages', 'Virtual Machine'] 
 tags: ['Programming Languages', 'Virtual Machine'] 
-author: Yanxi Chen
 mathjax: true
 ---
 

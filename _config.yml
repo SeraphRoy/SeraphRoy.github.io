@@ -7,40 +7,13 @@
 
 # Site settings
 title: Gae Blog
-blogname: Blog about Everything
-blogabout: Notes, Word Salad, etc.
+subtitle: Notes, Word Salad, etc.
 brief-intro: "Software Engineer@Amazon"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.gaeblog.com" # the base hostname & protocol for your site
 
-permalink: /:year/:month/:day/:title/
-
-# other links
-facebook_username: SeraphRoy
-github_username: SeraphRoy
-email: royxagain@gmail.com
-# weibo_username: 3115521wh
-# zhihu_username: gaohaoyang
-linkedIn_username: yanxichen
-# dribbble_username:
-
-description_footer:
-
-remote_theme: SeraphRoy/GaeBlogx
-# theme: jekyll-theme-gaeblogx
-
-# comments
-# two ways to comment, only choose one, and use your own short name
-# 两种评论插件，选一个就好了，使用自己的 short_name
-duoshuo_shortname: #hygblog
-disqus_shortname: https-seraphroy-github-io-1
-
-# statistic analysis 统计代码
-# 百度统计 id，将统计代码替换为自己的百度统计id，即
-# hm.src = "//hm.baidu.com/hm.js?xxxxxxxxxxxx";
-# xxxxx字符串
-baidu_tongji_id:
-google_analytics_id: UA-100686813-1
+remote_theme: mmistakes/minimal-mistakes
+minimal_mistakes_skin: "air" # "default", "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Build settings
 markdown: kramdown
@@ -49,37 +22,96 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 
-# port
-# port: 1234
-
-# url
-category_dir: category/
-tag_dir: tag/
-
-# excerpt
-excerpt_separator: "<!--more-->"
-
 repository: SeraphRoy/SeraphRoy.github.io
 
-# paginate
 plugins:
     - jekyll-paginate
+    - jekyll-include-cache
     - jekyll-seo-tag
     - jekyll-sitemap
-    - jekyll-toc
-paginate: 6
+    - jekyll-archives
 
 algolia:
    application_id: 'VQQEF0782J'
    index_name:     'VQQEF0782J'
    search_only_api_key: 'b66031155929f70634dffecb4a9d7eba'
+   powered_by: false
 
-jekyll_admin:
- hidden_links:
-   - datafiles
-
+# Theme settings
 defaults:
   - scope:
       path: ""
     values:
+      author_profile: true
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
       toc: true
+      toc_sticky: true
+      share: true
+      related: true
+      show_date: true
+      read_time: true
+      comments: true
+
+search: true
+
+search_provider: algolia
+
+comments:
+  provider: "disqus"
+  disqus:
+    shortname: "https-seraphroy-github-io-1"
+
+social:
+  type: Person
+  name: Yanxi Chen
+  links:
+    - "https://www.linkedin.com/in/yanxichen"
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "UA-100686813-1"
+    anonymize_ip: false # default
+
+author:
+  name: "Yanxi Chen"
+  avatar: "/assets/avatar1.jpeg"
+  bio: "Software Engineer@Amazon" # Note: Markdown is allowed
+  location: "California, USA"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/SeraphRoy"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/yanxichen/"
+
+paginate: 6
+
+category_archive:
+  type: jekyll-archives
+  path: /categories/
+tag_archive:
+  type: jekyll-archives
+  path: /tags/
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+    - year
+  layouts:
+    category: archive-taxonomy
+    tag: archive-taxonomy
+    year: archive-taxonomy
+  permalinks:
+    category: /categories/:name/
+    tag: /tags/:name/
+    year: /archives/:year/
+
+words_per_minute: 200
+
+include: ["_pages", "_includes"]
