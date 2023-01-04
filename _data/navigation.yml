@@ -1,9 +1,11 @@
 main:
-  - title: "Categories"
+  - title: Categories
     url: /categories/
-  - title: "Tags"
+  - title: Tags
     url: /tags/
-  - title: "Archives"
+  - title: Archives
     url: /archives/
-  - title: "About"
+  - title: About
     url: /about/
+  - title: Admin
+    url: /admin/
