@@ -1,14 +1,11 @@
 ---
-title: Polymorphic Functional Programming
-date: 2018-09-09 17:25:00 Z
-categories:
-- Programming Language Theory
-- Type Theory
-tags:
-- Programming Languages
-- Type Theory
+title: "Polymorphic Functional Programming"
+date: 2018-09-09 17:25
+categories: ['Programming Language Theory', 'Type Theory'] 
+tags: ['Programming Languages', 'Type Theory']
 mathjax: true
 ---
+
 
 # An example to start off
 

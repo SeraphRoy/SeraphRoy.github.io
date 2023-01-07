@@ -1,13 +1,9 @@
 ---
-title: Gradual Typing 1
-date: 2019-01-27 19:45:00 Z
-categories:
-- Programming Language Theory
-- Type Theory
-tags:
-- Programming Languages
-- Type Theory
 layout: post
+title: "Gradual Typing 1"
+date: 2019-01-27 19:45
+categories: ['Programming Language Theory', 'Type Theory'] 
+tags: ['Programming Languages', 'Type Theory']
 author: Yanxi Chen
 mathjax: true
 ---

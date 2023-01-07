@@ -1,112 +1,133 @@
----
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
 title: Gae Blog
-timezone: UTC
-collections:
-  posts:
-    title: Posts
-    output: true
-  uploads:
-    title: Uploads
-    output: true
-defaults:
-- scope:
-    path: ''
-  values:
-    author_profile: true
-- scope:
-    path: ''
-    type: posts
-  values:
-    layout: single
-    toc: true
-    toc_sticky: true
-    share: true
-    related: true
-    show_date: true
-    read_time: true
-    comments: true
 subtitle: Notes, Word Salad, etc.
-brief-intro: Software Engineer@Amazon
-baseurl: ''
-url: https://www.gaeblog.com
+brief-intro: "Software Engineer@Amazon"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://www.gaeblog.com" # the base hostname & protocol for your site
+
 remote_theme: mmistakes/minimal-mistakes
-minimal_mistakes_skin: air
+minimal_mistakes_skin: "air" # "default", "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+
+# Build settings
 markdown: kramdown
+
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
 repository: SeraphRoy/SeraphRoy.github.io
+
 plugins:
-- jekyll-paginate
-- jekyll-include-cache
-- jekyll-seo-tag
-- jekyll-sitemap
-- jekyll-archives
+    - jekyll-paginate
+    - jekyll-include-cache
+    - jekyll-seo-tag
+    - jekyll-sitemap
+    - jekyll-archives
+
 algolia:
-  application_id: VQQEF0782J
-  index_name: VQQEF0782J
-  search_only_api_key: b66031155929f70634dffecb4a9d7eba
-  powered_by: false
+   application_id: 'VQQEF0782J'
+   index_name:     'VQQEF0782J'
+   search_only_api_key: 'b66031155929f70634dffecb4a9d7eba'
+   powered_by: false
+  # application_id: 'VNWKURYNFF'
+  #  index_name:     'netlify_a2c772de-c6a5-46bb-9f4d-9961ddd62e5c_master_all'
+  #  search_only_api_key: '40fc6accada5c705bc76fee4b9f5117a'
+
+# Theme settings
+defaults:
+  - scope:
+      path: ""
+    values:
+      author_profile: true
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      toc: true
+      toc_sticky: true
+      share: true
+      related: true
+      show_date: true
+      read_time: true
+      comments: true
+
 search: true
+
 search_provider: algolia
+
 comments:
-  provider: disqus
+  provider: "disqus"
   disqus:
-    shortname: https-seraphroy-github-io-1
+    shortname: "https-seraphroy-github-io-1"
+
 social:
   type: Person
   name: Yanxi Chen
   links:
-  - https://www.linkedin.com/in/yanxichen
-  - https://github.com/SeraphRoy
+    - "https://www.linkedin.com/in/yanxichen"
+    - "https://github.com/SeraphRoy"
+
 analytics:
-  provider: google-gtag
+  provider: "google-gtag"
   google:
-    tracking_id: G-40LC9SH4E1
-    anonymize_ip: false
+    tracking_id: "G-40LC9SH4E1"
+    anonymize_ip: false # default
+
 author:
-  name: Yanxi Chen
+  name: "Yanxi Chen"
   avatar: "/assets/avatar1.jpeg"
-  bio: Software Engineer@Amazon
-  location: California, USA
+  bio: "Software Engineer@Amazon" # Note: Markdown is allowed
+  location: "California, USA"
   links:
-  - label: GitHub
-    icon: fab fa-fw fa-github
-    url: https://github.com/SeraphRoy
-  - label: LinkedIn
-    icon: fab fa-fw fa-linkedin
-    url: https://www.linkedin.com/in/yanxichen/
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/SeraphRoy"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/yanxichen/"
+
 paginate: 6
+
 category_archive:
   type: jekyll-archives
-  path: "/categories/"
+  path: /categories/
 tag_archive:
   type: jekyll-archives
-  path: "/tags/"
+  path: /tags/
 jekyll-archives:
   enabled:
-  - categories
-  - tags
-  - year
+    - categories
+    - tags
+    - year
   layouts:
     category: archive-taxonomy
     tag: archive-taxonomy
     year: archive-taxonomy
   permalinks:
-    category: "/categories/:name/"
-    tag: "/tags/:name/"
-    year: "/archives/:year/"
+    category: /categories/:name/
+    tag: /tags/:name/
+    year: /archives/:year/
+
 words_per_minute: 200
-include:
-- _pages
-- _includes
+
+include: ["_pages", "_includes"]
+
 atom_feed:
   hide: true
+
 head_scripts:
-- https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML
-- "/assets/js/mathjax-config.js"
-- https://identity.netlify.com/v1/netlify-identity-widget.js
-- "/assets/js/netlify-identity.js"
+  - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML
+  - /assets/js/mathjax-config.js
+  - https://identity.netlify.com/v1/netlify-identity-widget.js
+  - /assets/js/netlify-identity.js
 after_footer_scripts:
-- https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js
-- "/assets/js/back-to-top.js"
+  - https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js
+  - /assets/js/back-to-top.js

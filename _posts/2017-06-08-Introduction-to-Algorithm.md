@@ -1,12 +1,11 @@
 ---
-title: Introduction to Algorithm
-date: 2017-06-08 19:47:00 Z
-categories:
-- Algorithm
-tags:
-- Algorithm
+title: "Introduction to Algorithm"
+date: 2017-06-08 19:47
+categories: Algorithm
+tags: Algorithm
 mathjax: true
 ---
+
 
 # Some Notes of Introduction to Algorithm
 

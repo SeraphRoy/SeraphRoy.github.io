@@ -1,14 +1,11 @@
 ---
-title: Cost Semantics for Parallelism
-date: 2019-01-22 20:00:00 Z
-categories:
-- Programming Language Theory
-- Type Theory
-tags:
-- Programming Languages
-- Type Theory
+title: "Cost Semantics for Parallelism"
+date: 2019-01-22 20:00
+categories: ['Programming Language Theory', 'Type Theory'] 
+tags: ['Programming Languages', 'Type Theory']
 mathjax: true
 ---
+
 
 Cost semantics is to discuss: How long do programs run (abstractly)?
 

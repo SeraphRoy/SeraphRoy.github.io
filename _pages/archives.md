@@ -1,6 +1,5 @@
 ---
-title: Archives
-permalink: "/archives/"
+title: "Archives"
+permalink: /archives/
 layout: posts
 ---
-

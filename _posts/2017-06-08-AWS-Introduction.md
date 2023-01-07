@@ -1,13 +1,11 @@
 ---
-title: AWS Introduction
-date: 2017-06-08 16:41:00 Z
-categories:
-- Cloud Computing
-tags:
-- AWS
-- IaaS
+title: "AWS Introduction"
+date: 2017-06-08 16:41
+categories: ['Cloud Computing']
+tags: ['AWS', 'IaaS']
 mathjax: true
 ---
+
 
 ## Amazon Web Service
 

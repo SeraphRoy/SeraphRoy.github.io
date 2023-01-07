@@ -1,14 +1,11 @@
 ---
-title: Imperative Programming - Algol
-date: 2019-01-21 19:58:00 Z
-categories:
-- Programming Language Theory
-- Type Theory
-tags:
-- Programming Languages
-- Type Theory
+title: "Imperative Programming - Algol"
+date: 2019-01-21 19:58
+categories: ['Programming Language Theory', 'Type Theory'] 
+tags: ['Programming Languages', 'Type Theory']
 mathjax: true
 ---
+
 
 __Haskell is a dialect Algol!__
 

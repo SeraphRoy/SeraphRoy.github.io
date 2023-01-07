@@ -1,12 +1,11 @@
 ---
-title: Cache Oblivious Algorithms
-date: 2017-06-11 10:41:00 Z
-categories:
-- Algorithm
-tags:
-- Algorithm
+title: "Cache Oblivious Algorithms"
+date: 2017-06-11 10:41
+categories: Algorithm
+tags: Algorithm
 mathjax: true
 ---
+
 
 # Introduction to Cache Oblivious Algorithms
 

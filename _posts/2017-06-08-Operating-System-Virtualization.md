@@ -1,14 +1,11 @@
 ---
-title: Operating System Virtualization
-date: 2017-06-08 16:56:00 Z
-categories:
-- Operating System
-- Virtualization
-- Cloud Computing
-tags:
-- Virtualization
+title: "Operating System Virtualization"
+date: 2017-06-08 16:56
+categories: ['Operating System', 'Virtualization', 'Cloud Computing'] 
+tags: ['Virtualization']
 mathjax: true
 ---
+
 
 These notes will attempt to describe how operating systems virtualization (henceforth to be termed ``virtualization'') is implemented. There are essentially two approaches in use today: hardware assisted virtualization and paravirtualization. We'll discuss them in terms of their most prevalent open source examples: KVM and Xen.
 

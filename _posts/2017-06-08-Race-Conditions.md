@@ -1,12 +1,11 @@
 ---
-title: Race Conditions
-date: 2017-06-08 12:40:00 Z
-categories:
-- Operating System
-tags:
-- Thread
+title: "Race Conditions"
+date: 2017-06-08 12:40
+categories: ['Operating System']
+tags: Thread
 mathjax: true
 ---
+
 
 # Race conditions and mutexes
 
