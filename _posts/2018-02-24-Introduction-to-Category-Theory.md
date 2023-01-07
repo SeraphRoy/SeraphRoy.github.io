@@ -1,11 +1,13 @@
 ---
-title: "Introduction to Category Theory"
-date: 2018-02-24 21:45
-categories: ['Category Theory'] 
-tags: ['Category Theory', 'Math']
+title: Introduction to Category Theory
+date: 2018-02-24 21:45:00 Z
+categories:
+- Category Theory
+tags:
+- Category Theory
+- Math
 mathjax: true
 ---
-
 
 We can think of category theory as a generalized set theory, where in set theory
 we have sets and $\in$, but in category theory we have objects and arrows, where

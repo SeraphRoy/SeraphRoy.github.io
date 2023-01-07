@@ -1,11 +1,12 @@
 ---
 title: Semaphore
-date: 2017-06-08 14:54
-categories: ['Operating System']
-tags: Thread
+date: 2017-06-08 14:54:00 Z
+categories:
+- Operating System
+tags:
+- Thread
 mathjax: true
 ---
-
 
 ## Synchronization
 

@@ -1,11 +1,13 @@
 ---
-title: "Matrix Game Theory"
-date: 2017-09-10 15:23
-categories: ['Game Theory']
-tags: ['Game Theory', 'Math']
+title: Matrix Game Theory
+date: 2017-09-10 15:23:00 Z
+categories:
+- Game Theory
+tags:
+- Game Theory
+- Math
 mathjax: true
 ---
-
 
 __Matrix Game__: Two players, each makes a choice secretly and play simutaneously. And there is payoff.
 

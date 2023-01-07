@@ -1,11 +1,12 @@
 ---
-title: "Markov Chains"
-date: 2017-06-26 16:51
-categories: Statistics
-tags: Statistics
+title: Markov Chains
+date: 2017-06-26 16:51:00 Z
+categories:
+- Statistics
+tags:
+- Statistics
 mathjax: true
 ---
-
 
 ## The Setting
 

@@ -1,11 +1,14 @@
 ---
-title: "Type Theory Foundations"
-date: 2018-02-19 23:00
-categories: ['Programming Language Theory', 'Type Theory'] 
-tags: ['Programming Languages', 'Type Theory']
+title: Type Theory Foundations
+date: 2018-02-19 23:00:00 Z
+categories:
+- Programming Language Theory
+- Type Theory
+tags:
+- Programming Languages
+- Type Theory
 mathjax: true
 ---
-
 
 We can think of Type Theory as being a catalog of a variety of notions of computation.
 The type structure determines the "programming language features". For example,

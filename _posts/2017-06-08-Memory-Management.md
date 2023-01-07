@@ -1,11 +1,12 @@
 ---
-title: "Memory Management"
-date: 2017-06-08 15:34
-categories: ['Operating System']
-tags: Memory
+title: Memory Management
+date: 2017-06-08 15:34:00 Z
+categories:
+- Operating System
+tags:
+- Memory
 mathjax: true
 ---
-
 
 This lecture will attempt to cover the various concepts that are important to the memory management functions that most operating systems must perform.
 

@@ -1,11 +1,12 @@
 ---
-title: "Equational Reasoning"
-date: 2018-02-24 17:25
-categories: ['Programming Language Theory'] 
-tags: ['Programming Languages']
+title: Equational Reasoning
+date: 2018-02-24 17:25:00 Z
+categories:
+- Programming Language Theory
+tags:
+- Programming Languages
 mathjax: true
 ---
-
 
 The main question is, how do we define two programs are equal, and how do we prove it.
 

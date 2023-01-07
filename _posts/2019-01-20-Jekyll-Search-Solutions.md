@@ -1,11 +1,13 @@
 ---
-title: "Jekyll Search Solutions"
-date: 2019-01-20 15:13
-categories: ['Jekyll'] 
-tags: ['Jekyll', 'Blog']
+title: Jekyll Search Solutions
+date: 2019-01-20 15:13:00 Z
+categories:
+- Jekyll
+tags:
+- Jekyll
+- Blog
 mathjax: true
 ---
-
 
 # Updates
 

@@ -1,11 +1,14 @@
 ---
-title: "Recursive Programs"
-date: 2019-01-18 22:25
-categories: ['Programming Language Theory', 'Type Theory'] 
-tags: ['Programming Languages', 'Type Theory']
+title: Recursive Programs
+date: 2019-01-18 22:25:00 Z
+categories:
+- Programming Language Theory
+- Type Theory
+tags:
+- Programming Languages
+- Type Theory
 mathjax: true
 ---
-
 
 # Partial Functions
 

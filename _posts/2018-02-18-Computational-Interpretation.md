@@ -1,11 +1,16 @@
 ---
-title: "Computational Interpretations"
-date: 2018-02-18 13:30
-categories: ['Programming Language Theory', 'Proof Theory'] 
-tags: ['Programming Languages', 'Proof Theory', 'Logic', 'Philosophy'] 
+title: Computational Interpretations
+date: 2018-02-18 13:30:00 Z
+categories:
+- Programming Language Theory
+- Proof Theory
+tags:
+- Programming Languages
+- Proof Theory
+- Logic
+- Philosophy
 mathjax: true
 ---
-
 
 Here we will talk about computational interpretations by the example of lax logic.
 Hope from the example we can have sense of how logic and PL are connected.
