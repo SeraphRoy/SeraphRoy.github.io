@@ -1,11 +1,14 @@
 ---
-title: "Basic Computational Type Theory"
-date: 2018-02-20 20:00
-categories: ['Programming Language Theory', 'Type Theory'] 
-tags: ['Programming Languages', 'Type Theory']
+title: Basic Computational Type Theory
+date: 2018-02-20 20:00:00 Z
+categories:
+- Programming Language Theory
+- Type Theory
+tags:
+- Programming Languages
+- Type Theory
 mathjax: true
 ---
-
 
 # Family of Types
 

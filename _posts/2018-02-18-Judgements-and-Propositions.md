@@ -1,11 +1,16 @@
 ---
-title: "Judgements and Propositions"
-date: 2018-02-18 09:30
-categories: ['Programming Language Theory', 'Proof Theory'] 
-tags: ['Programming Languages', 'Proof Theory', 'Logic', 'Philosophy'] 
+title: Judgements and Propositions
+date: 2018-02-18 09:30:00 Z
+categories:
+- Programming Language Theory
+- Proof Theory
+tags:
+- Programming Languages
+- Proof Theory
+- Logic
+- Philosophy
 mathjax: true
 ---
-
 
 We state "A is true", then "A" is a proposition, and "A is true" as a whole is a judgement.
 

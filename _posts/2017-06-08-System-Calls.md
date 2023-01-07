@@ -1,11 +1,12 @@
 ---
-title: "System Calls"
-date: 2017-06-08 15:16
-categories: ['Operating System']
-tags: Syscall
+title: System Calls
+date: 2017-06-08 15:16:00 Z
+categories:
+- Operating System
+tags:
+- Syscall
 mathjax: true
 ---
-
 
 ## System Calls
 

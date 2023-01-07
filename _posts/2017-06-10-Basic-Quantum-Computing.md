@@ -1,12 +1,13 @@
 ---
-title: "Basic Quantum Computing"
-date: 2017-06-10 10:05
-categories: Algorithm
-tags: Algorithm Quantum
+title: Basic Quantum Computing
+date: 2017-06-10 10:05:00 Z
+categories:
+- Algorithm
+tags:
+- Algorithm
+- Quantum
 mathjax: true
 ---
-
-
 
 # Basic Quantum Computing with Least Physics Possible
 

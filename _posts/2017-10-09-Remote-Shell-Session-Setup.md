@@ -1,11 +1,14 @@
 ---
-title: "Remote Shell Session Setup: iTerm2+tmux+mosh"
-date: 2017-10-09 15:45
-categories: ['Random']
-tags: Mosh iTerm tmux
+title: 'Remote Shell Session Setup: iTerm2+tmux+mosh'
+date: 2017-10-09 15:45:00 Z
+categories:
+- Random
+tags:
+- Mosh
+- iTerm
+- tmux
 mathjax: true
 ---
-
 
 ## Requirements and Comments
 

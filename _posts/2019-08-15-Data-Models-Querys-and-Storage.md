@@ -1,11 +1,13 @@
 ---
-title: "Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications"
-date: 2019-08-15 10:00
-categories: ['Distributed System'] 
-tags: ['Books', 'Distributed System']
+title: Data Models, Querys, and Storage - Part 1 of Designing Data-Intensive Applications
+date: 2019-08-15 10:00:00 Z
+categories:
+- Distributed System
+tags:
+- Books
+- Distributed System
 mathjax: true
 ---
-
 
 Anthoer book summary/review!
 

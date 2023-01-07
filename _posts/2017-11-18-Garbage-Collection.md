@@ -1,11 +1,13 @@
 ---
-title: "Garbage Collection"
-date: 2017-11-18 17:30
-categories: ['Garbage Collection']
-tags: ['Garbage Collection', 'Slides']
+title: Garbage Collection
+date: 2017-11-18 17:30:00 Z
+categories:
+- Garbage Collection
+tags:
+- Garbage Collection
+- Slides
 mathjax: true
 ---
-
 
 # Variable Storage and Lifetime
 

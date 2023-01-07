@@ -1,11 +1,16 @@
 ---
-title: "Sequent Calculus"
-date: 2018-02-18 19:30
-categories: ['Programming Language Theory', 'Proof Theory'] 
-tags: ['Programming Languages', 'Proof Theory', 'Logic', 'Philosophy'] 
+title: Sequent Calculus
+date: 2018-02-18 19:30:00 Z
+categories:
+- Programming Language Theory
+- Proof Theory
+tags:
+- Programming Languages
+- Proof Theory
+- Logic
+- Philosophy
 mathjax: true
 ---
-
 
 ## Verifications
 

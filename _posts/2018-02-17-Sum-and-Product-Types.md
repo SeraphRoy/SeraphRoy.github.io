@@ -1,11 +1,12 @@
 ---
-title: "Sum and Product Types"
-date: 2018-02-17 18:50
-categories: ['Programming Language Theory'] 
-tags: ['Programming Languages'] 
+title: Sum and Product Types
+date: 2018-02-17 18:50:00 Z
+categories:
+- Programming Language Theory
+tags:
+- Programming Languages
 mathjax: true
 ---
-
 
 ## Products
 

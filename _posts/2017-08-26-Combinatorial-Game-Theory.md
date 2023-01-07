@@ -1,11 +1,13 @@
 ---
-title: "Combinatorial Game Theory"
-date: 2017-08-26 09:51
-categories: ['Game Theory']
-tags: ['Game Theory', "Math"]
+title: Combinatorial Game Theory
+date: 2017-08-26 09:51:00 Z
+categories:
+- Game Theory
+tags:
+- Game Theory
+- Math
 mathjax: true
 ---
-
 
 # Basic Definitions
 

@@ -1,11 +1,12 @@
 ---
-title: "Condition Variables"
-date: 2017-06-08 13:31
-categories: ['Operating System']
-tags: Thread
+title: Condition Variables
+date: 2017-06-08 13:31:00 Z
+categories:
+- Operating System
+tags:
+- Thread
 mathjax: true
 ---
-
 
 ## Introduction -- The Bounded Buffer Problem
 
