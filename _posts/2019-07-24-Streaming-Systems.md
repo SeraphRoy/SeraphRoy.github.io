@@ -1,13 +1,11 @@
 ---
-title: Streaming Systems
-date: 2019-07-24 10:25:00 Z
-categories:
-- Distributed System
-tags:
-- Books
-- Distributed System
+title: "Streaming Systems"
+date: 2019-07-24 10:25
+categories: ['Distributed System'] 
+tags: ['Books', 'Distributed System']
 mathjax: true
 ---
+
 
 I recently read through the book _Streaming Systems_ so think it would be a good
 idea to write up a summary/thoughts about it. The book is recommended by

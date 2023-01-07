@@ -1,13 +1,11 @@
 ---
-title: Dynamic Compilation
-date: 2017-06-08 17:40:00 Z
-categories:
-- Compiler
-tags:
-- Compiler
-- Slides
+title: "Dynamic Compilation"
+date: 2017-06-08 17:40
+categories: Compiler
+tags: Compiler Slides
 mathjax: true
 ---
+
 
 [Dynamic Compilation Part1-3](/assets/Dynamic-Compilation-dyncomp.pdf)
 

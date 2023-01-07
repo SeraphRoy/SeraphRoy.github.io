@@ -1,13 +1,11 @@
 ---
-title: Python Global Interpreter Lock (GIL)
-date: 2018-06-28 14:30:00 Z
-categories:
-- Interpreter
-tags:
-- Interpreter
-- GIL
+title: "Python Global Interpreter Lock (GIL)"
+date: 2018-06-28 14:30
+categories: ['Interpreter']
+tags: ['Interpreter', GIL]
 mathjax: true
 ---
+
 
 # Introduction
 

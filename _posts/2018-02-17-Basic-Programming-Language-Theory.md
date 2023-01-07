@@ -1,12 +1,11 @@
 ---
-title: Basic Programming Language Theory
-date: 2018-02-17 15:15:00 Z
-categories:
-- Programming Language Theory
-tags:
-- Programming Languages
+title: "Basic Programming Language Theory"
+date: 2018-02-17 15:15
+categories: ['Programming Language Theory'] 
+tags: ['Programming Languages'] 
 mathjax: true
 ---
+
 
 # Total Programming Language
 

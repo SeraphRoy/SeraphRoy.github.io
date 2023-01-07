@@ -1,11 +1,13 @@
 ---
-title: Data Encoding and Transmission- Part 2 of Designing Data-Intensive Applications
-date: 2019-08-15 22:00:00 Z
+title: >-
+  Data Encoding and Transmission- Part 2 of Designing Data-Intensive
+  Applications
+date: '2019-08-15T22:00:00.000Z'
 categories:
-- Distributed System
+  - Distributed System
 tags:
-- Books
-- Distributed System
+  - Books
+  - Distributed System
 mathjax: true
 ---
 

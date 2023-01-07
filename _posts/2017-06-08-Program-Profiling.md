@@ -1,13 +1,11 @@
 ---
 title: Program Profiling
-date: 2017-06-08 17:44:00 Z
-categories:
-- Profiler
-tags:
-- Profiler
-- Slides
+date: 2017-06-08 17:44
+categories: Profiler
+tags: Profiler Slides
 mathjax: true
 ---
+
 
 [Profiler](/assets/Program-Profiling-profiling.pdf)
 

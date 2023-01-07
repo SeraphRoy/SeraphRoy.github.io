@@ -1,12 +1,11 @@
 ---
-title: Introduction to Threads
-date: 2017-06-08 12:06:00 Z
-categories:
-- Operating System
-tags:
-- Thread
+title: "Introduction to Threads"
+date: 2017-06-08 12:06
+categories: ['Operating System']
+tags: Thread
 mathjax: true
 ---
+
 
 # Introduction
 

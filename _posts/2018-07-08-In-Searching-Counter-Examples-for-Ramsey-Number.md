@@ -1,12 +1,11 @@
 ---
-title: In Searching Counter Examples for Ramsey Number
-date: 2018-07-06 15:00:00 Z
-categories:
-- Cloud Computing
-tags:
-- Math
+title: "In Searching Counter Examples for Ramsey Number"
+date: 2018-07-06 15:00
+categories: ['Cloud Computing']
+tags: ['Math']
 mathjax: true
 ---
+
 
 This is a project I did in my undergrad, so I might forget some of the details.
 Also some of the design choices might seen stupid for now, but I am writing them

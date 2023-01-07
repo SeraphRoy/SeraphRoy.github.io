@@ -1,14 +1,11 @@
 ---
-title: Programming Language Virtual Machine
-date: 2017-06-08 17:27:00 Z
-categories:
-- Programming Languages
-- Virtual Machine
-tags:
-- Programming Languages
-- Virtual Machine
+title: "Programming Language Virtual Machine"
+date: 2017-06-08 17:27
+categories: ['Programming Languages', 'Virtual Machine'] 
+tags: ['Programming Languages', 'Virtual Machine'] 
 mathjax: true
 ---
+
 
 [Virtual Machine](/assets/Programming-Language-Virtual-Machine-vm.pdf)
 

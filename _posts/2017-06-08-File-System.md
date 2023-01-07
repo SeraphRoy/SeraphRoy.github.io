@@ -1,12 +1,11 @@
 ---
-title: File System
-date: 2017-06-08 15:54:00 Z
-categories:
-- Operating System
-tags:
-- File System
+title: "File System"
+date: 2017-06-08 15:54
+categories: ['Operating System']
+tags: ['File System']
 mathjax: true
 ---
+
 
 # The Unix File System
 

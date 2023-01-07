@@ -1,12 +1,11 @@
 ---
-title: Fibonacci Heap
-date: 2017-06-09 10:05:00 Z
-categories:
-- Algorithm
-tags:
-- Algorithm
+title: "Fibonacci Heap"
+date: 2017-06-09 10:05
+categories: Algorithm
+tags: Algorithm
 mathjax: true
 ---
+
 
 # Some Notes about Fibonacci Heaps
 

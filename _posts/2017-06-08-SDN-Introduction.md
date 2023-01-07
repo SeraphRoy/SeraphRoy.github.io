@@ -1,13 +1,11 @@
 ---
-title: SDN Introduction
-date: 2017-06-08 16:48:00 Z
-categories:
-- Software-Defined Networking
-- Cloud Computing
-tags:
-- SDN
+title: "SDN Introduction"
+date: 2017-06-08 16:48
+categories: ['Software-Defined Networking', 'Cloud Computing']
+tags: ['SDN']
 mathjax: true
 ---
+
 
 ## Software Defined Networking and The Cloud
 

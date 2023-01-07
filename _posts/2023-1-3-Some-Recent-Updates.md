@@ -1,8 +1,8 @@
 ---
 title: Some Recent Updates
-date: 2023-01-03 23:22:34 Z
+date: '2023-01-03T23:22:34.993Z'
 categories:
-- Random
+  - Random
 mathjax: true
 ---
 
