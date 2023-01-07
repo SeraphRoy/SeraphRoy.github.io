@@ -73,11 +73,12 @@ social:
   name: Yanxi Chen
   links:
     - "https://www.linkedin.com/in/yanxichen"
+    - "https://github.com/SeraphRoy"
 
 analytics:
   provider: "google-gtag"
   google:
-    tracking_id: "UA-100686813-1"
+    tracking_id: "G-40LC9SH4E1"
     anonymize_ip: false # default
 
 author:
