@@ -1,9 +1,10 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: SeraphRoy/SeraphRoy.github.io # Path to your GitHub repository
+  branch: master
 
 # when using the default proxy server port
-local_backend: true
-
+# local_backend: true
 
 media_folder: 'assets'
 collections:
