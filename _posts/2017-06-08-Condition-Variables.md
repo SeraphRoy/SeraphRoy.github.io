@@ -2,7 +2,8 @@
 title: "Condition Variables"
 date: 2017-06-08 13:31
 categories: ['Operating System']
-tags: Thread
+tags:
+  - Thread
 mathjax: true
 ---
 
