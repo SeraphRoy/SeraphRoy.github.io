@@ -2,7 +2,11 @@
 title: Website Infrastructure Updates
 date: 2023-01-08T14:28:56.639-08:00
 categories: Jekyll
-tags: Blog,Jekyll,CMS,Netlify
+tags:
+  - Blog
+  - Jekyll
+  - CMS
+  - Netlify
 mathjax: false
 ---
 There were some major updates to the infrastructure of this website so just to note them down before I forget.
