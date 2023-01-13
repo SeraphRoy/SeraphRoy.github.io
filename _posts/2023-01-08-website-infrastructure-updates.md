@@ -1,7 +1,8 @@
 ---
 title: Website Infrastructure Updates
 date: 2023-01-08T14:28:56.639-08:00
-categories: Jekyll
+categories:
+ - Jekyll
 tags:
   - Blog
   - Jekyll
