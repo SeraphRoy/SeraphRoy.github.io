@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/SeraphRoy/SeraphRoy.github.io#readme",
   "dependencies": {
-    "@tinacms/cli": "^1.0.5",
+    "@tinacms/cli": "^1.5.29",
     "tinacms": "^1.1.2"
   }
 }
