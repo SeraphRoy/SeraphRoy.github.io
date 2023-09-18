@@ -4,7 +4,6 @@ date: 2023-01-16T14:02:33.976-08:00
 categories:
   - Cooking
 tags:
-  - Cooking
   - 米饭
 mathjax: false
 ---
