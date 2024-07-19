@@ -31,11 +31,11 @@ plugins:
     - jekyll-sitemap
     - jekyll-archives
 
-#algolia:
-#   application_id: 'MXQQARBXUQ'
-#   index_name:     'MXQQARBXUQ'
-#   search_only_api_key: 'a1c81a66f1e7369b386db389a8820ad5'
-#   powered_by: false
+algolia:
+   application_id: 'MXQQARBXUQ'
+   index_name:     'netlify_a2c772de-c6a5-46bb-9f4d-9961ddd62e5c_master_all'
+   search_only_api_key: 'a1c81a66f1e7369b386db389a8820ad5'
+   powered_by: false
   # application_id: 'VNWKURYNFF'
   #  index_name:     'netlify_a2c772de-c6a5-46bb-9f4d-9961ddd62e5c_master_all'
   #  search_only_api_key: '40fc6accada5c705bc76fee4b9f5117a'
