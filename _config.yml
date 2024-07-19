@@ -32,9 +32,9 @@ plugins:
     - jekyll-archives
 
 algolia:
-   application_id: 'MXQQARBXUQ'
-   index_name:     'netlify_a2c772de-c6a5-46bb-9f4d-9961ddd62e5c_master_all'
-   search_only_api_key: 'a1c81a66f1e7369b386db389a8820ad5'
+   application_id: 'Y8FHWDW9NB'
+   index_name:     'Gaeblog'
+   search_only_api_key: '7b585e6b877dd5ae83ada3eb38a70bdd'
    powered_by: false
   # application_id: 'VNWKURYNFF'
   #  index_name:     'netlify_a2c772de-c6a5-46bb-9f4d-9961ddd62e5c_master_all'
@@ -61,7 +61,7 @@ defaults:
 
 search: true
 
-search_provider: google
+search_provider: algolia
 
 google:
   search_engine_id: 2283be536cce140dd
