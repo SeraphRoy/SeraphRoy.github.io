@@ -34,7 +34,7 @@ plugins:
 algolia:
    application_id: 'Y8FHWDW9NB'
    index_name:     'Y8FHWDW9NB'
-   search_only_api_key: 'b66031155929f70634dffecb4a9d7eba'
+   search_only_api_key: '7b585e6b877dd5ae83ada3eb38a70bdd'
    powered_by: false
   # application_id: 'VNWKURYNFF'
   #  index_name:     'netlify_a2c772de-c6a5-46bb-9f4d-9961ddd62e5c_master_all'
