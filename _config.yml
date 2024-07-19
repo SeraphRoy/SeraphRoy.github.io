@@ -61,7 +61,10 @@ defaults:
 
 search: true
 
-search_provider: algolia
+search_provider: google
+
+google:
+  search_engine_id: 2283be536cce140dd
 
 comments:
   provider: "disqus"
