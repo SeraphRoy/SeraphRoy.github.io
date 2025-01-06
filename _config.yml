@@ -8,7 +8,7 @@
 # Site settings
 title: Gae Blog
 subtitle: Notes, Word Salad, etc.
-brief-intro: "Software Engineer@Amazon"
+brief-intro: "Senior Software Engineer at Stubhub"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.gaeblog.com" # the base hostname & protocol for your site
 
@@ -87,7 +87,7 @@ analytics:
 author:
   name: "Yanxi Chen"
   avatar: "/assets/avatar1.jpeg"
-  bio: "Software Engineer@Amazon" # Note: Markdown is allowed
+  bio: ""Senior Software Engineer at Stubhub" # Note: Markdown is allowed
   location: "California, USA"
   links:
     - label: "GitHub"
