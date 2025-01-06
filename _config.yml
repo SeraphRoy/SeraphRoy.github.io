@@ -87,7 +87,7 @@ analytics:
 author:
   name: "Yanxi Chen"
   avatar: "/assets/avatar1.jpeg"
-  bio: ""Senior Software Engineer at Stubhub" # Note: Markdown is allowed
+  bio: "Senior Software Engineer at Stubhub" # Note: Markdown is allowed
   location: "California, USA"
   links:
     - label: "GitHub"
