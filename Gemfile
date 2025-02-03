@@ -12,3 +12,5 @@ group :jekyll_plugins do
 end
 
 gem "webrick" # https://github.com/jekyll/jekyll/issues/8523
+gem "json"
+gem 'mutex_m'
