@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-ruby '3.4.1'  # Changed from "~> 3.4.1" to '3.4.1' for exact version
 
 group :jekyll_plugins do
   gem 'jekyll-algolia'
