@@ -7,9 +7,34 @@
     <title>Content Manager</title>
     <!-- Include the identity widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" type="text/javascript"></script>
+    <!-- Add styles for better admin UI experience -->
+    <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" />
   </head>
   <body>
     <!-- Include the script that builds the page and powers Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>
+      // Register preview styles using CDN for Minimal Mistakes theme
+      CMS.registerPreviewStyle("https://cdn.jsdelivr.net/npm/minimal-mistakes@4.24.0/assets/css/main.min.css");
+      
+      var PostPreview = createClass({
+        render: function() {
+          var entry = this.props.entry;
+          var date = entry.getIn(['data', 'date']);
+          
+          return h('div', {className: "content"},
+            h('h1', {}, entry.getIn(['data', 'title'])),
+            h('div', {className: "meta"},
+              h('span', {}, "Categories: " + (entry.getIn(['data', 'categories']) || []).join(', ')),
+              h('br'),
+              h('span', {}, "Tags: " + (entry.getIn(['data', 'tags']) || []).join(', '))
+            ),
+            h('div', {className: "post-content"}, this.props.widgetFor('body'))
+          );
+        }
+      });
+      
+      CMS.registerPreviewTemplate("blog", PostPreview);
+    </script>
   </body>
 </html>

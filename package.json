@@ -4,9 +4,12 @@
   "description": "Use my own theme: https://github.com/SeraphRoy/GaeBlogx",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tinacms dev -c \"bundle exec jekyll serve\"",
-    "build": "npx tinacms build && jekyll build"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
