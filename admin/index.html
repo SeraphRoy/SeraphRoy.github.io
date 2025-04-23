@@ -17,17 +17,58 @@
       // Register preview styles using CDN for Minimal Mistakes theme
       CMS.registerPreviewStyle("https://cdn.jsdelivr.net/npm/minimal-mistakes@4.24.0/assets/css/main.min.css");
       
+      // Fix categories and tags in entries before they're saved
+      CMS.registerEventListener({
+        name: 'preSave',
+        handler: ({ entry }) => {
+          let data = entry.get('data').toJS();
+          
+          // Handle categories - convert from objects to simple strings if needed
+          if (data.categories && Array.isArray(data.categories)) {
+            data.categories = data.categories.map(item => {
+              return typeof item === 'object' && item.category ? item.category : item;
+            });
+          }
+          
+          // Handle tags - convert from objects to simple strings if needed
+          if (data.tags && Array.isArray(data.tags)) {
+            data.tags = data.tags.map(item => {
+              return typeof item === 'object' && item.tag ? item.tag : item;
+            });
+          }
+          
+          return { data };
+        }
+      });
+      
       var PostPreview = createClass({
         render: function() {
           var entry = this.props.entry;
-          var date = entry.getIn(['data', 'date']);
+          
+          // Format categories for preview
+          var categories = [];
+          var rawCategories = entry.getIn(['data', 'categories']);
+          if (rawCategories) {
+            categories = rawCategories.toJS().map(item => {
+              return typeof item === 'object' && item.category ? item.category : item;
+            });
+          }
+          
+          // Format tags for preview
+          var tags = [];
+          var rawTags = entry.getIn(['data', 'tags']);
+          if (rawTags) {
+            tags = rawTags.toJS().map(item => {
+              return typeof item === 'object' && item.tag ? item.tag : item;
+            });
+          }
           
           return h('div', {className: "content"},
             h('h1', {}, entry.getIn(['data', 'title'])),
             h('div', {className: "meta"},
-              h('span', {}, "Categories: " + (entry.getIn(['data', 'categories']) || []).join(', ')),
+              h('span', {}, "Categories: " + categories.join(', ')),
               h('br'),
-              h('span', {}, "Tags: " + (entry.getIn(['data', 'tags']) || []).join(', '))
+              h('span', {}, "Tags: " + tags.join(', '))
             ),
             h('div', {className: "post-content"}, this.props.widgetFor('body'))
           );

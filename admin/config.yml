@@ -16,7 +16,7 @@ collections:
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     editor:
-      preview: false
+      preview: true
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
@@ -27,7 +27,7 @@ collections:
   - name: 'pages'
     label: 'Pages'
     editor:
-      preview: false
+      preview: true
     files:
       - label: 'About Page'
         name: 'about'
