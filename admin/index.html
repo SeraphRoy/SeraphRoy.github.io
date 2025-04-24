@@ -9,73 +9,78 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" type="text/javascript"></script>
     <!-- Add styles for better admin UI experience -->
     <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" />
+    <!-- Include the config script for local development -->
+    <script src="config.js"></script>
   </head>
   <body>
     <!-- Include the script that builds the page and powers Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
-      // Register preview styles using CDN for Minimal Mistakes theme
-      CMS.registerPreviewStyle("https://cdn.jsdelivr.net/npm/minimal-mistakes@4.24.0/assets/css/main.min.css");
-      
-      // Fix categories and tags in entries before they're saved
-      CMS.registerEventListener({
-        name: 'preSave',
-        handler: ({ entry }) => {
-          let data = entry.get('data').toJS();
-          
-          // Handle categories - convert from objects to simple strings if needed
-          if (data.categories && Array.isArray(data.categories)) {
-            data.categories = data.categories.map(item => {
-              return typeof item === 'object' && item.category ? item.category : item;
-            });
+      // Only run this code if CMS is not manually initialized by config.js
+      if (window.CMS_MANUAL_INIT !== true) {
+        // Register preview styles using CDN for Minimal Mistakes theme
+        CMS.registerPreviewStyle("https://cdn.jsdelivr.net/npm/minimal-mistakes@4.24.0/assets/css/main.min.css");
+        
+        // Fix categories and tags in entries before they're saved
+        CMS.registerEventListener({
+          name: 'preSave',
+          handler: ({ entry }) => {
+            let data = entry.get('data').toJS();
+            
+            // Handle categories - convert from objects to simple strings if needed
+            if (data.categories && Array.isArray(data.categories)) {
+              data.categories = data.categories.map(item => {
+                return typeof item === 'object' && item.category ? item.category : item;
+              });
+            }
+            
+            // Handle tags - convert from objects to simple strings if needed
+            if (data.tags && Array.isArray(data.tags)) {
+              data.tags = data.tags.map(item => {
+                return typeof item === 'object' && item.tag ? item.tag : item;
+              });
+            }
+            
+            return { data };
           }
-          
-          // Handle tags - convert from objects to simple strings if needed
-          if (data.tags && Array.isArray(data.tags)) {
-            data.tags = data.tags.map(item => {
-              return typeof item === 'object' && item.tag ? item.tag : item;
-            });
+        });
+        
+        var PostPreview = createClass({
+          render: function() {
+            var entry = this.props.entry;
+            
+            // Format categories for preview
+            var categories = [];
+            var rawCategories = entry.getIn(['data', 'categories']);
+            if (rawCategories) {
+              categories = rawCategories.toJS().map(item => {
+                return typeof item === 'object' && item.category ? item.category : item;
+              });
+            }
+            
+            // Format tags for preview
+            var tags = [];
+            var rawTags = entry.getIn(['data', 'tags']);
+            if (rawTags) {
+              tags = rawTags.toJS().map(item => {
+                return typeof item === 'object' && item.tag ? item.tag : item;
+              });
+            }
+            
+            return h('div', {className: "content"},
+              h('h1', {}, entry.getIn(['data', 'title'])),
+              h('div', {className: "meta"},
+                h('span', {}, "Categories: " + categories.join(', ')),
+                h('br'),
+                h('span', {}, "Tags: " + tags.join(', '))
+              ),
+              h('div', {className: "post-content"}, this.props.widgetFor('body'))
+            );
           }
-          
-          return { data };
-        }
-      });
-      
-      var PostPreview = createClass({
-        render: function() {
-          var entry = this.props.entry;
-          
-          // Format categories for preview
-          var categories = [];
-          var rawCategories = entry.getIn(['data', 'categories']);
-          if (rawCategories) {
-            categories = rawCategories.toJS().map(item => {
-              return typeof item === 'object' && item.category ? item.category : item;
-            });
-          }
-          
-          // Format tags for preview
-          var tags = [];
-          var rawTags = entry.getIn(['data', 'tags']);
-          if (rawTags) {
-            tags = rawTags.toJS().map(item => {
-              return typeof item === 'object' && item.tag ? item.tag : item;
-            });
-          }
-          
-          return h('div', {className: "content"},
-            h('h1', {}, entry.getIn(['data', 'title'])),
-            h('div', {className: "meta"},
-              h('span', {}, "Categories: " + categories.join(', ')),
-              h('br'),
-              h('span', {}, "Tags: " + tags.join(', '))
-            ),
-            h('div', {className: "post-content"}, this.props.widgetFor('body'))
-          );
-        }
-      });
-      
-      CMS.registerPreviewTemplate("blog", PostPreview);
+        });
+        
+        CMS.registerPreviewTemplate("blog", PostPreview);
+      }
     </script>
   </body>
 </html>

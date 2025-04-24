@@ -1,14 +1,30 @@
 # config.yml
 
-# when using the default proxy server port
-# local_backend: true
+# Enable local backend for development
+local_backend: true
 
 backend:
   name: git-gateway
   branch: master
+  # Add commit status indicators
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
+    
 media_folder: 'assets'
 public_folder: '/assets'
 publish_mode: editorial_workflow
+
+# Display editorial workflow status in the UI
+show_preview_links: true
+
+# Use refresh_sec to poll for changes
+site_url: https://www.gaeblog.com
+display_url: https://www.gaeblog.com
+
 collections:
   - name: 'blog'
     label: 'Blog'
@@ -22,7 +38,7 @@ collections:
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
       - { label: 'Categories', name: 'categories', widget: 'list' }
       - { label: 'Tags', name: 'tags', widget: 'list' }
-      - { label: 'Mathjax', name: 'mathjax', widget: 'boolean' }
+      - { label: 'Mathjax', name: 'mathjax', widget: 'boolean', default: true }
       - { label: 'Body', name: 'body', widget: 'markdown' }
   - name: 'pages'
     label: 'Pages'
